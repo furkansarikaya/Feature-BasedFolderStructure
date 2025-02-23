@@ -10,7 +10,7 @@ Bu proje, C# dilinde yazılmış ve MediatR ile .NET 9 kullanılarak geliştiril
 - MediatR 12.4.1
 - AutoMapper 14.0.0
 - FluentValidation 11.11.0
-- Swagger/OpenAPI
+- Scalar/OpenAPI
 
 ## Mimari ve Desenler
 
@@ -27,7 +27,7 @@ Bu proje, C# dilinde yazılmış ve MediatR ile .NET 9 kullanılarak geliştiril
 - FluentValidation ile veri doğrulama
 - Global exception handling
 - PostgreSQL veritabanı desteği
-- Swagger UI ile API dokümantasyonu
+- Scalar ile API dokümantasyonu
 
 ## Gereksinimler
 
@@ -124,7 +124,7 @@ dotnet run --project src/FeatureBasedFolderStructure.API
 - Controller tanımlamaları
 - Program başlangıç yapılandırması
 - Middleware konfigürasyonları
-- Swagger entegrasyonu
+- Scalar entegrasyonu
 
 ### `src/FeatureBasedFolderStructure.Application/`
 - İş mantığı katmanı
