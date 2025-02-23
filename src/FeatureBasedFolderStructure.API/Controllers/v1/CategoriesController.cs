@@ -1,6 +1,7 @@
 using FeatureBasedFolderStructure.API.Controllers.Base;
 using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.Categories.Commands.CreateCategory;
+using FeatureBasedFolderStructure.Application.Features.Categories.Commands.DeleteCategory;
 using FeatureBasedFolderStructure.Application.Features.Categories.Commands.UpdateCategory;
 using FeatureBasedFolderStructure.Application.Features.Categories.DTOs;
 using FeatureBasedFolderStructure.Application.Features.Categories.Queries.GetCategories;
@@ -43,6 +44,13 @@ public class CategoriesController : BaseController
         }
 
         var response = await Mediator.Send(command, cancellationToken);
+        return StatusCode((int)response.StatusCode, response);
+    }
+    
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
+    {
+        var response = await Mediator.Send(new DeleteCategoryCommand(id), cancellationToken);
         return StatusCode((int)response.StatusCode, response);
     }
 }

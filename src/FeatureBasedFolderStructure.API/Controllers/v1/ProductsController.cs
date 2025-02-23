@@ -1,6 +1,7 @@
 using FeatureBasedFolderStructure.API.Controllers.Base;
 using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.Products.Commands.CreateProduct;
+using FeatureBasedFolderStructure.Application.Features.Products.Commands.DeleteProduct;
 using FeatureBasedFolderStructure.Application.Features.Products.Commands.UpdateProduct;
 using FeatureBasedFolderStructure.Application.Features.Products.DTOs;
 using FeatureBasedFolderStructure.Application.Features.Products.Queries.GetProductDetail;
@@ -43,6 +44,13 @@ public class ProductsController : BaseController
         }
 
         var response = await Mediator.Send(command, cancellationToken);
+        return StatusCode((int)response.StatusCode, response);
+    }
+    
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
+    {
+        var response = await Mediator.Send(new DeleteProductCommand(id), cancellationToken);
         return StatusCode((int)response.StatusCode, response);
     }
 }

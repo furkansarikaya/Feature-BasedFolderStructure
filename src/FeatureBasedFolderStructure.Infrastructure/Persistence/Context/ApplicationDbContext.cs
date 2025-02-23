@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using System.Reflection;
 using FeatureBasedFolderStructure.Domain.Common;
 using FeatureBasedFolderStructure.Domain.Entities;
@@ -23,6 +24,20 @@ public class ApplicationDbContext(
     {
         builder.Ignore<DomainEvent>();
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        
+        // Tüm entity'ler için soft delete filtresi
+        foreach (var entityType in builder.Model.GetEntityTypes())
+        {
+            if (entityType.ClrType.GetProperty("IsDeleted") == null) continue;
+            
+            var parameter = Expression.Parameter(entityType.ClrType, "e");
+            var property = Expression.Property(parameter, "IsDeleted");
+            var condition = Expression.Equal(property, Expression.Constant(false));
+            var lambda = Expression.Lambda(condition, parameter);
+
+            builder.Entity(entityType.ClrType).HasQueryFilter(lambda);
+        }
+        
         base.OnModelCreating(builder);
     }
 
@@ -37,7 +52,3 @@ public class ApplicationDbContext(
         return await base.SaveChangesAsync(cancellationToken);
     }
 }
-
-//cd src/FeatureBasedFolderStructure.Infrastructure
-//dotnet ef migrations add InitialCreate --startup-project ../FeatureBasedFolderStructure.API
-//dotnet ef database update --startup-project ../FeatureBasedFolderStructure.API
