@@ -1,0 +1,33 @@
+using FeatureBasedFolderStructure.Domain.Entities;
+using FeatureBasedFolderStructure.Domain.Interfaces;
+using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
+using Microsoft.EntityFrameworkCore;
+
+namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories;
+
+public class OrderRepository(ApplicationDbContext context) : BaseRepository<Order, Guid>(context), IOrderRepository
+{
+    public async Task<Order?> GetOrderWithItems(Guid id)
+    {
+        return await context.Orders
+            .Include(o => o.OrderItems)
+            .ThenInclude(oi => oi.Product)
+            .FirstOrDefaultAsync(o => o.Id == id);
+    }
+
+    public async Task<IEnumerable<Order>> GetOrdersByCustomerId(string customerId)
+    {
+        return await context.Orders
+            .Where(o => o.CustomerId == customerId)
+            .Include(o => o.OrderItems)
+            .OrderByDescending(o => o.OrderDate)
+            .ToListAsync();
+    }
+
+    public async Task<decimal> GetTotalOrderAmount(string customerId)
+    {
+        return await context.Orders
+            .Where(o => o.CustomerId == customerId)
+            .SumAsync(o => o.TotalAmount);
+    }
+}
