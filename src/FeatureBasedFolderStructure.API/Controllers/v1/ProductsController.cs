@@ -38,12 +38,11 @@ public class ProductsController : BaseController
     {
         if (id != command.Id)
         {
-            var response = BaseResponse<object>.ErrorResult("Id in request does not match Id in command",["Id in request does not match Id in command"]);
-            return StatusCode((int)response.StatusCode, response);
+            var errorResponse = BaseResponse<object>.ErrorResult("Id in request does not match Id in command", ["Id in request does not match Id in command"]);
+            return StatusCode((int)errorResponse.StatusCode, errorResponse);
         }
 
-        await Mediator.Send(command, cancellationToken);
-
-        return NoContent();
+        var response = await Mediator.Send(command, cancellationToken);
+        return StatusCode((int)response.StatusCode, response);
     }
 }

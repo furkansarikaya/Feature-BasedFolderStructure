@@ -1,3 +1,4 @@
+using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Domain.Entities;
 using FeatureBasedFolderStructure.Domain.Interfaces;
 using MediatR;
@@ -7,9 +8,9 @@ namespace FeatureBasedFolderStructure.Application.Features.Categories.Commands.C
 
 public class CreateCategoryCommandHandler(ICategoryRepository categoryRepository, 
     ILogger<CreateCategoryCommandHandler> logger)
-    : IRequestHandler<CreateCategoryCommand, int>
+    : IRequestHandler<CreateCategoryCommand, BaseResponse<int>>
 {
-    public async Task<int> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<BaseResponse<int>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
         var entity = new Category
         {
@@ -21,6 +22,6 @@ public class CreateCategoryCommandHandler(ICategoryRepository categoryRepository
 
         logger.LogInformation("Created Category {CategoryId}", entity.Id);
 
-        return entity.Id;
+        return BaseResponse<int>.SuccessResult(entity.Id);
     }
 }
