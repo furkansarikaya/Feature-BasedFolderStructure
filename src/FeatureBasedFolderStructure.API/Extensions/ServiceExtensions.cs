@@ -15,14 +15,27 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 namespace FeatureBasedFolderStructure.API.Extensions;
 
 public static class ServiceExtensions
 {
-    private static void AddSwaggerDocumentation(this IServiceCollection services)
+    private static void AddOpenApiDocumentation(this IServiceCollection services)
     {
-        services.AddOpenApi();
+        services.AddOpenApi(options =>
+        {
+            options.AddDocumentTransformer((document, context, cancellationToken) =>
+            {
+                document.Info = new OpenApiInfo
+                {
+                    Title = "Feature-Based Folder Structure API Documentation | v1",
+                    Version = "v1",
+                    Description = "API for Feature-Based Folder Structure."
+                };
+                return Task.CompletedTask;
+            });
+        });
     }
 
     private static void AddMediatRServices(this IServiceCollection services)
@@ -94,7 +107,7 @@ public static class ServiceExtensions
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
         services.AddCoreServices();
-        services.AddSwaggerDocumentation();
+        services.AddOpenApiDocumentation();
         services.AddMediatRServices();
         services.AddDatabaseContext(configuration);
         services.AddRepositories();

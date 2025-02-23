@@ -28,16 +28,31 @@ public class AuditableEntitySaveChangesInterceptor(
 
         foreach (var entry in context.ChangeTracker.Entries<BaseAuditableEntity<int>>())
         {
-            if (entry.State == EntityState.Added)
+            switch (entry.State)
             {
-                entry.Entity.CreatedBy = currentUserService.UserId;
-                entry.Entity.CreatedAt = dateTime.Now;
-            }
+                case EntityState.Added:
+                    entry.Entity.CreatedBy = currentUserService.UserId;
+                    entry.Entity.CreatedAt = dateTime.Now;
+                    break;
+                case EntityState.Modified:
+                    if (entry.Property("IsDeleted").CurrentValue is true &&
+                        entry.Property("IsDeleted").OriginalValue is false)
+                    {
+                        entry.Entity.DeletedBy = currentUserService.UserId;
+                        entry.Entity.DeletedAt = dateTime.Now;
+                    }
+                    else
+                    {
+                        entry.Entity.UpdatedBy = currentUserService.UserId;
+                        entry.Entity.UpdatedAt = dateTime.Now;
+                    }
 
-            if (entry.State == EntityState.Added || entry.State == EntityState.Modified)
-            {
-                entry.Entity.UpdatedBy = currentUserService.UserId;
-                entry.Entity.UpdatedAt = dateTime.Now;
+                    break;
+                case EntityState.Detached:
+                case EntityState.Unchanged:
+                case EntityState.Deleted: 
+                default:
+                    break;
             }
         }
     }

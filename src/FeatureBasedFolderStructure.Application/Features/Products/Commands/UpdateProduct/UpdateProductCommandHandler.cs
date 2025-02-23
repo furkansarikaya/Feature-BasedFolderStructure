@@ -29,6 +29,6 @@ public class UpdateProductCommandHandler(
 
         logger.LogInformation("Updated Product {ProductId}", entity.Id);
 
-        return BaseResponse<Unit>.SuccessResult(Unit.Value, HttpStatusCode.NoContent);
+        return BaseResponse<Unit>.SuccessResult(Unit.Value);
     }
 }

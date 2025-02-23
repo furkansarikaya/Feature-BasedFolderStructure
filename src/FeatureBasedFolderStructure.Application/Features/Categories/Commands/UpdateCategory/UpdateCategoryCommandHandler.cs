@@ -27,6 +27,6 @@ public class UpdateCategoryCommandHandler(
 
         logger.LogInformation("Updated Category {CategoryId}", entity.Id);
 
-        return BaseResponse<Unit>.SuccessResult(Unit.Value, HttpStatusCode.NoContent);
+        return BaseResponse<Unit>.SuccessResult(Unit.Value);
     }
 }
