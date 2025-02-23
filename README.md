@@ -1,6 +1,6 @@
 # FeatureBasedFolderStructure
 
-Bu proje, C# dilinde yazılmış ve MediatR ile .NET 9 kullanılarak geliştirilmiş bir ürün yönetim API'sidir. Proje, özellik tabanlı bir klasör yapısı kullanmaktadır.
+Bu proje, C# dilinde yazılmış ve MediatR ile .NET 9 kullanılarak geliştirilmiş bir ürün ve kategori yönetim API'sidir. Proje, özellik tabanlı bir klasör yapısı kullanmaktadır.
 
 ## Teknolojiler
 
@@ -23,7 +23,7 @@ Bu proje, C# dilinde yazılmış ve MediatR ile .NET 9 kullanılarak geliştiril
 ## Özellikler
 
 - RESTful API endpoints
-- Ürün CRUD işlemleri
+- Ürün ve Kategori CRUD işlemleri
 - FluentValidation ile veri doğrulama
 - Global exception handling
 - PostgreSQL veritabanı desteği
@@ -75,25 +75,47 @@ dotnet run --project src/FeatureBasedFolderStructure.API
 
 ### API Endpoints
 
+#### Ürünler
 - **GET** `/api/products`
-   - **Açıklama**: Tüm ürünleri listeler
-   - **Dönüş**: `List<ProductDto>`
+  - **Açıklama**: Tüm ürünleri listeler
+  - **Dönüş**: `List<ProductDto>`
 
 - **GET** `/api/products/{id}`
-   - **Açıklama**: Belirli bir ürünün detaylarını getirir
-   - **Parametreler**: `id` (int)
-   - **Dönüş**: `ProductDto`
+  - **Açıklama**: Belirli bir ürünün detaylarını getirir
+  - **Parametreler**: `id` (int)
+  - **Dönüş**: `ProductDto`
 
 - **POST** `/api/products`
-   - **Açıklama**: Yeni bir ürün oluşturur
-   - **Gövde**: `CreateProductCommand`
-   - **Dönüş**: Oluşturulan ürünün ID'si (int)
+  - **Açıklama**: Yeni bir ürün oluşturur
+  - **Gövde**: `CreateProductCommand`
+  - **Dönüş**: Oluşturulan ürünün ID'si (int)
 
 - **PUT** `/api/products/{id}`
-   - **Açıklama**: Mevcut bir ürünü günceller
-   - **Parametreler**: `id` (int)
-   - **Gövde**: `UpdateProductCommand`
-   - **Dönüş**: `204 No Content`
+  - **Açıklama**: Mevcut bir ürünü günceller
+  - **Parametreler**: `id` (int)
+  - **Gövde**: `UpdateProductCommand`
+  - **Dönüş**: `204 No Content`
+
+#### Kategoriler
+- **GET** `/api/categories`
+  - **Açıklama**: Tüm kategorileri listeler
+  - **Dönüş**: `List<CategoryDto>`
+
+- **GET** `/api/categories/{id}`
+  - **Açıklama**: Belirli bir kategorinin detaylarını getirir
+  - **Parametreler**: `id` (int)
+  - **Dönüş**: `CategoryDto`
+
+- **POST** `/api/categories`
+  - **Açıklama**: Yeni bir kategori oluşturur
+  - **Gövde**: `CreateCategoryCommand`
+  - **Dönüş**: Oluşturulan kategorinin ID'si (int)
+
+- **PUT** `/api/categories/{id}`
+  - **Açıklama**: Mevcut bir kategoriyi günceller
+  - **Parametreler**: `id` (int)
+  - **Gövde**: `UpdateCategoryCommand`
+  - **Dönüş**: `204 No Content`
 
 ## Proje Yapısı
 
@@ -107,15 +129,15 @@ dotnet run --project src/FeatureBasedFolderStructure.API
 ### `src/FeatureBasedFolderStructure.Application/`
 - İş mantığı katmanı
 - CQRS pattern implementasyonları
-   - Commands
-   - Queries
-   - DTOs
+  - Commands
+  - Queries
+  - DTOs
 - Validasyon kuralları
 - Interfaces
 - Common
-   - Behaviors
-   - Exceptions
-   - Mappings
+  - Behaviors
+  - Exceptions
+  - Mappings
 
 ### `src/FeatureBasedFolderStructure.Infrastructure/`
 - Veritabanı işlemleri
@@ -137,7 +159,11 @@ dotnet run --project src/FeatureBasedFolderStructure.API
  ┃ ┃ ┃ ┣ 📂Exceptions
  ┃ ┃ ┃ ┗ 📂Mappings
  ┃ ┃ ┗ 📂Features
- ┃ ┃   ┗ 📂Products
+ ┃ ┃   ┣ 📂Products
+ ┃ ┃   ┃ ┣ 📂Commands
+ ┃ ┃   ┃ ┣ 📂DTOs
+ ┃ ┃   ┃ ┗ 📂Queries
+ ┃ ┃   ┗ 📂Categories
  ┃ ┃     ┣ 📂Commands
  ┃ ┃     ┣ 📂DTOs
  ┃ ┃     ┗ 📂Queries
