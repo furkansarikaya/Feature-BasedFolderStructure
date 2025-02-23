@@ -73,49 +73,38 @@ Projeyi çalıştırmak için:
 dotnet run --project src/FeatureBasedFolderStructure.API
 ```
 
-### API Endpoints
+## 🚀 API Endpoints
 
-#### Ürünler
-- **GET** `/api/products`
-  - **Açıklama**: Tüm ürünleri listeler
-  - **Dönüş**: `List<ProductDto>`
+### Ürünler API
 
-- **GET** `/api/products/{id}`
-  - **Açıklama**: Belirli bir ürünün detaylarını getirir
-  - **Parametreler**: `id` (int)
-  - **Dönüş**: `ProductDto`
+| Metod | Endpoint | Açıklama | İstek Gövdesi | Dönüş Tipi |
+|-------|----------|----------|---------------|------------|
+| GET | `/api/products` | Tüm ürünleri listeler | - | `BaseResponse<List<ProductDto>>` |
+| GET | `/api/products/{id}` | Ürün detayını getirir | - | `BaseResponse<ProductDto>` |
+| POST | `/api/products` | Yeni ürün oluşturur | `CreateProductCommand` | `BaseResponse<int>` |
+| PUT | `/api/products/{id}` | Ürün günceller | `UpdateProductCommand` | `BaseResponse<Unit>` |
+| DELETE | `/api/products/{id}` | Ürün siler | - | `BaseResponse<Unit>` |
 
-- **POST** `/api/products`
-  - **Açıklama**: Yeni bir ürün oluşturur
-  - **Gövde**: `CreateProductCommand`
-  - **Dönüş**: Oluşturulan ürünün ID'si (int)
+### Kategoriler API
 
-- **PUT** `/api/products/{id}`
-  - **Açıklama**: Mevcut bir ürünü günceller
-  - **Parametreler**: `id` (int)
-  - **Gövde**: `UpdateProductCommand`
-  - **Dönüş**: `204 No Content`
+| Metod | Endpoint | Açıklama | İstek Gövdesi | Dönüş Tipi |
+|-------|----------|----------|---------------|------------|
+| GET | `/api/categories` | Tüm kategorileri listeler | - | `BaseResponse<List<CategoryDto>>` |
+| GET | `/api/categories/{id}` | Kategori detayını getirir | - | `BaseResponse<CategoryDto>` |
+| POST | `/api/categories` | Yeni kategori oluşturur | `CreateCategoryCommand` | `BaseResponse<int>` |
+| PUT | `/api/categories/{id}` | Kategori günceller | `UpdateCategoryCommand` | `BaseResponse<Unit>` |
+| DELETE | `/api/categories/{id}` | Kategori siler | - | `BaseResponse<Unit>` |
 
-#### Kategoriler
-- **GET** `/api/categories`
-  - **Açıklama**: Tüm kategorileri listeler
-  - **Dönüş**: `List<CategoryDto>`
+### HTTP Durum Kodları
 
-- **GET** `/api/categories/{id}`
-  - **Açıklama**: Belirli bir kategorinin detaylarını getirir
-  - **Parametreler**: `id` (int)
-  - **Dönüş**: `CategoryDto`
-
-- **POST** `/api/categories`
-  - **Açıklama**: Yeni bir kategori oluşturur
-  - **Gövde**: `CreateCategoryCommand`
-  - **Dönüş**: Oluşturulan kategorinin ID'si (int)
-
-- **PUT** `/api/categories/{id}`
-  - **Açıklama**: Mevcut bir kategoriyi günceller
-  - **Parametreler**: `id` (int)
-  - **Gövde**: `UpdateCategoryCommand`
-  - **Dönüş**: `204 No Content`
+| Kod | Açıklama |
+|-----|-----------|
+| 200 | Başarılı |
+| 201 | Oluşturuldu |
+| 204 | İçerik Yok |
+| 400 | Hatalı İstek |
+| 404 | Bulunamadı |
+| 500 | Sunucu Hatası |
 
 ## Proje Yapısı
 
