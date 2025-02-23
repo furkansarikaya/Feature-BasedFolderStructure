@@ -13,7 +13,7 @@ public class UpdateProductCommandHandler(
 {
     public async Task<bool> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
-        var entity = await productRepository.GetByIdAsync(request.Id, cancellationToken: cancellationToken);
+        var entity = await productRepository.GetByIdAsync(request.Id, cancellationToken);
 
         if (entity == null)
             throw new NotFoundException(nameof(Product), request.Id);

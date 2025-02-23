@@ -2,6 +2,8 @@ using System.Reflection;
 using FeatureBasedFolderStructure.Application.Common.Behaviors;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Features.Products.Commands.CreateProduct;
+using FeatureBasedFolderStructure.Application.Features.Products.Mappings;
+using FeatureBasedFolderStructure.Application.Features.Products.Validators;
 using FeatureBasedFolderStructure.Domain.Interfaces;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Interceptors;
@@ -68,8 +70,8 @@ public static class ServiceExtensions
 
     private static void AddAssemblyServices(this IServiceCollection services)
     {
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddValidatorsFromAssembly(Assembly.GetAssembly(typeof(CreateProductCommandValidator)));
+        services.AddAutoMapper(Assembly.GetAssembly(typeof(ProductMappingProfile)));
     }
 
     public static void AddApiServices(this IServiceCollection services, IConfiguration configuration)
