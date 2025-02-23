@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FeatureBasedFolderStructure.API.Controllers.Base;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v{version:apiVersion}/[controller]")]
 public abstract class BaseController : ControllerBase
 {
     private IMediator? _mediator;

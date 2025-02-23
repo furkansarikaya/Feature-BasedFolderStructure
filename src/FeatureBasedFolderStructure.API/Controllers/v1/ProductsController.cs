@@ -6,8 +6,9 @@ using FeatureBasedFolderStructure.Application.Features.Products.Queries.GetProdu
 using FeatureBasedFolderStructure.Application.Features.Products.Queries.GetProducts;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FeatureBasedFolderStructure.API.Controllers;
+namespace FeatureBasedFolderStructure.API.Controllers.v1;
 
+[ApiVersion("1.0")]
 public class ProductsController : BaseController
 {
     [HttpGet]

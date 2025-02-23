@@ -1,13 +1,14 @@
 using FeatureBasedFolderStructure.API.Controllers.Base;
-using FeatureBasedFolderStructure.Application.Features.Categories.DTOs;
 using FeatureBasedFolderStructure.Application.Features.Categories.Commands.CreateCategory;
 using FeatureBasedFolderStructure.Application.Features.Categories.Commands.UpdateCategory;
-using FeatureBasedFolderStructure.Application.Features.Categories.Queries.GetCategoryDetail;
+using FeatureBasedFolderStructure.Application.Features.Categories.DTOs;
 using FeatureBasedFolderStructure.Application.Features.Categories.Queries.GetCategories;
+using FeatureBasedFolderStructure.Application.Features.Categories.Queries.GetCategoryDetail;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FeatureBasedFolderStructure.API.Controllers;
+namespace FeatureBasedFolderStructure.API.Controllers.v1;
 
+[ApiVersion("1.0")]
 public class CategoriesController : BaseController
 {
     [HttpGet]
