@@ -1,6 +1,4 @@
 using System.Reflection;
-using FeatureBasedFolderStructure.API.Core;
-using FeatureBasedFolderStructure.API.MockData;
 using FeatureBasedFolderStructure.Application.Common.Behaviors;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Features.Products.Commands.CreateProduct;
@@ -16,7 +14,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
-using Swashbuckle.AspNetCore.Filters;
 
 namespace FeatureBasedFolderStructure.API.Extensions;
 
@@ -25,9 +22,6 @@ public static class ServiceExtensions
     private static void AddSwaggerDocumentation(this IServiceCollection services)
     {
         services.AddOpenApi();
-        services.AddSwaggerGen();
-        services.ConfigureOptions<ConfigureSwaggerOptions>();
-        services.AddSwaggerExamplesFromAssemblies(typeof(MockCategory).GetTypeInfo().Assembly);
     }
 
     private static void AddMediatRServices(this IServiceCollection services)
