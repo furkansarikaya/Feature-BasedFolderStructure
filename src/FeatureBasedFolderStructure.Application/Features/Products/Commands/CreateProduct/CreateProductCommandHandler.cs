@@ -20,7 +20,8 @@ public class CreateProductCommandHandler(
             Description = request.Description,
             CategoryId = request.CategoryId
         };
-
+        entity.UpdatePrice(request.Price, "TRY");
+        
         await productRepository.AddAsync(entity, cancellationToken);
         
         logger.LogInformation("Created Product {ProductId}", entity.Id);
