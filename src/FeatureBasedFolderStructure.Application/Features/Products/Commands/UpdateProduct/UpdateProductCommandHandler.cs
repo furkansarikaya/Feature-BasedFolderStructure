@@ -1,3 +1,4 @@
+using System.Net;
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Domain.Entities;
@@ -10,9 +11,9 @@ namespace FeatureBasedFolderStructure.Application.Features.Products.Commands.Upd
 public class UpdateProductCommandHandler(
     IProductRepository productRepository,
     ILogger<UpdateProductCommandHandler> logger)
-    : IRequestHandler<UpdateProductCommand, BaseResponse<bool>>
+    : IRequestHandler<UpdateProductCommand, BaseResponse<Unit>>
 {
-    public async Task<BaseResponse<bool>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
+    public async Task<BaseResponse<Unit>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
         var entity = await productRepository.GetByIdAsync(request.Id, cancellationToken);
 
@@ -28,6 +29,6 @@ public class UpdateProductCommandHandler(
 
         logger.LogInformation("Updated Product {ProductId}", entity.Id);
 
-        return BaseResponse<bool>.SuccessResult(true);
+        return BaseResponse<Unit>.SuccessResult(Unit.Value, HttpStatusCode.NoContent);
     }
 }

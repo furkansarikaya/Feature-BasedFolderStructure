@@ -18,12 +18,12 @@ public class BaseResponse<T>
         StatusCode = HttpStatusCode.OK;
     }
 
-    public static BaseResponse<T> SuccessResult(T data)
+    public static BaseResponse<T> SuccessResult(T data, HttpStatusCode statusCode = HttpStatusCode.OK)
     {
         return new BaseResponse<T>
         {
             Data = data,
-            StatusCode = HttpStatusCode.OK
+            StatusCode = statusCode
         };
     }
 

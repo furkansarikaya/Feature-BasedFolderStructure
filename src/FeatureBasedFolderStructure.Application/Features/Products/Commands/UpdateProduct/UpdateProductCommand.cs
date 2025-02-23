@@ -3,7 +3,7 @@ using MediatR;
 
 namespace FeatureBasedFolderStructure.Application.Features.Products.Commands.UpdateProduct;
 
-public class UpdateProductCommand : IRequest<BaseResponse<bool>>
+public class UpdateProductCommand : IRequest<BaseResponse<Unit>>
 {
     public int Id { get; set; }
     public string Name { get; set; } = null!;
