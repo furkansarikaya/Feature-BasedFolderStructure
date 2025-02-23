@@ -1,4 +1,5 @@
 using System.Reflection;
+using FeatureBasedFolderStructure.API.Common;
 using FeatureBasedFolderStructure.Application.Common.Behaviors;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Features.Products.Commands.CreateProduct;
@@ -59,6 +60,7 @@ public static class ServiceExtensions
         services.AddScoped<IDateTime, DateTimeService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<AuditableEntitySaveChangesInterceptor>();
+        services.AddTransient<GlobalExceptionHandlingMiddleware>();
     }
 
     private static void AddDatabaseContext(this IServiceCollection services, IConfiguration configuration)

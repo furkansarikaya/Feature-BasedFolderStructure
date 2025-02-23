@@ -1,3 +1,4 @@
+using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Domain.Entities;
 using FeatureBasedFolderStructure.Domain.Interfaces;
 using MediatR;
@@ -8,9 +9,9 @@ namespace FeatureBasedFolderStructure.Application.Features.Products.Commands.Cre
 public class CreateProductCommandHandler(
     IProductRepository productRepository,
     ILogger<CreateProductCommandHandler> logger)
-    : IRequestHandler<CreateProductCommand, int>
+    : IRequestHandler<CreateProductCommand, BaseResponse<int>>
 {
-    public async Task<int> Handle(CreateProductCommand request, 
+    public async Task<BaseResponse<int>> Handle(CreateProductCommand request, 
         CancellationToken cancellationToken)
     {
         var entity = new Product
@@ -26,6 +27,6 @@ public class CreateProductCommandHandler(
         
         logger.LogInformation("Created Product {ProductId}", entity.Id);
         
-        return entity.Id;
+        return BaseResponse<int>.SuccessResult(entity.Id);
     }
 }

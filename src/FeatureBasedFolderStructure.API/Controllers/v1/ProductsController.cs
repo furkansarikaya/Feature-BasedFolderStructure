@@ -1,4 +1,5 @@
 using FeatureBasedFolderStructure.API.Controllers.Base;
+using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.Products.Commands.CreateProduct;
 using FeatureBasedFolderStructure.Application.Features.Products.Commands.UpdateProduct;
 using FeatureBasedFolderStructure.Application.Features.Products.DTOs;
@@ -14,26 +15,32 @@ public class ProductsController : BaseController
     [HttpGet]
     public async Task<ActionResult<List<ProductDto>>> GetProducts(CancellationToken cancellationToken)
     {
-        return await Mediator.Send(new GetProductsQuery(), cancellationToken);
+        var response = await Mediator.Send(new GetProductsQuery(), cancellationToken);
+        return StatusCode((int)response.StatusCode, response);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<ProductDto>> GetProduct(int id, CancellationToken cancellationToken)
     {
-        return await Mediator.Send(new GetProductDetailQuery { Id = id }, cancellationToken);
+        var response = await Mediator.Send(new GetProductDetailQuery { Id = id }, cancellationToken);
+        return StatusCode((int)response.StatusCode, response);
     }
 
     [HttpPost]
     public async Task<ActionResult<int>> Create(CreateProductCommand command, CancellationToken cancellationToken)
     {
-        return await Mediator.Send(command, cancellationToken);
+        var response = await Mediator.Send(command, cancellationToken);
+        return StatusCode((int)response.StatusCode, response);
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(int id, UpdateProductCommand command, CancellationToken cancellationToken)
     {
         if (id != command.Id)
-            return BadRequest();
+        {
+            var response = BaseResponse<object>.ErrorResult("Id in request does not match Id in command",["Id in request does not match Id in command"]);
+            return StatusCode((int)response.StatusCode, response);
+        }
 
         await Mediator.Send(command, cancellationToken);
 

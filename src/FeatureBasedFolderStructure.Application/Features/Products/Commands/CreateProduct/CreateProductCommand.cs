@@ -1,8 +1,9 @@
+using FeatureBasedFolderStructure.Application.Common.Models;
 using MediatR;
 
 namespace FeatureBasedFolderStructure.Application.Features.Products.Commands.CreateProduct;
 
-public class CreateProductCommand : IRequest<int>
+public class CreateProductCommand : IRequest<BaseResponse<int>>
 {
     public string Name { get; set; } = null!;
     public decimal Price { get; set; }
