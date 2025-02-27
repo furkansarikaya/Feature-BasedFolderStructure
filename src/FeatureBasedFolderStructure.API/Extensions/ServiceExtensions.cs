@@ -4,6 +4,7 @@ using FeatureBasedFolderStructure.Application.Common.Behaviors;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Features.Products.Commands.CreateProduct;
 using FeatureBasedFolderStructure.Application.Features.Products.Mappings;
+using FeatureBasedFolderStructure.Application.Features.Products.Rules;
 using FeatureBasedFolderStructure.Application.Features.Products.Validators;
 using FeatureBasedFolderStructure.Domain.Interfaces;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
@@ -94,6 +95,11 @@ public static class ServiceExtensions
     private static void AddCustomServices(this IServiceCollection services)
     {
         // Custom service registrations can be added here
+    }
+    
+    private static void AddBusinessRules(this IServiceCollection services)
+    {
+        services.AddScoped<ProductBusinessRules>();
     }
 
     private static void AddAssemblyServices(this IServiceCollection services)

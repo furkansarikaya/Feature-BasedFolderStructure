@@ -1,6 +1,7 @@
 using System.Net;
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Common.Models;
+using FeatureBasedFolderStructure.Application.Features.Products.Rules;
 using FeatureBasedFolderStructure.Domain.Entities;
 using FeatureBasedFolderStructure.Domain.Interfaces;
 using MediatR;
@@ -10,7 +11,7 @@ namespace FeatureBasedFolderStructure.Application.Features.Products.Commands.Upd
 
 public class UpdateProductCommandHandler(
     IProductRepository productRepository,
-    ICategoryRepository categoryRepository,
+    ProductBusinessRules productBusinessRules,
     ILogger<UpdateProductCommandHandler> logger)
     : IRequestHandler<UpdateProductCommand, BaseResponse<Unit>>
 {
@@ -21,9 +22,7 @@ public class UpdateProductCommandHandler(
         if (entity == null)
             throw new NotFoundException(nameof(Product), request.Id);
         
-        var category = await categoryRepository.GetByIdAsync(request.CategoryId, cancellationToken);
-        if(category == null)
-            throw new NotFoundException(nameof(category), request.CategoryId);
+        await productBusinessRules.CheckIfCategoryExists(request.CategoryId, cancellationToken);
 
         entity.Name = request.Name;
         entity.Price = request.Price;

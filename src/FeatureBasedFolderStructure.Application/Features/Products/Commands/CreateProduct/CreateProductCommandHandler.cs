@@ -1,5 +1,6 @@
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Common.Models;
+using FeatureBasedFolderStructure.Application.Features.Products.Rules;
 using FeatureBasedFolderStructure.Domain.Entities;
 using FeatureBasedFolderStructure.Domain.Interfaces;
 using MediatR;
@@ -9,16 +10,14 @@ namespace FeatureBasedFolderStructure.Application.Features.Products.Commands.Cre
 
 public class CreateProductCommandHandler(
     IProductRepository productRepository,
-    ICategoryRepository categoryRepository,
+    ProductBusinessRules productBusinessRules,
     ILogger<CreateProductCommandHandler> logger)
     : IRequestHandler<CreateProductCommand, BaseResponse<int>>
 {
     public async Task<BaseResponse<int>> Handle(CreateProductCommand request, 
         CancellationToken cancellationToken)
     {
-        var category = await categoryRepository.GetByIdAsync(request.CategoryId, cancellationToken);
-        if(category == null)
-            throw new NotFoundException(nameof(category), request.CategoryId);
+        await productBusinessRules.CheckIfCategoryExists(request.CategoryId, cancellationToken);
         
         var entity = new Product
         {
