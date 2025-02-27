@@ -13,7 +13,7 @@ public class GetProductsQueryHandler(
     public async Task<BaseResponse<ProductListDto>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
         var products = await productRepository.GetListAsync(
-            orderBy: p => p.OrderBy(p => p.Name),
+            orderBy: p => p.OrderBy(product => product.Name),
             index: request.PageRequest.Page,
             size: request.PageRequest.PageSize,
             cancellationToken: cancellationToken);
