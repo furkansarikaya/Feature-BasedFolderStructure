@@ -6,6 +6,7 @@ using FeatureBasedFolderStructure.Application.Features.Products.Commands.UpdateP
 using FeatureBasedFolderStructure.Application.Features.Products.DTOs;
 using FeatureBasedFolderStructure.Application.Features.Products.Queries.GetProductDetail;
 using FeatureBasedFolderStructure.Application.Features.Products.Queries.GetProducts;
+using FeatureBasedFolderStructure.Application.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FeatureBasedFolderStructure.API.Controllers.v1;
@@ -14,9 +15,10 @@ namespace FeatureBasedFolderStructure.API.Controllers.v1;
 public class ProductsController : BaseController
 {
     [HttpGet]
-    public async Task<ActionResult<List<ProductDto>>> GetProducts(CancellationToken cancellationToken)
+    public async Task<ActionResult<List<ProductDto>>> GetProducts([FromQuery] PageRequest pageRequest, CancellationToken cancellationToken)
     {
-        var response = await Mediator.Send(new GetProductsQuery(), cancellationToken);
+        GetProductsQuery query = new() { PageRequest = pageRequest };
+        var response = await Mediator.Send(query, cancellationToken);
         return StatusCode((int)response.StatusCode, response);
     }
 
@@ -46,7 +48,7 @@ public class ProductsController : BaseController
         var response = await Mediator.Send(command, cancellationToken);
         return StatusCode((int)response.StatusCode, response);
     }
-    
+
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
     {

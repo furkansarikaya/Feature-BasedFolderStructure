@@ -8,11 +8,15 @@ namespace FeatureBasedFolderStructure.Application.Features.Products.Queries.GetP
 
 public class GetProductsQueryHandler(
     IProductRepository productRepository,
-    IMapper mapper) : IRequestHandler<GetProductsQuery, BaseResponse<List<ProductDto>>>
+    IMapper mapper) : IRequestHandler<GetProductsQuery, BaseResponse<ProductListDto>>
 {
-    public async Task<BaseResponse<List<ProductDto>>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
+    public async Task<BaseResponse<ProductListDto>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
-        var products = await productRepository.GetAllAsync(cancellationToken);
-        return BaseResponse<List<ProductDto>>.SuccessResult(mapper.Map<List<ProductDto>>(products.OrderBy(p => p.Name).ToList()));
+        var products = await productRepository.GetListAsync(
+            orderBy: p => p.OrderBy(p => p.Name),
+            index: request.PageRequest.Page,
+            size: request.PageRequest.PageSize,
+            cancellationToken: cancellationToken);
+        return BaseResponse<ProductListDto>.SuccessResult(mapper.Map<ProductListDto>(products));
     }
 }
