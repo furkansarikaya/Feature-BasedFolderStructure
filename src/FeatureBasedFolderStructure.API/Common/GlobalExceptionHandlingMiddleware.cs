@@ -14,40 +14,26 @@ public class GlobalExceptionHandlingMiddleware(ILogger<GlobalExceptionHandlingMi
         }
         catch (ValidationException exception)
         {
-            logger.LogError(exception, "Validation hatası oluştu");
-
-            var response = BaseResponse<object>.ErrorResult(
-                "Validation hatası oluştu", 
-                exception.Errors.Values.SelectMany(x => x).ToList()
-            );
-            
-            context.Response.StatusCode = (int)response.StatusCode;
-            context.Response.ContentType = "application/json";
-            await context.Response.WriteAsJsonAsync(response);
+            await HandleExceptionAsync(context, exception, "Validation hatası oluştu", exception.Errors.Values.SelectMany(x => x).ToList(), HttpStatusCode.BadRequest);
         }
         catch (NotFoundException exception)
         {
-            logger.LogError(exception, "Kayıt bulunamadı");
-
-            var response = BaseResponse<object>.ErrorResult(
-                "Kayıt bulunamadı", 
-                [exception.Message], 
-                HttpStatusCode.NotFound
-            );
-            
-            context.Response.StatusCode = (int)response.StatusCode;
-            context.Response.ContentType = "application/json";
-            await context.Response.WriteAsJsonAsync(response);
+            await HandleExceptionAsync(context, exception, "Kayıt bulunamadı", [exception.Message], HttpStatusCode.NotFound);
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, "Beklenmeyen bir hata oluştu");
-
-            var response = BaseResponse<object>.ErrorResult("Beklenmeyen bir hata oluştu", [exception.Message], HttpStatusCode.InternalServerError);
-
-            context.Response.StatusCode = (int)response.StatusCode;
-            context.Response.ContentType = "application/json";
-            await context.Response.WriteAsJsonAsync(response);
+            await HandleExceptionAsync(context, exception, "Beklenmeyen bir hata oluştu", [exception.Message], HttpStatusCode.InternalServerError);
         }
+    }
+
+    private async Task HandleExceptionAsync(HttpContext context, Exception exception, string message, List<string> errors, HttpStatusCode statusCode)
+    {
+        logger.LogError(exception, message);
+
+        var response = BaseResponse<object>.ErrorResult(message, errors, statusCode);
+
+        context.Response.StatusCode = (int)response.StatusCode;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(response);
     }
 }
