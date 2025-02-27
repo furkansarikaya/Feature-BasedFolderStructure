@@ -21,10 +21,4 @@ public class ProductRepository(ApplicationDbContext context) : BaseRepository<Pr
             .Include(p => p.Category)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
-
-    public async Task<bool> IsProductNameUnique(string name)
-    {
-        return !await context.Products
-            .AnyAsync(p => p.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase));
-    }
 }

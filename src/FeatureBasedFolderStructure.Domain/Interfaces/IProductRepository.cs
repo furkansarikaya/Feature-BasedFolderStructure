@@ -7,5 +7,4 @@ public interface IProductRepository : IRepository<Product, int>
 {
     Task<IEnumerable<Product>> GetProductsByCategory(int categoryId);
     Task<Product?> GetProductWithCategory(int id);
-    Task<bool> IsProductNameUnique(string name);
 }

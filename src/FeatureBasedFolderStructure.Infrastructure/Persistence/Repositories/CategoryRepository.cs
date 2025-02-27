@@ -9,14 +9,14 @@ public class CategoryRepository(ApplicationDbContext context) : BaseRepository<C
 {
     public async Task<Category?> GetCategoryWithProducts(int id)
     {
-        return await context.Categories
+        return await AsQueryable()
             .Include(c => c.Products)
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 
     public async Task<IEnumerable<Category>> GetAllWithProducts()
     {
-        return await context.Categories
+        return await AsQueryable()
             .Include(c => c.Products)
             .ToListAsync();
     }
