@@ -1,3 +1,4 @@
+using System.Net;
 using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Domain.Entities;
 using FeatureBasedFolderStructure.Domain.Interfaces;
@@ -22,6 +23,6 @@ public class CreateCategoryCommandHandler(ICategoryRepository categoryRepository
 
         logger.LogInformation("Created Category {CategoryId}", entity.Id);
 
-        return BaseResponse<int>.SuccessResult(entity.Id);
+        return BaseResponse<int>.SuccessResult(entity.Id, HttpStatusCode.Created);
     }
 }
