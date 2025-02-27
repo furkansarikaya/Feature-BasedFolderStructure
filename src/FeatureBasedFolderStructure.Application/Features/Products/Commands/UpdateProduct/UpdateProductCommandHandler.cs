@@ -10,6 +10,7 @@ namespace FeatureBasedFolderStructure.Application.Features.Products.Commands.Upd
 
 public class UpdateProductCommandHandler(
     IProductRepository productRepository,
+    ICategoryRepository categoryRepository,
     ILogger<UpdateProductCommandHandler> logger)
     : IRequestHandler<UpdateProductCommand, BaseResponse<Unit>>
 {
@@ -19,6 +20,10 @@ public class UpdateProductCommandHandler(
 
         if (entity == null)
             throw new NotFoundException(nameof(Product), request.Id);
+        
+        var category = await categoryRepository.GetByIdAsync(request.CategoryId, cancellationToken);
+        if(category == null)
+            throw new NotFoundException(nameof(category), request.CategoryId);
 
         entity.Name = request.Name;
         entity.Price = request.Price;
