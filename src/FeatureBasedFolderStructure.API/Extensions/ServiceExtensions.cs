@@ -117,6 +117,7 @@ public static class ServiceExtensions
         services.AddMediatRServices();
         services.AddDatabaseContext(configuration);
         services.AddRepositories();
+        services.AddBusinessRules();
         services.AddCustomServices();
         services.AddAssemblyServices();
     }
