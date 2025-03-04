@@ -1,3 +1,4 @@
+using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.Interfaces;
@@ -6,19 +7,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories;
 
-public class UserTokenRepository(ApplicationDbContext context) : BaseRepository<UserToken, int>(context), IUserTokenRepository
+public class UserTokenRepository(ApplicationDbContext context,IDateTime dateTime) : BaseRepository<UserToken, int>(context), IUserTokenRepository
 {
     public async Task<UserToken?> GetByTokenValueAsync(string tokenValue)
     {
         return await AsQueryable()
             .FirstOrDefaultAsync(t => t.TokenValue == tokenValue);
     }
-
-    //TODO: now u icurrenctservice den al
+    
     public async Task<IEnumerable<UserToken>> GetExpiredTokensAsync()
     {
         return await AsQueryable()
-            .Where(t => t.ExpiryDate != null && t.ExpiryDate < DateTime.UtcNow)
+            .Where(t => t.ExpiryDate != null && t.ExpiryDate < dateTime.Now)
             .ToListAsync();
     }
 
@@ -31,7 +31,6 @@ public class UserTokenRepository(ApplicationDbContext context) : BaseRepository<
     public async Task DeleteExpiredTokensAsync()
     {
         var expiredTokens = await GetExpiredTokensAsync();
-        context.UserTokens.RemoveRange(expiredTokens);
-        await context.SaveChangesAsync();
+        await DeleteRangeAsync(expiredTokens, CancellationToken.None, false);
     }
 }

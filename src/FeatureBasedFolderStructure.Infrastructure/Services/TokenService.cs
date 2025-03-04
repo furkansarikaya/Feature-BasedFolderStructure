@@ -98,7 +98,7 @@ public class TokenService(IUserTokenRepository userTokenRepository, IDateTime da
         if (userToken == null)
             return false;
 
-        await userTokenRepository.DeleteAsync(userToken, CancellationToken.None);
+        await userTokenRepository.DeleteAsync(userToken, CancellationToken.None, false);
         return true;
     }
 
