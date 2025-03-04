@@ -15,7 +15,7 @@ public abstract class BaseRepository<TEntity, TKey>(DbContext context) : IReposi
 
     public virtual IQueryable<TEntity> AsQueryable() => _dbSet;
 
-    public virtual async Task<TEntity?> GetByIdAsync(TKey id, CancellationToken cancellationToken, bool enableTracking = false) =>
+    public virtual async Task<TEntity?> GetByIdAsync(TKey id, CancellationToken cancellationToken = default, bool enableTracking = false) =>
         enableTracking
             ? await _dbSet.AsNoTracking().FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken)
             : await _dbSet.FindAsync([id], cancellationToken);
@@ -36,29 +36,29 @@ public abstract class BaseRepository<TEntity, TKey>(DbContext context) : IReposi
         return await query.ToPaginateAsync(index, size, 0, cancellationToken);
     }
 
-    public virtual async Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken cancellationToken) => await _dbSet.ToListAsync(cancellationToken);
+    public virtual async Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken cancellationToken = default) => await _dbSet.ToListAsync(cancellationToken);
 
-    public virtual async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken)
+    public virtual async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         await _dbSet.AddAsync(entity, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
         return entity;
     }
 
-    public async Task<IEnumerable<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
+    public async Task<IEnumerable<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         await _dbSet.AddRangeAsync(entities, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
         return entities;
     }
 
-    public virtual async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)
+    public virtual async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         context.Entry(entity).State = EntityState.Modified;
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
+    public async Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         foreach (var entity in entities) 
             context.Entry(entity).State = EntityState.Modified;
@@ -66,7 +66,7 @@ public abstract class BaseRepository<TEntity, TKey>(DbContext context) : IReposi
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken, bool isSoftDelete = true)
+    public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default, bool isSoftDelete = true)
     {
         var hasIsDeleted = typeof(TEntity).GetProperty("IsDeleted") != null;
 
@@ -82,7 +82,7 @@ public abstract class BaseRepository<TEntity, TKey>(DbContext context) : IReposi
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken, bool isSoftDelete = true)
+    public async Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default, bool isSoftDelete = true)
     {
         var hasIsDeleted = typeof(TEntity).GetProperty("IsDeleted") != null;
 

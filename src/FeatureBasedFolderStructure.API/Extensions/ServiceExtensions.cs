@@ -10,6 +10,7 @@ using FeatureBasedFolderStructure.Application.Features.Products.Rules;
 using FeatureBasedFolderStructure.Application.Features.Products.Validators;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.Interfaces;
+using FeatureBasedFolderStructure.Infrastructure.Persistence;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Interceptors;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories;
@@ -98,6 +99,8 @@ public static class ServiceExtensions
             options.UseNpgsql(configuration
                 .GetConnectionString("DefaultConnection"))
                 .UseSnakeCaseNamingConvention());
+        
+        services.AddScoped<ApplicationDbContextInitialiser>();
     }
 
     private static void AddRepositories(this IServiceCollection services)
