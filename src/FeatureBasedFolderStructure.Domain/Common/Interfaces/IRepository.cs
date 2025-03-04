@@ -17,6 +17,9 @@ public interface IRepository<TEntity, TKey>
         CancellationToken cancellationToken = default);
     Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken cancellationToken);
     Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken);
+    Task<IEnumerable<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken);
     Task UpdateAsync(TEntity entity, CancellationToken cancellationToken);
+    Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken);
     Task DeleteAsync(TEntity entity, CancellationToken cancellationToken, bool isSoftDelete = true);
+    Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken, bool isSoftDelete = true);
 }

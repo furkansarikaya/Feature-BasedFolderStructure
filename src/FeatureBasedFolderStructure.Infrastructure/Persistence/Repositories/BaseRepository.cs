@@ -45,9 +45,24 @@ public abstract class BaseRepository<TEntity, TKey>(DbContext context) : IReposi
         return entity;
     }
 
+    public async Task<IEnumerable<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
+    {
+        await _dbSet.AddRangeAsync(entities, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+        return entities;
+    }
+
     public virtual async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)
     {
         context.Entry(entity).State = EntityState.Modified;
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
+    {
+        foreach (var entity in entities) 
+            context.Entry(entity).State = EntityState.Modified;
+
         await context.SaveChangesAsync(cancellationToken);
     }
 
@@ -63,6 +78,25 @@ public abstract class BaseRepository<TEntity, TKey>(DbContext context) : IReposi
         }
         else
             _dbSet.Remove(entity);
+
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken, bool isSoftDelete = true)
+    {
+        var hasIsDeleted = typeof(TEntity).GetProperty("IsDeleted") != null;
+
+        if (hasIsDeleted && isSoftDelete)
+        {
+            var isDeletedProperty = typeof(TEntity).GetProperty("IsDeleted");
+            foreach (var entity in entities)
+            {
+                isDeletedProperty!.SetValue(entity, true);
+                context.Entry(entity).State = EntityState.Modified;
+            }
+        }
+        else
+            _dbSet.RemoveRange(entities);
 
         await context.SaveChangesAsync(cancellationToken);
     }
