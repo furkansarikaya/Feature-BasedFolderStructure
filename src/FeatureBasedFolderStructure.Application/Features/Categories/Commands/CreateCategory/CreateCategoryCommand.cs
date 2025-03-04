@@ -5,7 +5,7 @@ using MediatR;
 namespace FeatureBasedFolderStructure.Application.Features.Categories.Commands.CreateCategory;
 
 [RequiresClaim("Permission", false, "Category.Create")]
-[RequiresClaim("Role", false, "Admin", "SuperAdmin")]
+[RequiresClaim("Role", false, "Admin")]
 public class CreateCategoryCommand : IRequest<BaseResponse<int>>
 {
     public string Name { get; set; } = null!;
