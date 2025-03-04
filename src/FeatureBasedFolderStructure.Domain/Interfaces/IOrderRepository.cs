@@ -1,5 +1,4 @@
 using FeatureBasedFolderStructure.Domain.Common.Interfaces;
-using FeatureBasedFolderStructure.Domain.Entities;
 using FeatureBasedFolderStructure.Domain.Entities.Orders;
 
 namespace FeatureBasedFolderStructure.Domain.Interfaces;

@@ -1,5 +1,4 @@
 using FeatureBasedFolderStructure.Domain.Common.Interfaces;
-using FeatureBasedFolderStructure.Domain.Entities;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 
 namespace FeatureBasedFolderStructure.Domain.Interfaces;

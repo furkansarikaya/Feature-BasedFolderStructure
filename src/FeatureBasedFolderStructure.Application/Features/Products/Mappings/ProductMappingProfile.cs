@@ -3,7 +3,6 @@ using FeatureBasedFolderStructure.Application.Features.Products.Commands.CreateP
 using FeatureBasedFolderStructure.Application.Features.Products.Commands.UpdateProduct;
 using FeatureBasedFolderStructure.Application.Features.Products.DTOs;
 using FeatureBasedFolderStructure.Domain.Common.Interfaces;
-using FeatureBasedFolderStructure.Domain.Entities;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 
 namespace FeatureBasedFolderStructure.Application.Features.Products.Mappings;

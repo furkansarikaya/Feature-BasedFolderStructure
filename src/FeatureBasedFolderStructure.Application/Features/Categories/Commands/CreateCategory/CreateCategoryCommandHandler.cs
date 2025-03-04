@@ -1,6 +1,5 @@
 using System.Net;
 using FeatureBasedFolderStructure.Application.Common.Models;
-using FeatureBasedFolderStructure.Domain.Entities;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Domain.Interfaces;
 using MediatR;

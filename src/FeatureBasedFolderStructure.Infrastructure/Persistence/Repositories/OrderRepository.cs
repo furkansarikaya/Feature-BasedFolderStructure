@@ -1,4 +1,3 @@
-using FeatureBasedFolderStructure.Domain.Entities;
 using FeatureBasedFolderStructure.Domain.Entities.Orders;
 using FeatureBasedFolderStructure.Domain.Interfaces;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
