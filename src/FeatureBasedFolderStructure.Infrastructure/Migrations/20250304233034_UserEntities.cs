@@ -12,101 +12,18 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "updated_at",
-                table: "products",
-                type: "timestamp without time zone",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp with time zone",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "deleted_at",
-                table: "products",
-                type: "timestamp without time zone",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp with time zone",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "created_at",
-                table: "products",
-                type: "timestamp without time zone",
-                nullable: false,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp with time zone");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "updated_at",
-                table: "orders",
-                type: "timestamp without time zone",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp with time zone",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "order_date",
-                table: "orders",
-                type: "timestamp without time zone",
-                nullable: false,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp with time zone");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "deleted_at",
-                table: "orders",
-                type: "timestamp without time zone",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp with time zone",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "created_at",
-                table: "orders",
-                type: "timestamp without time zone",
-                nullable: false,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp with time zone");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "updated_at",
-                table: "categories",
-                type: "timestamp without time zone",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp with time zone",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "deleted_at",
-                table: "categories",
-                type: "timestamp without time zone",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp with time zone",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "created_at",
-                table: "categories",
-                type: "timestamp without time zone",
-                nullable: false,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp with time zone");
-
             migrationBuilder.CreateTable(
                 name: "application_users",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    user_name = table.Column<string>(type: "text", nullable: false),
-                    email = table.Column<string>(type: "text", nullable: false),
+                    user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     password_hash = table.Column<string>(type: "text", nullable: false),
                     status = table.Column<int>(type: "integer", nullable: false),
+                    email_confirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    lockout_end = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    access_failed_count = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     created_by = table.Column<string>(type: "text", nullable: true),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -126,9 +43,9 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                 {
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "text", nullable: false),
-                    normalized_name = table.Column<string>(type: "text", nullable: false),
-                    description = table.Column<string>(type: "text", nullable: true),
+                    name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    normalized_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     created_by = table.Column<string>(type: "text", nullable: true),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -150,7 +67,7 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     token_type = table.Column<int>(type: "integer", nullable: false),
-                    token_value = table.Column<string>(type: "text", nullable: false),
+                    token_value = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     expiry_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     created_by = table.Column<string>(type: "text", nullable: true),
@@ -178,8 +95,9 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     role_id = table.Column<int>(type: "integer", nullable: false),
-                    claim_type = table.Column<int>(type: "integer", nullable: false),
-                    claim_value = table.Column<string>(type: "text", nullable: false),
+                    claim_type = table.Column<int>(type: "integer", maxLength: 256, nullable: false),
+                    claim_value = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    role_id1 = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     created_by = table.Column<string>(type: "text", nullable: true),
                     updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -194,6 +112,12 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "fk_role_claims_roles_role_id",
                         column: x => x.role_id,
+                        principalTable: "roles",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_role_claims_roles_role_id1",
+                        column: x => x.role_id1,
                         principalTable: "roles",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -233,9 +157,39 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_role_claims_role_id",
+                name: "ix_application_users_email",
+                table: "application_users",
+                column: "email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_application_users_user_name",
+                table: "application_users",
+                column: "user_name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_role_claims_role_id_claim_type",
                 table: "role_claims",
-                column: "role_id");
+                columns: new[] { "role_id", "claim_type" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_role_claims_role_id1",
+                table: "role_claims",
+                column: "role_id1");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_roles_name",
+                table: "roles",
+                column: "name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_roles_normalized_name",
+                table: "roles",
+                column: "normalized_name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_user_roles_role_id",
@@ -243,14 +197,16 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                 column: "role_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_user_roles_user_id",
+                name: "ix_user_roles_user_id_role_id_is_deleted",
                 table: "user_roles",
-                column: "user_id");
+                columns: new[] { "user_id", "role_id", "is_deleted" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_user_tokens_user_id",
+                name: "ix_user_tokens_user_id_token_type_token_value_is_deleted",
                 table: "user_tokens",
-                column: "user_id");
+                columns: new[] { "user_id", "token_type", "token_value", "is_deleted" },
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -270,92 +226,6 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "application_users");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "updated_at",
-                table: "products",
-                type: "timestamp with time zone",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp without time zone",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "deleted_at",
-                table: "products",
-                type: "timestamp with time zone",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp without time zone",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "created_at",
-                table: "products",
-                type: "timestamp with time zone",
-                nullable: false,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp without time zone");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "updated_at",
-                table: "orders",
-                type: "timestamp with time zone",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp without time zone",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "order_date",
-                table: "orders",
-                type: "timestamp with time zone",
-                nullable: false,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp without time zone");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "deleted_at",
-                table: "orders",
-                type: "timestamp with time zone",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp without time zone",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "created_at",
-                table: "orders",
-                type: "timestamp with time zone",
-                nullable: false,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp without time zone");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "updated_at",
-                table: "categories",
-                type: "timestamp with time zone",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp without time zone",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "deleted_at",
-                table: "categories",
-                type: "timestamp with time zone",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp without time zone",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "created_at",
-                table: "categories",
-                type: "timestamp with time zone",
-                nullable: false,
-                oldClrType: typeof(DateTime),
-                oldType: "timestamp without time zone");
         }
     }
 }

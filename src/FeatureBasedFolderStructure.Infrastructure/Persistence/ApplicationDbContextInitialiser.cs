@@ -47,7 +47,17 @@ public class ApplicationDbContextInitialiser(
     {
         logger.LogInformation("Seeding database start");
 
-        // Default data seeding
+        await SeedCategoriesAsync();
+        var role = await SeedRolesAsync();
+        await SeedRoleClaimsAsync(role);
+        var user = await SeedUsersAsync();
+        await SeedUserRolesAsync(user, role);
+
+        logger.LogInformation("Seeding database end");
+    }
+
+    private async Task SeedCategoriesAsync()
+    {
         if (!context.Categories.Any())
         {
             context.Categories.Add(new Category
@@ -55,8 +65,12 @@ public class ApplicationDbContextInitialiser(
                 Name = "Default Category",
                 Description = "Default Category Description"
             });
+            await context.SaveChangesAsync();
         }
+    }
 
+    private async Task<Role> SeedRolesAsync()
+    {
         var role = context.Roles.FirstOrDefault();
         if (role == null)
         {
@@ -69,6 +83,11 @@ public class ApplicationDbContextInitialiser(
             await context.SaveChangesAsync();
         }
 
+        return role;
+    }
+
+    private async Task SeedRoleClaimsAsync(Role role)
+    {
         if (!context.RoleClaims.Any())
         {
             context.RoleClaims.Add(new RoleClaim
@@ -77,8 +96,12 @@ public class ApplicationDbContextInitialiser(
                 ClaimType = ClaimType.Permission,
                 ClaimValue = "Admin"
             });
+            await context.SaveChangesAsync();
         }
+    }
 
+    private async Task<ApplicationUser> SeedUsersAsync()
+    {
         var user = context.ApplicationUsers.FirstOrDefault();
         if (user == null)
         {
@@ -92,7 +115,12 @@ public class ApplicationDbContextInitialiser(
             context.ApplicationUsers.Add(user);
             await context.SaveChangesAsync();
         }
-        
+
+        return user;
+    }
+
+    private async Task SeedUserRolesAsync(ApplicationUser user, Role role)
+    {
         if (!context.UserRoles.Any())
         {
             context.UserRoles.Add(new UserRole
@@ -100,9 +128,7 @@ public class ApplicationDbContextInitialiser(
                 UserId = user.Id,
                 RoleId = role.Id
             });
+            await context.SaveChangesAsync();
         }
-
-        await context.SaveChangesAsync();
-        logger.LogInformation("Seeding database end");
     }
 }

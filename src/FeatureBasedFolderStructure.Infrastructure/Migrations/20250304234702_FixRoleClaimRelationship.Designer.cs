@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FeatureBasedFolderStructure.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250304231112_UserEntityUpdate")]
-    partial class UserEntityUpdate
+    [Migration("20250304234702_FixRoleClaimRelationship")]
+    partial class FixRoleClaimRelationship
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -287,7 +287,8 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
                         .HasColumnName("email");
 
                     b.Property<bool>("EmailConfirmed")
@@ -321,11 +322,20 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
                         .HasColumnName("user_name");
 
                     b.HasKey("Id")
                         .HasName("pk_application_users");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasDatabaseName("ix_application_users_email");
+
+                    b.HasIndex("UserName")
+                        .IsUnique()
+                        .HasDatabaseName("ix_application_users_user_name");
 
                     b.ToTable("application_users", (string)null);
                 });
@@ -356,7 +366,8 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                         .HasColumnName("deleted_by");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("description");
 
                     b.Property<bool>("IsDeleted")
@@ -365,12 +376,14 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
                         .HasColumnName("name");
 
                     b.Property<string>("NormalizedName")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
                         .HasColumnName("normalized_name");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -383,6 +396,14 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_roles");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_roles_name");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("ix_roles_normalized_name");
 
                     b.ToTable("roles", (string)null);
                 });
@@ -397,12 +418,14 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ClaimType")
+                        .HasMaxLength(256)
                         .HasColumnType("integer")
                         .HasColumnName("claim_type");
 
                     b.Property<string>("ClaimValue")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
                         .HasColumnName("claim_value");
 
                     b.Property<DateTime>("CreatedAt")
@@ -440,8 +463,9 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_role_claims");
 
-                    b.HasIndex("RoleId")
-                        .HasDatabaseName("ix_role_claims_role_id");
+                    b.HasIndex("RoleId", "ClaimType")
+                        .IsUnique()
+                        .HasDatabaseName("ix_role_claims_role_id_claim_type");
 
                     b.ToTable("role_claims", (string)null);
                 });
@@ -497,8 +521,9 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                     b.HasIndex("RoleId")
                         .HasDatabaseName("ix_user_roles_role_id");
 
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_user_roles_user_id");
+                    b.HasIndex("UserId", "RoleId", "IsDeleted")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_roles_user_id_role_id_is_deleted");
 
                     b.ToTable("user_roles", (string)null);
                 });
@@ -542,7 +567,8 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
 
                     b.Property<string>("TokenValue")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("token_value");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -560,8 +586,9 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_user_tokens");
 
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("ix_user_tokens_user_id");
+                    b.HasIndex("UserId", "TokenType", "TokenValue", "IsDeleted")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_tokens_user_id_token_type_token_value_is_deleted");
 
                     b.ToTable("user_tokens", (string)null);
                 });
