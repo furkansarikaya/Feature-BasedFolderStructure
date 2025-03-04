@@ -1,4 +1,6 @@
 using System.Reflection;
+using System.Security.Claims;
+using System.Text;
 using FeatureBasedFolderStructure.API.Common;
 using FeatureBasedFolderStructure.Application.Common.Behaviors;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
@@ -6,6 +8,7 @@ using FeatureBasedFolderStructure.Application.Features.Products.Commands.CreateP
 using FeatureBasedFolderStructure.Application.Features.Products.Mappings;
 using FeatureBasedFolderStructure.Application.Features.Products.Rules;
 using FeatureBasedFolderStructure.Application.Features.Products.Validators;
+using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.Interfaces;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Interceptors;
@@ -13,9 +16,11 @@ using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories;
 using FeatureBasedFolderStructure.Infrastructure.Services;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace FeatureBasedFolderStructure.API.Extensions;
@@ -97,7 +102,9 @@ public static class ServiceExtensions
 
     private static void AddCustomServices(this IServiceCollection services)
     {
-        // Custom service registrations can be added here
+        services.AddScoped<ITokenService, TokenService>();
+        services.Configure<JwtSettings>(services.BuildServiceProvider().GetService<IConfiguration>()
+            .GetSection(nameof(JwtSettings)));
     }
     
     private static void AddBusinessRules(this IServiceCollection services)
@@ -109,6 +116,45 @@ public static class ServiceExtensions
     {
         services.AddValidatorsFromAssembly(Assembly.GetAssembly(typeof(CreateProductCommandValidator)));
         services.AddAutoMapper(Assembly.GetAssembly(typeof(ProductMappingProfile)));
+    }
+    
+    private static void AddAuthorizationPolicies(this IServiceCollection services,IConfiguration configuration)
+    {
+        var jwtSettings = configuration.GetRequiredSection(nameof(JwtSettings)).Get<JwtSettings>()!;
+        
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer =jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(jwtSettings.Key))
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = async context =>
+                    {
+                        var tokenService = context.HttpContext.RequestServices
+                            .GetRequiredService<ITokenService>();
+                        
+                        var nameIdentifier = context.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                        _ = Guid.TryParse(nameIdentifier, out var userId);
+                        var token = context.Request.Headers["Authorization"]
+                            .FirstOrDefault()?.Split(" ").Last() ?? "";
+
+                        if (!await tokenService.ValidateTokenAsync(userId, token, TokenType.AccessToken)) 
+                            context.Fail("Token is invalid");
+                    }
+                };
+            });
+        services.AddAuthorization();
     }
 
     public static void AddApiServices(this IServiceCollection services, IConfiguration configuration)
@@ -123,5 +169,6 @@ public static class ServiceExtensions
         services.AddBusinessRules();
         services.AddCustomServices();
         services.AddAssemblyServices();
+        services.AddAuthorizationPolicies(configuration);
     }
 }

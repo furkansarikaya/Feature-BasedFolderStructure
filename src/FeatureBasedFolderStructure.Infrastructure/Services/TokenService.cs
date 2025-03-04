@@ -8,15 +8,14 @@ using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace FeatureBasedFolderStructure.Infrastructure.Services;
 
-public class TokenService(IUserTokenRepository userTokenRepository, IDateTime dateTime, IConfiguration configuration) : ITokenService
+public class TokenService(IUserTokenRepository userTokenRepository, IDateTime dateTime, IOptions<JwtSettings> jwtSettings) : ITokenService
 {
-    private readonly JwtSettings _jwtSettings = configuration
-        .GetSection("JwtSettings")
-        .Get<JwtSettings>() ?? throw new InvalidOperationException("JWT ayarları bulunamadı.");
+    private readonly JwtSettings _jwtSettings = jwtSettings.Value;
     
     public async Task<string> GenerateTokenAsync(Guid userId, TokenType tokenType, TimeSpan? expiryDuration = null)
     {
