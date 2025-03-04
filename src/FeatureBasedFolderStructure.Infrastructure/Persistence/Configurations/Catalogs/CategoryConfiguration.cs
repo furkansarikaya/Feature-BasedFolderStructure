@@ -2,7 +2,7 @@ using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Configurations;
+namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Configurations.Catalogs;
 
 public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {

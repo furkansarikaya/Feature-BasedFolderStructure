@@ -2,7 +2,7 @@ using FeatureBasedFolderStructure.Domain.Entities.Orders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Configurations;
+namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Configurations.Orders;
 
 public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
 {
