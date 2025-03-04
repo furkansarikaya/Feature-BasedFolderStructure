@@ -1,6 +1,7 @@
 using FeatureBasedFolderStructure.Domain.Common;
+using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 
-namespace FeatureBasedFolderStructure.Domain.Entities;
+namespace FeatureBasedFolderStructure.Domain.Entities.Orders;
 
 public class OrderItem : BaseEntity<Guid>
 {

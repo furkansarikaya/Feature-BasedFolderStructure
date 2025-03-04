@@ -3,6 +3,7 @@ using FeatureBasedFolderStructure.Application.Features.Categories.Commands.Creat
 using FeatureBasedFolderStructure.Application.Features.Categories.Commands.UpdateCategory;
 using FeatureBasedFolderStructure.Application.Features.Categories.DTOs;
 using FeatureBasedFolderStructure.Domain.Entities;
+using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 
 namespace FeatureBasedFolderStructure.Application.Features.Categories.Mappings;
 

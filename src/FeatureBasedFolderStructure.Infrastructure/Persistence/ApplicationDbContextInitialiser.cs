@@ -1,4 +1,5 @@
 using FeatureBasedFolderStructure.Domain.Entities;
+using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

@@ -1,6 +1,6 @@
 using FeatureBasedFolderStructure.Domain.Common;
 
-namespace FeatureBasedFolderStructure.Domain.Entities;
+namespace FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 
 public class Category : BaseAuditableEntity<int>
 {

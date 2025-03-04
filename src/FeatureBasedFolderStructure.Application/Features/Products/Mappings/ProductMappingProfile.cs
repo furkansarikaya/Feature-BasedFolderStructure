@@ -4,6 +4,7 @@ using FeatureBasedFolderStructure.Application.Features.Products.Commands.UpdateP
 using FeatureBasedFolderStructure.Application.Features.Products.DTOs;
 using FeatureBasedFolderStructure.Domain.Common.Interfaces;
 using FeatureBasedFolderStructure.Domain.Entities;
+using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 
 namespace FeatureBasedFolderStructure.Application.Features.Products.Mappings;
 

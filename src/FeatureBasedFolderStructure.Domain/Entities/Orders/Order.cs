@@ -1,8 +1,9 @@
 using FeatureBasedFolderStructure.Domain.Common;
+using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.ValueObjects;
 
-namespace FeatureBasedFolderStructure.Domain.Entities;
+namespace FeatureBasedFolderStructure.Domain.Entities.Orders;
 
 public class Order : BaseAuditableEntity<Guid>
 {

@@ -2,6 +2,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 using FeatureBasedFolderStructure.Domain.Common;
 using FeatureBasedFolderStructure.Domain.Entities;
+using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
+using FeatureBasedFolderStructure.Domain.Entities.Orders;
 using FeatureBasedFolderStructure.Infrastructure.Extensions;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Interceptors;
 using MediatR;

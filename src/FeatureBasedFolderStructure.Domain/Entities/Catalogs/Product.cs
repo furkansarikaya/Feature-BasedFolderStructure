@@ -3,7 +3,7 @@ using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.Events;
 using FeatureBasedFolderStructure.Domain.ValueObjects;
 
-namespace FeatureBasedFolderStructure.Domain.Entities;
+namespace FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 
 public class Product : BaseAuditableEntity<int>
 {
