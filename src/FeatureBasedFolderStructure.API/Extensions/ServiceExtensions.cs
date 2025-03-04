@@ -57,6 +57,15 @@ public static class ServiceExtensions
 
     private static void AddCoreServices(this IServiceCollection services)
     {
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll",
+                builder => builder
+                    .AllowAnyMethod()
+                    .AllowCredentials()
+                    .SetIsOriginAllowed((host) => true)
+                    .AllowAnyHeader());
+        });
         services.AddHttpContextAccessor();
         services.AddControllers();
         services.AddApiVersioning(opt =>
@@ -121,7 +130,7 @@ public static class ServiceExtensions
     private static void AddAuthorizationPolicies(this IServiceCollection services,IConfiguration configuration)
     {
         var jwtSettings = configuration.GetRequiredSection(nameof(JwtSettings)).Get<JwtSettings>()!;
-        
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -131,7 +140,7 @@ public static class ServiceExtensions
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer =jwtSettings.Issuer,
+                    ValidIssuer = jwtSettings.Issuer,
                     ValidAudience = jwtSettings.Audience,
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(jwtSettings.Key))
@@ -143,18 +152,17 @@ public static class ServiceExtensions
                     {
                         var tokenService = context.HttpContext.RequestServices
                             .GetRequiredService<ITokenService>();
-                        
+
                         var nameIdentifier = context.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                         _ = Guid.TryParse(nameIdentifier, out var userId);
                         var token = context.Request.Headers["Authorization"]
                             .FirstOrDefault()?.Split(" ").Last() ?? "";
 
-                        if (!await tokenService.ValidateTokenAsync(userId, token, TokenType.AccessToken)) 
+                        if (!await tokenService.ValidateTokenAsync(userId, token, TokenType.AccessToken))
                             context.Fail("Token is invalid");
                     }
                 };
             });
-        services.AddAuthorization();
     }
 
     public static void AddApiServices(this IServiceCollection services, IConfiguration configuration)
