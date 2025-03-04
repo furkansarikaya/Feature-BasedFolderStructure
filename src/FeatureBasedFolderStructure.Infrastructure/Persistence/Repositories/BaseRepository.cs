@@ -28,9 +28,9 @@ public abstract class BaseRepository<TEntity, TKey>(DbContext context) : IReposi
         CancellationToken cancellationToken = default)
     {
         var query = AsQueryable();
-        if(enableTracking) query = query.AsTracking();
+        if (enableTracking) query = query.AsTracking();
         if (include != null) query = include(query);
-        if(predicate != null) query = query.Where(predicate);
+        if (predicate != null) query = query.Where(predicate);
         if (orderBy != null)
             query = orderBy(query);
         return await query.ToPaginateAsync(index, size, 0, cancellationToken);
@@ -51,11 +51,11 @@ public abstract class BaseRepository<TEntity, TKey>(DbContext context) : IReposi
         await context.SaveChangesAsync(cancellationToken);
     }
 
-    public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken)
+    public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken, bool isSoftDelete = true)
     {
         var hasIsDeleted = typeof(TEntity).GetProperty("IsDeleted") != null;
-    
-        if (hasIsDeleted)
+
+        if (hasIsDeleted && isSoftDelete)
         {
             var isDeletedProperty = typeof(TEntity).GetProperty("IsDeleted");
             isDeletedProperty!.SetValue(entity, true);
