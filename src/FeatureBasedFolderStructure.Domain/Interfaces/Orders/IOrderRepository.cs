@@ -1,7 +1,7 @@
 using FeatureBasedFolderStructure.Domain.Common.Interfaces;
 using FeatureBasedFolderStructure.Domain.Entities.Orders;
 
-namespace FeatureBasedFolderStructure.Domain.Interfaces;
+namespace FeatureBasedFolderStructure.Domain.Interfaces.Orders;
 
 public interface IOrderRepository : IRepository<Order, Guid>
 {

@@ -1,13 +1,14 @@
+using System.Net;
 using FeatureBasedFolderStructure.Application.Common.Models;
-using FeatureBasedFolderStructure.Application.Interfaces;
+using FeatureBasedFolderStructure.Application.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
+using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.Interfaces;
+using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using System.Net;
-using FeatureBasedFolderStructure.Domain.Enums;
 
-namespace FeatureBasedFolderStructure.Application.Services;
+namespace FeatureBasedFolderStructure.Application.Services.Users;
 
 public class ApplicationUserService(
     IApplicationUserRepository userRepository,

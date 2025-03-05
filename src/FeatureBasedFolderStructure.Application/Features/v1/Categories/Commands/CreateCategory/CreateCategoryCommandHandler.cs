@@ -2,10 +2,11 @@ using System.Net;
 using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Domain.Interfaces;
+using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace FeatureBasedFolderStructure.Application.Features.Categories.Commands.CreateCategory;
+namespace FeatureBasedFolderStructure.Application.Features.v1.Categories.Commands.CreateCategory;
 
 public class CreateCategoryCommandHandler(ICategoryRepository categoryRepository, 
     ILogger<CreateCategoryCommandHandler> logger)

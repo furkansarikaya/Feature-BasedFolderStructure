@@ -1,7 +1,8 @@
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Domain.Interfaces;
+using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
 
-namespace FeatureBasedFolderStructure.Application.Features.Products.Rules;
+namespace FeatureBasedFolderStructure.Application.Features.v1.Products.Rules;
 
 public class ProductBusinessRules(ICategoryRepository categoryRepository)
 {

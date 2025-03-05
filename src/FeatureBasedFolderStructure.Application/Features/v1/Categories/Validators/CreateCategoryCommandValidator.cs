@@ -1,7 +1,7 @@
-using FeatureBasedFolderStructure.Application.Features.Categories.Commands.CreateCategory;
+using FeatureBasedFolderStructure.Application.Features.v1.Categories.Commands.CreateCategory;
 using FluentValidation;
 
-namespace FeatureBasedFolderStructure.Application.Features.Categories.Validators;
+namespace FeatureBasedFolderStructure.Application.Features.v1.Categories.Validators;
 
 public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCommand>
 {

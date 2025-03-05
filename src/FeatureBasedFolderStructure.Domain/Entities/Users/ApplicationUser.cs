@@ -1,6 +1,7 @@
 using FeatureBasedFolderStructure.Domain.Common;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.ValueObjects;
+using FeatureBasedFolderStructure.Domain.ValueObjects.Users;
 
 namespace FeatureBasedFolderStructure.Domain.Entities.Users;
 

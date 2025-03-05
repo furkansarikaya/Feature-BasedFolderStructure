@@ -2,6 +2,7 @@ using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.DTOs;
 using FeatureBasedFolderStructure.Application.Interfaces;
+using FeatureBasedFolderStructure.Application.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 using MediatR;
 

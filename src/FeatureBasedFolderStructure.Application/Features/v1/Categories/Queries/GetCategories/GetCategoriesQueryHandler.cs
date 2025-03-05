@@ -1,10 +1,11 @@
 using AutoMapper;
 using FeatureBasedFolderStructure.Application.Common.Models;
-using FeatureBasedFolderStructure.Application.Features.Categories.DTOs;
+using FeatureBasedFolderStructure.Application.Features.v1.Categories.DTOs;
 using FeatureBasedFolderStructure.Domain.Interfaces;
+using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
 using MediatR;
 
-namespace FeatureBasedFolderStructure.Application.Features.Categories.Queries.GetCategories;
+namespace FeatureBasedFolderStructure.Application.Features.v1.Categories.Queries.GetCategories;
 
 public class GetCategoriesQueryHandler(ICategoryRepository categoryRepository,
     IMapper mapper) : IRequestHandler<GetCategoriesQuery, BaseResponse<List<CategoryDto>>>

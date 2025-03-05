@@ -2,7 +2,7 @@ using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 
-namespace FeatureBasedFolderStructure.Application.Interfaces;
+namespace FeatureBasedFolderStructure.Application.Interfaces.Users;
 
 public interface IApplicationUserService
 {

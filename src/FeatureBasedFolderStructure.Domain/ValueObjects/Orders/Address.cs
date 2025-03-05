@@ -1,6 +1,6 @@
 using FeatureBasedFolderStructure.Domain.Common;
 
-namespace FeatureBasedFolderStructure.Domain.ValueObjects;
+namespace FeatureBasedFolderStructure.Domain.ValueObjects.Orders;
 
 public class Address : ValueObject
 {

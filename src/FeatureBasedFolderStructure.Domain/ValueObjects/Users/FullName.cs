@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace FeatureBasedFolderStructure.Domain.ValueObjects;
+namespace FeatureBasedFolderStructure.Domain.ValueObjects.Users;
 
 /// <summary>
 /// Represents a user's full name as a value object.

@@ -1,7 +1,7 @@
-using FeatureBasedFolderStructure.Application.Features.Products.Commands.CreateProduct;
+using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.CreateProduct;
 using FluentValidation;
 
-namespace FeatureBasedFolderStructure.Application.Features.Products.Validators;
+namespace FeatureBasedFolderStructure.Application.Features.v1.Products.Validators;
 
 public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
 {

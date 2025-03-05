@@ -1,11 +1,11 @@
 using AutoMapper;
-using FeatureBasedFolderStructure.Application.Features.Products.Commands.CreateProduct;
-using FeatureBasedFolderStructure.Application.Features.Products.Commands.UpdateProduct;
-using FeatureBasedFolderStructure.Application.Features.Products.DTOs;
+using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.CreateProduct;
+using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.UpdateProduct;
+using FeatureBasedFolderStructure.Application.Features.v1.Products.DTOs;
 using FeatureBasedFolderStructure.Domain.Common.Interfaces;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 
-namespace FeatureBasedFolderStructure.Application.Features.Products.Mappings;
+namespace FeatureBasedFolderStructure.Application.Features.v1.Products.Mappings;
 
 public class ProductMappingProfile : Profile
 {

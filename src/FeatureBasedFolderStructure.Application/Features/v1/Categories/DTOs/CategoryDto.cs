@@ -1,4 +1,4 @@
-namespace FeatureBasedFolderStructure.Application.Features.Categories.DTOs;
+namespace FeatureBasedFolderStructure.Application.Features.v1.Categories.DTOs;
 
 public class CategoryDto
 {

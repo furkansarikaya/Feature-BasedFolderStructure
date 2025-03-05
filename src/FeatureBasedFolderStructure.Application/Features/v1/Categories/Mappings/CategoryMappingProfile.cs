@@ -1,10 +1,10 @@
 using AutoMapper;
-using FeatureBasedFolderStructure.Application.Features.Categories.Commands.CreateCategory;
-using FeatureBasedFolderStructure.Application.Features.Categories.Commands.UpdateCategory;
-using FeatureBasedFolderStructure.Application.Features.Categories.DTOs;
+using FeatureBasedFolderStructure.Application.Features.v1.Categories.Commands.CreateCategory;
+using FeatureBasedFolderStructure.Application.Features.v1.Categories.Commands.UpdateCategory;
+using FeatureBasedFolderStructure.Application.Features.v1.Categories.DTOs;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 
-namespace FeatureBasedFolderStructure.Application.Features.Categories.Mappings;
+namespace FeatureBasedFolderStructure.Application.Features.v1.Categories.Mappings;
 
 public class CategoryMappingProfile : Profile
 {

@@ -1,7 +1,7 @@
 using FeatureBasedFolderStructure.Domain.Common.Interfaces;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 
-namespace FeatureBasedFolderStructure.Domain.Interfaces;
+namespace FeatureBasedFolderStructure.Domain.Interfaces.Users;
 
 public interface IRoleRepository : IRepository<Role, int>
 {

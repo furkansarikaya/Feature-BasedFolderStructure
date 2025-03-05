@@ -1,7 +1,7 @@
-using FeatureBasedFolderStructure.Application.Features.Products.Commands.UpdateProduct;
+using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.UpdateProduct;
 using FluentValidation;
 
-namespace FeatureBasedFolderStructure.Application.Features.Products.Validators;
+namespace FeatureBasedFolderStructure.Application.Features.v1.Products.Validators;
 
 public class UpdateProductCommandValidator : AbstractValidator<UpdateProductCommand>
 {

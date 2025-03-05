@@ -2,6 +2,7 @@ using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.ValueObjects;
+using FeatureBasedFolderStructure.Domain.ValueObjects.Users;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

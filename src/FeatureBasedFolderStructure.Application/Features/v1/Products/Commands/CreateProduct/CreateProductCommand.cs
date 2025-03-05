@@ -1,7 +1,7 @@
 using FeatureBasedFolderStructure.Application.Common.Models;
 using MediatR;
 
-namespace FeatureBasedFolderStructure.Application.Features.Products.Commands.CreateProduct;
+namespace FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.CreateProduct;
 
 public class CreateProductCommand : IRequest<BaseResponse<int>>
 {

@@ -1,12 +1,13 @@
 using AutoMapper;
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Common.Models;
-using FeatureBasedFolderStructure.Application.Features.Products.DTOs;
+using FeatureBasedFolderStructure.Application.Features.v1.Products.DTOs;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Domain.Interfaces;
+using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
 using MediatR;
 
-namespace FeatureBasedFolderStructure.Application.Features.Products.Queries.GetProductDetail;
+namespace FeatureBasedFolderStructure.Application.Features.v1.Products.Queries.GetProductDetail;
 
 public class GetProductDetailQueryHandler(
     IProductRepository productRepository,

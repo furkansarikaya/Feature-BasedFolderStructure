@@ -1,11 +1,12 @@
 using FeatureBasedFolderStructure.Application.Common.Models;
-using FeatureBasedFolderStructure.Application.Features.Products.Rules;
+using FeatureBasedFolderStructure.Application.Features.v1.Products.Rules;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Domain.Interfaces;
+using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace FeatureBasedFolderStructure.Application.Features.Products.Commands.CreateProduct;
+namespace FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.CreateProduct;
 
 public class CreateProductCommandHandler(
     IProductRepository productRepository,

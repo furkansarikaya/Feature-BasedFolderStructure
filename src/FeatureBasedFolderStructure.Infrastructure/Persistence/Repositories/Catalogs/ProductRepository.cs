@@ -1,5 +1,6 @@
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Domain.Interfaces;
+using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 

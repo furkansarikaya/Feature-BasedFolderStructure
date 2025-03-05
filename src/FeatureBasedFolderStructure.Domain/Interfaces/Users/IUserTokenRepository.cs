@@ -2,7 +2,7 @@ using FeatureBasedFolderStructure.Domain.Common.Interfaces;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 
-namespace FeatureBasedFolderStructure.Domain.Interfaces;
+namespace FeatureBasedFolderStructure.Domain.Interfaces.Users;
 
 public interface IUserTokenRepository : IRepository<UserToken, int>
 {

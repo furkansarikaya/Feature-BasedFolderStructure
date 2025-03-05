@@ -1,5 +1,6 @@
 using FeatureBasedFolderStructure.Domain.Entities.Orders;
 using FeatureBasedFolderStructure.Domain.Interfaces;
+using FeatureBasedFolderStructure.Domain.Interfaces.Orders;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 

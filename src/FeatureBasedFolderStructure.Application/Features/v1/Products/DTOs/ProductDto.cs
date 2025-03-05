@@ -1,4 +1,4 @@
-namespace FeatureBasedFolderStructure.Application.Features.Products.DTOs;
+namespace FeatureBasedFolderStructure.Application.Features.v1.Products.DTOs;
 
 public class ProductDto
 {
