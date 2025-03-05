@@ -95,6 +95,14 @@ dotnet run --project src/FeatureBasedFolderStructure.API
 | PUT | `/api/categories/{id}` | Kategori günceller | `UpdateCategoryCommand` | `BaseResponse<Unit>` |
 | DELETE | `/api/categories/{id}` | Kategori siler | - | `BaseResponse<Unit>` |
 
+### Auth API
+
+| Metod | Endpoint | Açıklama | İstek Gövdesi | Dönüş Tipi |
+|-------|----------|----------|---------------|------------|
+| POST | `/api/auth/login` | Kullanıcı girişi | `LoginCommand` | `BaseResponse<LoginResponseDto>` |
+| POST | `/api/auth/refresh-token` | Token yenileme | `RefreshTokenCommand` | `BaseResponse<RefreshTokenResponseDto>` |
+| POST | `/api/auth/logout` | Kullanıcı çıkışı | `LogoutCommand` | `BaseResponse<Unit>` |
+
 ### HTTP Durum Kodları
 
 | Kod | Açıklama |
@@ -141,23 +149,42 @@ dotnet run --project src/FeatureBasedFolderStructure.API
  ┣ 📂src
  ┃ ┣ 📂FeatureBasedFolderStructure.API
  ┃ ┃ ┣ 📂Controllers
- ┃ ┃ ┗ 📂Configurations
+ ┃ ┃ ┣ 📂Configurations
+ ┃ ┃ ┗ 📂Extensions
  ┃ ┣ 📂FeatureBasedFolderStructure.Application
  ┃ ┃ ┣ 📂Common
  ┃ ┃ ┃ ┣ 📂Behaviors
  ┃ ┃ ┃ ┣ 📂Exceptions
- ┃ ┃ ┃ ┗ 📂Mappings
+ ┃ ┃ ┃ ┣ 📂Interfaces
+ ┃ ┃ ┃ ┣ 📂Mappings
+ ┃ ┃ ┃ ┗ 📂Models
  ┃ ┃ ┗ 📂Features
- ┃ ┃   ┣ 📂Products
- ┃ ┃   ┃ ┣ 📂Commands
- ┃ ┃   ┃ ┣ 📂DTOs
- ┃ ┃   ┃ ┗ 📂Queries
- ┃ ┃   ┗ 📂Categories
- ┃ ┃     ┣ 📂Commands
- ┃ ┃     ┣ 📂DTOs
- ┃ ┃     ┗ 📂Queries
+ ┃ ┃   ┣ 📂v1
+ ┃ ┃   ┃ ┣ 📂Auth
+ ┃ ┃   ┃ ┃ ┣ 📂Commands
+ ┃ ┃   ┃ ┃ ┃ ┣ 📂Login
+ ┃ ┃   ┃ ┃ ┃ ┣ 📂Logout
+ ┃ ┃   ┃ ┃ ┃ ┗ 📂RefreshToken
+ ┃ ┃   ┃ ┃ ┗ 📂DTOs
+ ┃ ┃   ┃ ┣ 📂Products
+ ┃ ┃   ┃ ┃ ┣ 📂Commands
+ ┃ ┃   ┃ ┃ ┣ 📂DTOs
+ ┃ ┃   ┃ ┃ ┗ 📂Queries
+ ┃ ┃   ┃ ┗ 📂Categories
+ ┃ ┃   ┃   ┣ 📂Commands
+ ┃ ┃   ┃   ┣ 📂DTOs
+ ┃ ┃   ┃   ┗ 📂Queries
+ ┃ ┣ 📂FeatureBasedFolderStructure.Domain
+ ┃ ┃ ┣ 📂Common
+ ┃ ┃ ┃ ┗ 📂Interfaces
+ ┃ ┃ ┣ 📂Entities
+ ┃ ┃ ┗ 📂Enums
  ┃ ┗ 📂FeatureBasedFolderStructure.Infrastructure
+ ┃   ┣ 📂Extensions
  ┃   ┣ 📂Persistence
- ┃   ┣ 📂Services
- ┃   ┗ 📂Migrations
+ ┃   ┃ ┣ 📂Configurations
+ ┃   ┃ ┣ 📂Migrations
+ ┃   ┃ ┣ 📂Paging
+ ┃   ┃ ┗ 📂Repositories
+ ┃   ┗ 📂Services
  ┗ 📜README.md
