@@ -1,11 +1,12 @@
 using FeatureBasedFolderStructure.Domain.Common;
 using FeatureBasedFolderStructure.Domain.Enums;
+using FeatureBasedFolderStructure.Domain.ValueObjects;
 
 namespace FeatureBasedFolderStructure.Domain.Entities.Users;
 
 public class ApplicationUser: BaseAuditableEntity<Guid>
 {
-    public string UserName { get; set; } = null!;
+    public FullName FullName { get; set; }
     public string Email { get; set; } = null!;
     public string PasswordHash { get; set; } = null!;
     public UserStatus Status { get; set; } = UserStatus.Active;

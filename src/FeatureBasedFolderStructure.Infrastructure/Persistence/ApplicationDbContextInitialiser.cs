@@ -1,6 +1,7 @@
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
+using FeatureBasedFolderStructure.Domain.ValueObjects;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -113,7 +114,7 @@ public class ApplicationDbContextInitialiser(
             var passwordHasher = new PasswordHasher<ApplicationUser>();
             user = new ApplicationUser
             {
-                UserName = "admin",
+                FullName = FullName.Create("Admin", "Admin"),
                 Email = "admin@admin.com",
                 PasswordHash = passwordHasher.HashPassword(null, "pwd"),
             };

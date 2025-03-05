@@ -1,4 +1,5 @@
 using FeatureBasedFolderStructure.Domain.Entities.Users;
+using FeatureBasedFolderStructure.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,9 +9,8 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
 {
     public void Configure(EntityTypeBuilder<ApplicationUser> builder)
     {
-        builder.Property(u => u.UserName)
-            .HasMaxLength(256)
-            .IsRequired();
+        builder.Property(x => x.FullName)
+            .HasConversion(x => x.ToString(), x => FullName.Create(x));
 
         builder.Property(u => u.Email)
             .HasMaxLength(256)
@@ -39,9 +39,6 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
             .WithOne()
             .HasForeignKey(ut => ut.UserId)
             .IsRequired();
-
-        builder.HasIndex(u => u.UserName)
-            .IsUnique();
 
         builder.HasIndex(u => u.Email)
             .IsUnique();
