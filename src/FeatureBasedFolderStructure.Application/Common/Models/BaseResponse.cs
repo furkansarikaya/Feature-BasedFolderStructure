@@ -2,21 +2,13 @@ using System.Net;
 
 namespace FeatureBasedFolderStructure.Application.Common.Models;
 
-public class BaseResponse<T>
+public record BaseResponse<T>
 {
-    public bool Success { get; set; }
-    public T Data { get; set; }
-    public string Message { get; set; }
-    public List<string> Errors { get; private set; }
-    public HttpStatusCode StatusCode { get; set; }
-
-    public BaseResponse()
-    {
-        Message = string.Empty;
-        Errors = [];
-        Success = true;
-        StatusCode = HttpStatusCode.OK;
-    }
+    public bool Success { get; set; } = true;
+    public T? Data { get; set; } = default;
+    public string Message { get; set; } = string.Empty;
+    public List<string> Errors { get; private set; } = [];
+    public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.OK;
 
     public static BaseResponse<T> SuccessResult(T data, HttpStatusCode statusCode = HttpStatusCode.OK)
     {

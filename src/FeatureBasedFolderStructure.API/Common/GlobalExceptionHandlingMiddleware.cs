@@ -20,6 +20,14 @@ public class GlobalExceptionHandlingMiddleware(ILogger<GlobalExceptionHandlingMi
         {
             await HandleExceptionAsync(context, exception, "Kayıt bulunamadı", [exception.Message], HttpStatusCode.NotFound);
         }
+        catch(ForbiddenAccessException exception)
+        {
+            await HandleExceptionAsync(context, exception, "Yetkiniz yok", [exception.Message], HttpStatusCode.Forbidden);
+        }
+        catch(UnauthorizedAccessException exception)
+        {
+            await HandleExceptionAsync(context, exception, "Yetkiniz yok", [exception.Message], HttpStatusCode.Unauthorized);
+        }
         catch (Exception exception)
         {
             await HandleExceptionAsync(context, exception, "Beklenmeyen bir hata oluştu", [exception.Message], HttpStatusCode.InternalServerError);

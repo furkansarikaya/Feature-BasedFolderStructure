@@ -1,7 +1,9 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using FeatureBasedFolderStructure.Domain.Common;
-using FeatureBasedFolderStructure.Domain.Entities;
+using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
+using FeatureBasedFolderStructure.Domain.Entities.Orders;
+using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Infrastructure.Extensions;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Interceptors;
 using MediatR;
@@ -19,6 +21,12 @@ public class ApplicationDbContext(
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
+    public DbSet<ApplicationUser> ApplicationUsers => Set<ApplicationUser>();
+    public DbSet<Role> Roles => Set<Role>();
+    public DbSet<RoleClaim> RoleClaims => Set<RoleClaim>();
+    public DbSet<UserRole> UserRoles => Set<UserRole>();
+    public DbSet<UserToken> UserTokens => Set<UserToken>();
+    
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

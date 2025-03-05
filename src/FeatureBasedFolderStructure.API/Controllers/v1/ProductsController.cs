@@ -1,11 +1,11 @@
 using FeatureBasedFolderStructure.API.Controllers.Base;
 using FeatureBasedFolderStructure.Application.Common.Models;
-using FeatureBasedFolderStructure.Application.Features.Products.Commands.CreateProduct;
-using FeatureBasedFolderStructure.Application.Features.Products.Commands.DeleteProduct;
-using FeatureBasedFolderStructure.Application.Features.Products.Commands.UpdateProduct;
-using FeatureBasedFolderStructure.Application.Features.Products.DTOs;
-using FeatureBasedFolderStructure.Application.Features.Products.Queries.GetProductDetail;
-using FeatureBasedFolderStructure.Application.Features.Products.Queries.GetProducts;
+using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.CreateProduct;
+using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.DeleteProduct;
+using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.UpdateProduct;
+using FeatureBasedFolderStructure.Application.Features.v1.Products.DTOs;
+using FeatureBasedFolderStructure.Application.Features.v1.Products.Queries.GetProductDetail;
+using FeatureBasedFolderStructure.Application.Features.v1.Products.Queries.GetProducts;
 using FeatureBasedFolderStructure.Application.Requests;
 using Microsoft.AspNetCore.Mvc;
 

@@ -22,7 +22,7 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Category", b =>
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Catalogs.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -32,7 +32,7 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("CreatedBy")
@@ -40,7 +40,7 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("deleted_at");
 
                     b.Property<string>("DeletedBy")
@@ -63,7 +63,7 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                         .HasColumnName("name");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<string>("UpdatedBy")
@@ -79,7 +79,77 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                     b.ToTable("categories", (string)null);
                 });
 
-            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Order", b =>
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Catalogs.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("integer")
+                        .HasColumnName("category_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("description");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("price");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id")
+                        .HasName("pk_products");
+
+                    b.HasIndex("CategoryId")
+                        .HasDatabaseName("ix_products_category_id");
+
+                    b.ToTable("products", (string)null);
+                });
+
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Orders.Order", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -87,7 +157,7 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                         .HasColumnName("id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("CreatedBy")
@@ -100,7 +170,7 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                         .HasColumnName("customer_id");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("deleted_at");
 
                     b.Property<string>("DeletedBy")
@@ -112,7 +182,7 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                         .HasColumnName("is_deleted");
 
                     b.Property<DateTime>("OrderDate")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("order_date");
 
                     b.Property<string>("OrderNumber")
@@ -131,7 +201,7 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                         .HasColumnName("total_amount");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<string>("UpdatedBy")
@@ -144,7 +214,7 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                     b.ToTable("orders", (string)null);
                 });
 
-            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.OrderItem", b =>
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Orders.OrderItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -185,7 +255,84 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                     b.ToTable("order_items", (string)null);
                 });
 
-            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Product", b =>
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Users.ApplicationUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("access_failed_count");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("email");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean")
+                        .HasColumnName("email_confirmed");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("full_name");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<DateTime?>("LockoutEnd")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("lockout_end");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("password_hash");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id")
+                        .HasName("pk_application_users");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasDatabaseName("ix_application_users_email");
+
+                    b.ToTable("application_users", (string)null);
+                });
+
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Users.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -194,12 +341,8 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("integer")
-                        .HasColumnName("category_id");
-
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("created_at");
 
                     b.Property<string>("CreatedBy")
@@ -207,7 +350,7 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("deleted_at");
 
                     b.Property<string>("DeletedBy")
@@ -215,8 +358,8 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                         .HasColumnName("deleted_by");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("description");
 
                     b.Property<bool>("IsDeleted")
@@ -225,21 +368,18 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
                         .HasColumnName("name");
 
-                    b.Property<decimal>("Price")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)")
-                        .HasColumnName("price");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("status");
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("normalized_name");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasColumnName("updated_at");
 
                     b.Property<string>("UpdatedBy")
@@ -247,15 +387,245 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                         .HasColumnName("updated_by");
 
                     b.HasKey("Id")
-                        .HasName("pk_products");
+                        .HasName("pk_roles");
 
-                    b.HasIndex("CategoryId")
-                        .HasDatabaseName("ix_products_category_id");
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_roles_name");
 
-                    b.ToTable("products", (string)null);
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("ix_roles_normalized_name");
+
+                    b.ToTable("roles", (string)null);
                 });
 
-            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Order", b =>
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Users.RoleClaim", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ClaimType")
+                        .HasMaxLength(256)
+                        .HasColumnType("integer")
+                        .HasColumnName("claim_type");
+
+                    b.Property<string>("ClaimValue")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("claim_value");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer")
+                        .HasColumnName("role_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id")
+                        .HasName("pk_role_claims");
+
+                    b.HasIndex("RoleId", "ClaimType")
+                        .IsUnique()
+                        .HasDatabaseName("ix_role_claims_role_id_claim_type");
+
+                    b.ToTable("role_claims", (string)null);
+                });
+
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Users.UserRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer")
+                        .HasColumnName("role_id");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("updated_by");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_roles");
+
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("ix_user_roles_role_id");
+
+                    b.HasIndex("UserId", "RoleId", "IsDeleted")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_roles_user_id_role_id_is_deleted");
+
+                    b.ToTable("user_roles", (string)null);
+                });
+
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Users.UserToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<DateTime?>("ExpiryDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("expiry_date");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<int>("TokenType")
+                        .HasColumnType("integer")
+                        .HasColumnName("token_type");
+
+                    b.Property<string>("TokenValue")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("token_value");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("text")
+                        .HasColumnName("updated_by");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_tokens");
+
+                    b.HasIndex("UserId", "TokenType", "TokenValue", "IsDeleted")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_tokens_user_id_token_type_token_value_is_deleted");
+
+                    b.ToTable("user_tokens", (string)null);
+                });
+
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Catalogs.Product", b =>
+                {
+                    b.HasOne("FeatureBasedFolderStructure.Domain.Entities.Catalogs.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("fk_products_categories_category_id");
+
+                    b.OwnsOne("FeatureBasedFolderStructure.Domain.ValueObjects.Money", "CurrentPrice", b1 =>
+                        {
+                            b1.Property<int>("ProductId")
+                                .HasColumnType("integer")
+                                .HasColumnName("id");
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("current_price_amount");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("character varying(3)")
+                                .HasColumnName("current_price_currency");
+
+                            b1.HasKey("ProductId");
+
+                            b1.ToTable("products");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProductId")
+                                .HasConstraintName("fk_products_products_id");
+                        });
+
+                    b.Navigation("Category");
+
+                    b.Navigation("CurrentPrice")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Orders.Order", b =>
                 {
                     b.OwnsOne("FeatureBasedFolderStructure.Domain.ValueObjects.Address", "ShippingAddress", b1 =>
                         {
@@ -306,16 +676,16 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.OrderItem", b =>
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Orders.OrderItem", b =>
                 {
-                    b.HasOne("FeatureBasedFolderStructure.Domain.Entities.Order", null)
+                    b.HasOne("FeatureBasedFolderStructure.Domain.Entities.Orders.Order", null)
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_order_items_orders_order_id");
 
-                    b.HasOne("FeatureBasedFolderStructure.Domain.Entities.Product", "Product")
+                    b.HasOne("FeatureBasedFolderStructure.Domain.Entities.Catalogs.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -325,55 +695,73 @@ namespace FeatureBasedFolderStructure.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Product", b =>
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Users.RoleClaim", b =>
                 {
-                    b.HasOne("FeatureBasedFolderStructure.Domain.Entities.Category", "Category")
-                        .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                    b.HasOne("FeatureBasedFolderStructure.Domain.Entities.Users.Role", "Role")
+                        .WithMany("RoleClaims")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_products_categories_category_id");
+                        .HasConstraintName("fk_role_claims_roles_role_id");
 
-                    b.OwnsOne("FeatureBasedFolderStructure.Domain.ValueObjects.Money", "CurrentPrice", b1 =>
-                        {
-                            b1.Property<int>("ProductId")
-                                .HasColumnType("integer")
-                                .HasColumnName("id");
-
-                            b1.Property<decimal>("Amount")
-                                .HasPrecision(18, 2)
-                                .HasColumnType("numeric(18,2)")
-                                .HasColumnName("current_price_amount");
-
-                            b1.Property<string>("Currency")
-                                .IsRequired()
-                                .HasMaxLength(3)
-                                .HasColumnType("character varying(3)")
-                                .HasColumnName("current_price_currency");
-
-                            b1.HasKey("ProductId");
-
-                            b1.ToTable("products");
-
-                            b1.WithOwner()
-                                .HasForeignKey("ProductId")
-                                .HasConstraintName("fk_products_products_id");
-                        });
-
-                    b.Navigation("Category");
-
-                    b.Navigation("CurrentPrice")
-                        .IsRequired();
+                    b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Category", b =>
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Users.UserRole", b =>
+                {
+                    b.HasOne("FeatureBasedFolderStructure.Domain.Entities.Users.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_roles_roles_role_id");
+
+                    b.HasOne("FeatureBasedFolderStructure.Domain.Entities.Users.ApplicationUser", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_roles_application_users_user_id");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Users.UserToken", b =>
+                {
+                    b.HasOne("FeatureBasedFolderStructure.Domain.Entities.Users.ApplicationUser", "User")
+                        .WithMany("UserTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_tokens_application_users_user_id");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Catalogs.Category", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Order", b =>
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Orders.Order", b =>
                 {
                     b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Users.ApplicationUser", b =>
+                {
+                    b.Navigation("UserRoles");
+
+                    b.Navigation("UserTokens");
+                });
+
+            modelBuilder.Entity("FeatureBasedFolderStructure.Domain.Entities.Users.Role", b =>
+                {
+                    b.Navigation("RoleClaims");
+
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

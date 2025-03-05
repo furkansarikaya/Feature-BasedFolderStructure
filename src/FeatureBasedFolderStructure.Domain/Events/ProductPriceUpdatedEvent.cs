@@ -1,5 +1,5 @@
 using FeatureBasedFolderStructure.Domain.Common;
-using FeatureBasedFolderStructure.Domain.Entities;
+using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 
 namespace FeatureBasedFolderStructure.Domain.Events;
 
