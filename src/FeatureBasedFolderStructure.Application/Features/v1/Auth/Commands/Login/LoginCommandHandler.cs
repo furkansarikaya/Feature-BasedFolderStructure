@@ -36,6 +36,6 @@ public class LoginCommandHandler(IApplicationUserService applicationUserService,
 
         var accessToken = await tokenService.GenerateTokenAsync(applicationUser.Data.Id, TokenType.AccessToken);
         var refreshToken = await tokenService.GenerateTokenAsync(applicationUser.Data.Id, TokenType.RefreshToken);
-        return BaseResponse<LoginDto>.SuccessResult(new LoginDto(accessToken.token, accessToken.expiryDate, refreshToken.token, refreshToken.expiryDate));
+        return BaseResponse<LoginDto>.SuccessResult(new LoginDto(accessToken.Token, accessToken.ExpiryDate, refreshToken.Token, refreshToken.ExpiryDate));
     }
 }

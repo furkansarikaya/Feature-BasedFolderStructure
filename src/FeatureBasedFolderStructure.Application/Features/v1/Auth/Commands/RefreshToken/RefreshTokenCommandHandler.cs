@@ -32,16 +32,13 @@ public class RefreshTokenCommandHandler(
     
         if (result == null)
             return BaseResponse<RefreshTokenDto>.ErrorResult("Yetkilendirme hatası", ["Token yenileme işlemi başarısız."]);
-        
-        var (accessToken, refreshToken, accessTokenExpiryDate, refreshTokenExpiryDate) = result.Value;
-    
+
         var response = new RefreshTokenDto(
-            accessToken,
-            refreshToken,
-            accessTokenExpiryDate,
-            refreshTokenExpiryDate
+            result.AccessToken.Token,
+            result.AccessToken.ExpiryDate,
+            result.RefreshToken.Token,
+            result.RefreshToken.ExpiryDate
         );
-    
         return BaseResponse<RefreshTokenDto>.SuccessResult(response);
     }
 }

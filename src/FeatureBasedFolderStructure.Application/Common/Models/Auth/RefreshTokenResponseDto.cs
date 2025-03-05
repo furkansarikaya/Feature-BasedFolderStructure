@@ -1,0 +1,3 @@
+namespace FeatureBasedFolderStructure.Application.Common.Models.Auth;
+
+public record RefreshTokenResponseDto(TokenResponseDto AccessToken, TokenResponseDto RefreshToken);
