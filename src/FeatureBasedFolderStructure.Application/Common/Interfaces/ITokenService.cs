@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 
@@ -10,5 +11,6 @@ public interface ITokenService
     Task<bool> RevokeTokenAsync(Guid userId, string token, TokenType tokenType);
     Task<UserToken?> GetTokenAsync(Guid userId, string token, TokenType tokenType);
     Task<bool> IsTokenExpiredAsync(UserToken token);
-    Task<(string accessToken, string refreshToken, DateTime accessTokenExpiryDate, DateTime refreshTokenExpiryDate)?> RefreshTokenAsync(Guid userId, string refreshToken);
+    Task<(string accessToken, string refreshToken, DateTime accessTokenExpiryDate, DateTime refreshTokenExpiryDate)?> RefreshTokenAsync(Guid userId, string accessToken, string refreshToken);
+    ClaimsPrincipal? GetPrincipalFromToken(string token);
 }

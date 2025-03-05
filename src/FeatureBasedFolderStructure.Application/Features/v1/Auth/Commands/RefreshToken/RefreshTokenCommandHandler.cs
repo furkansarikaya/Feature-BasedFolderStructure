@@ -1,36 +1,47 @@
+using System.Security.Claims;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.DTOs;
+using FeatureBasedFolderStructure.Domain.Enums;
 using MediatR;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.RefreshToken;
 
 public class RefreshTokenCommandHandler(
-    ITokenService tokenService, 
-    ICurrentUserService currentUserService) 
+    ITokenService tokenService) 
     : IRequestHandler<RefreshTokenCommand, BaseResponse<RefreshTokenDto>>
 {
     public async Task<BaseResponse<RefreshTokenDto>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
-        var currentUserId = currentUserService.UserId;
-        
-        if (!Guid.TryParse(currentUserId, out var userId))
-            return BaseResponse<RefreshTokenDto>.ErrorResult("Kimlik doğrulama hatası", ["Kullanıcı kimliği doğrulanamadı."]);
-
-        var result = await tokenService.RefreshTokenAsync(userId, request.RefreshToken);
-        
-        if (result == null)
+        var principal = tokenService.GetPrincipalFromToken(request.AccessToken);
+    
+        if (principal == null)
+            return BaseResponse<RefreshTokenDto>.ErrorResult("Yetkilendirme hatası", ["Geçersiz refresh token formatı."]);
+    
+        var userIdClaim = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    
+        if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+            return BaseResponse<RefreshTokenDto>.ErrorResult("Yetkilendirme hatası", ["Token'dan kullanıcı kimliği alınamadı."]);
+    
+        var isValid = await tokenService.ValidateTokenAsync(userId, request.RefreshToken, TokenType.RefreshToken);
+    
+        if (!isValid)
             return BaseResponse<RefreshTokenDto>.ErrorResult("Yetkilendirme hatası", ["Geçersiz veya süresi dolmuş refresh token."]);
 
-        var (accessToken, refreshToken, accessTokenExpiryDate, refreshTokenExpiryDate) = result.Value;
+        var result = await tokenService.RefreshTokenAsync(userId, request.AccessToken, request.RefreshToken);
+    
+        if (result == null)
+            return BaseResponse<RefreshTokenDto>.ErrorResult("Yetkilendirme hatası", ["Token yenileme işlemi başarısız."]);
         
+        var (accessToken, refreshToken, accessTokenExpiryDate, refreshTokenExpiryDate) = result.Value;
+    
         var response = new RefreshTokenDto(
             accessToken,
             refreshToken,
             accessTokenExpiryDate,
             refreshTokenExpiryDate
         );
-        
+    
         return BaseResponse<RefreshTokenDto>.SuccessResult(response);
     }
 }

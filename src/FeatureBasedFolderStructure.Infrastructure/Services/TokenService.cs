@@ -116,12 +116,13 @@ public class TokenService(IApplicationUserRepository applicationUserRepository, 
         return Task.FromResult(token.ExpiryDate.HasValue && token.ExpiryDate < dateTime.Now);
     }
 
-    public async Task<(string accessToken, string refreshToken, DateTime accessTokenExpiryDate, DateTime refreshTokenExpiryDate)?> RefreshTokenAsync(Guid userId, string refreshToken)
+    public async Task<(string accessToken, string refreshToken, DateTime accessTokenExpiryDate, DateTime refreshTokenExpiryDate)?> RefreshTokenAsync(Guid userId, string accessToken, string refreshToken)
     {
         var isValid = await ValidateTokenAsync(userId, refreshToken, TokenType.RefreshToken);
         if (!isValid)
             return null;
 
+        await RevokeTokenAsync(userId, accessToken, TokenType.AccessToken);
         await RevokeTokenAsync(userId, refreshToken, TokenType.RefreshToken);
 
         var (newAccessToken, accessTokenExpiryDate) = await GenerateTokenAsync(userId, TokenType.AccessToken);
@@ -152,10 +153,7 @@ public class TokenService(IApplicationUserRepository applicationUserRepository, 
             claims.Add(new Claim(ClaimTypes.Role, userRole.Role.Name));
         
             // Role'e ait claim'leri ekle
-            foreach (var roleClaim in userRole.Role.RoleClaims)
-            {
-                claims.Add(new Claim(roleClaim.ClaimType.ToString(), roleClaim.ClaimValue));
-            }
+            claims.AddRange(userRole.Role.RoleClaims.Select(roleClaim => new Claim(roleClaim.ClaimType.ToString(), roleClaim.ClaimValue)));
         }
 
         var token = new JwtSecurityToken(
@@ -169,7 +167,7 @@ public class TokenService(IApplicationUserRepository applicationUserRepository, 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    private ClaimsPrincipal? GetPrincipalFromToken(string token)
+    public ClaimsPrincipal? GetPrincipalFromToken(string token)
     {
         var tokenValidationParameters = new TokenValidationParameters
         {
