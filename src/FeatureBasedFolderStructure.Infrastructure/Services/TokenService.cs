@@ -116,6 +116,20 @@ public class TokenService(IApplicationUserRepository applicationUserRepository, 
         return Task.FromResult(token.ExpiryDate.HasValue && token.ExpiryDate < dateTime.Now);
     }
 
+    public async Task<(string accessToken, string refreshToken, DateTime accessTokenExpiryDate, DateTime refreshTokenExpiryDate)?> RefreshTokenAsync(Guid userId, string refreshToken)
+    {
+        var isValid = await ValidateTokenAsync(userId, refreshToken, TokenType.RefreshToken);
+        if (!isValid)
+            return null;
+
+        await RevokeTokenAsync(userId, refreshToken, TokenType.RefreshToken);
+
+        var (newAccessToken, accessTokenExpiryDate) = await GenerateTokenAsync(userId, TokenType.AccessToken);
+
+        var (newRefreshToken, refreshTokenExpiryDate) = await GenerateTokenAsync(userId, TokenType.RefreshToken);
+        return (newAccessToken, newRefreshToken, accessTokenExpiryDate, refreshTokenExpiryDate);
+    }
+
     private string GenerateJwtToken(ApplicationUser applicationUser, DateTime expiryDate)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));

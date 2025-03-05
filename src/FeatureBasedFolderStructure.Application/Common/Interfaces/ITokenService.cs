@@ -10,4 +10,5 @@ public interface ITokenService
     Task<bool> RevokeTokenAsync(Guid userId, string token, TokenType tokenType);
     Task<UserToken?> GetTokenAsync(Guid userId, string token, TokenType tokenType);
     Task<bool> IsTokenExpiredAsync(UserToken token);
+    Task<(string accessToken, string refreshToken, DateTime accessTokenExpiryDate, DateTime refreshTokenExpiryDate)?> RefreshTokenAsync(Guid userId, string refreshToken);
 }
