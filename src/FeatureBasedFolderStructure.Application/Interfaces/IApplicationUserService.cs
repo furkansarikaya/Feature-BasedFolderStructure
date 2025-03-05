@@ -13,6 +13,7 @@ public interface IApplicationUserService
     Task<BaseResponse<Guid>> CreateAsync(ApplicationUser user, string password, CancellationToken cancellationToken = default);
     Task<BaseResponse<bool>> UpdateAsync(ApplicationUser user, CancellationToken cancellationToken = default);
     Task<BaseResponse<bool>> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+    BaseResponse<bool> VerifyPassword(ApplicationUser user, string password);
     Task<BaseResponse<bool>> ChangePasswordAsync(Guid id, string currentPassword, string newPassword, CancellationToken cancellationToken = default);
     Task<BaseResponse<bool>> LockUserAsync(Guid id, DateTime lockoutEnd, CancellationToken cancellationToken = default);
     Task<BaseResponse<bool>> UnlockUserAsync(Guid id, CancellationToken cancellationToken = default);

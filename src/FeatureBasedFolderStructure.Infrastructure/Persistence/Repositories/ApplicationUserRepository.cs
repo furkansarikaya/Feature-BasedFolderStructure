@@ -8,6 +8,15 @@ namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories;
 
 public class ApplicationUserRepository(ApplicationDbContext context) : BaseRepository<ApplicationUser, Guid>(context), IApplicationUserRepository
 {
+    public async Task<ApplicationUser?> GetUserWithRolesAndClaims(Guid userId)
+    {
+        return await AsQueryable()
+            .Include(u => u.UserRoles)
+            .ThenInclude(ur => ur.Role)
+            .ThenInclude(r => r.RoleClaims)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+    }
+
     public async Task<ApplicationUser?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
         return await AsQueryable().FirstOrDefaultAsync(e => e.Email == email, cancellationToken);

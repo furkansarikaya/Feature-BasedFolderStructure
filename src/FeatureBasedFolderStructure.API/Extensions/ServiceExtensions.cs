@@ -9,6 +9,8 @@ using FeatureBasedFolderStructure.Application.Features.Products.Commands.CreateP
 using FeatureBasedFolderStructure.Application.Features.Products.Mappings;
 using FeatureBasedFolderStructure.Application.Features.Products.Rules;
 using FeatureBasedFolderStructure.Application.Features.Products.Validators;
+using FeatureBasedFolderStructure.Application.Interfaces;
+using FeatureBasedFolderStructure.Application.Services;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.Interfaces;
 using FeatureBasedFolderStructure.Infrastructure.Persistence;
@@ -111,6 +113,7 @@ public static class ServiceExtensions
         services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddScoped<IUserTokenRepository, UserTokenRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
     }
 
     private static void AddCustomServices(this IServiceCollection services)
@@ -118,6 +121,8 @@ public static class ServiceExtensions
         services.AddScoped<ITokenService, TokenService>();
         services.Configure<JwtSettings>(services.BuildServiceProvider().GetService<IConfiguration>()
             .GetSection(nameof(JwtSettings)));
+
+        services.AddScoped<IApplicationUserService, ApplicationUserService>();
     }
     
     private static void AddBusinessRules(this IServiceCollection services)

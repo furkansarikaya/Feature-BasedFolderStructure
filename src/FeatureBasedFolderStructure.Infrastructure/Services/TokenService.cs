@@ -13,21 +13,22 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FeatureBasedFolderStructure.Infrastructure.Services;
 
-public class TokenService(IUserTokenRepository userTokenRepository, IDateTime dateTime, IOptions<JwtSettings> jwtSettings) : ITokenService
+public class TokenService(IApplicationUserRepository applicationUserRepository, IUserTokenRepository userTokenRepository, IDateTime dateTime, IOptions<JwtSettings> jwtSettings) : ITokenService
 {
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
-    
-    public async Task<string> GenerateTokenAsync(Guid userId, TokenType tokenType, TimeSpan? expiryDuration = null)
+
+    public async Task<(string token, DateTime expiryDate)> GenerateTokenAsync(Guid userId, TokenType tokenType, TimeSpan? expiryDuration = null)
     {
         string tokenValue;
         DateTime expiryDate;
-        
+
         if (tokenType == TokenType.AccessToken)
         {
             // JWT AccessToken oluşturma
             var expiryTime = expiryDuration ?? TimeSpan.FromHours(_jwtSettings.ExpiryInHours);
             expiryDate = dateTime.Now.Add(expiryTime);
-            tokenValue = GenerateJwtToken(userId, expiryDate);
+            var applicationUser = await applicationUserRepository.GetUserWithRolesAndClaims(userId);
+            tokenValue = GenerateJwtToken(applicationUser, expiryDate);
         }
         else
         {
@@ -55,7 +56,7 @@ public class TokenService(IUserTokenRepository userTokenRepository, IDateTime da
         };
 
         await userTokenRepository.AddAsync(userToken, CancellationToken.None);
-        return tokenValue;
+        return (tokenValue, expiryDate);
     }
 
     public async Task<bool> ValidateTokenAsync(Guid userId, string token, TokenType tokenType)
@@ -115,17 +116,33 @@ public class TokenService(IUserTokenRepository userTokenRepository, IDateTime da
         return Task.FromResult(token.ExpiryDate.HasValue && token.ExpiryDate < dateTime.Now);
     }
 
-    private string GenerateJwtToken(Guid userId, DateTime expiryDate)
+    private string GenerateJwtToken(ApplicationUser applicationUser, DateTime expiryDate)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        var claims = new[]
+        var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+            new Claim(JwtRegisteredClaimNames.Sub, applicationUser.Id.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, applicationUser.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
+            new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
+            new Claim(ClaimTypes.Email, applicationUser.Email),
+            new Claim(JwtRegisteredClaimNames.GivenName, applicationUser.FullName.FirstName),
+            new Claim(JwtRegisteredClaimNames.FamilyName, applicationUser.FullName.LastName),
+            new Claim(JwtRegisteredClaimNames.Exp, expiryDate.ToFileTimeUtc().ToString()),
         };
+        
+        foreach (var userRole in applicationUser.UserRoles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, userRole.Role.Name));
+        
+            // Role'e ait claim'leri ekle
+            foreach (var roleClaim in userRole.Role.RoleClaims)
+            {
+                claims.Add(new Claim(roleClaim.ClaimType.ToString(), roleClaim.ClaimValue));
+            }
+        }
 
         var token = new JwtSecurityToken(
             issuer: _jwtSettings.Issuer,
@@ -156,7 +173,7 @@ public class TokenService(IUserTokenRepository userTokenRepository, IDateTime da
         try
         {
             var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
-            if (!(securityToken is JwtSecurityToken jwtSecurityToken) || 
+            if (!(securityToken is JwtSecurityToken jwtSecurityToken) ||
                 !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
                 return null;
 

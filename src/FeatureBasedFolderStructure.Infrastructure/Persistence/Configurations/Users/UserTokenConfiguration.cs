@@ -12,8 +12,7 @@ public class UserTokenConfiguration : IEntityTypeConfiguration<UserToken>
             .IsRequired();
 
         builder.Property(ut => ut.TokenValue)
-            .IsRequired()
-            .HasMaxLength(500);
+            .IsRequired();
 
         builder.Property(ut => ut.ExpiryDate);
 

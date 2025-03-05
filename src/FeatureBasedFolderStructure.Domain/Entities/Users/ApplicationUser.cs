@@ -17,4 +17,6 @@ public sealed class ApplicationUser: BaseAuditableEntity<Guid>
     
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     public ICollection<UserToken> UserTokens { get; set; } = new List<UserToken>();
+    
+    
 }

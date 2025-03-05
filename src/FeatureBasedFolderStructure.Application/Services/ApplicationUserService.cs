@@ -129,6 +129,27 @@ public class ApplicationUserService(
         }
     }
 
+    public BaseResponse<bool> VerifyPassword(ApplicationUser user, string password)
+    {
+        try
+        {
+            if (user == null)
+                return BaseResponse<bool>.NotFound("Kullanıcı bulunamadı.");
+
+            var verificationResult = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+
+            if (verificationResult == PasswordVerificationResult.Failed)
+                return BaseResponse<bool>.ErrorResult("Doğrulama başarısız", ["Şifre yanlış."]);
+
+            return BaseResponse<bool>.SuccessResult(true);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Şifre doğrulama hatası. {UserId}", user?.Id);
+            return BaseResponse<bool>.ErrorResult("İşlem sırasında hata oluştu", ["Şifre doğrulama işlemi başarısız oldu."]);
+        }
+    }
+
     public async Task<BaseResponse<bool>> ChangePasswordAsync(Guid id, string currentPassword, string newPassword, CancellationToken cancellationToken = default)
     {
         try
