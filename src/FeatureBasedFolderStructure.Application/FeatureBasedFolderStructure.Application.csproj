@@ -18,8 +18,4 @@
       <ProjectReference Include="..\FeatureBasedFolderStructure.Domain\FeatureBasedFolderStructure.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Features\v1\Auth\Validators\" />
-    </ItemGroup>
-
 </Project>
