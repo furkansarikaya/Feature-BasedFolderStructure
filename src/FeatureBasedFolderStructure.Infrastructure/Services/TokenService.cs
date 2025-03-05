@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
+using FeatureBasedFolderStructure.Application.Common.Settings;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.Interfaces;
@@ -166,12 +167,4 @@ public class TokenService(IUserTokenRepository userTokenRepository, IDateTime da
             return null;
         }
     }
-}
-
-public class JwtSettings
-{
-    public string Key { get; set; } = null!;
-    public string Issuer { get; set; } = null!;
-    public string Audience { get; set; } = null!;
-    public int ExpiryInHours { get; set; }
 }

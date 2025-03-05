@@ -4,6 +4,7 @@ using System.Text;
 using FeatureBasedFolderStructure.API.Common;
 using FeatureBasedFolderStructure.Application.Common.Behaviors;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
+using FeatureBasedFolderStructure.Application.Common.Settings;
 using FeatureBasedFolderStructure.Application.Features.Products.Commands.CreateProduct;
 using FeatureBasedFolderStructure.Application.Features.Products.Mappings;
 using FeatureBasedFolderStructure.Application.Features.Products.Rules;
