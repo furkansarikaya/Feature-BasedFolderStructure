@@ -19,6 +19,11 @@ public class ApplicationDbContextInitialiser(
             if (context.Database.IsNpgsql())
             {
                 logger.LogInformation("Initialising PostgreSQL database start");
+                var i = 1;
+                foreach (var pendingMigration in await context.Database.GetPendingMigrationsAsync())
+                {
+                    logger.LogInformation("Migrating PostgreSQL database to {PendingMigration} - {Unknown}", pendingMigration, i++);
+                }
                 await context.Database.MigrateAsync();
                 logger.LogInformation("Initialising PostgreSQL database end");
             }
