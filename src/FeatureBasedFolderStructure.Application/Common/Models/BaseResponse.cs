@@ -2,7 +2,7 @@ using System.Net;
 
 namespace FeatureBasedFolderStructure.Application.Common.Models;
 
-public class BaseResponse<T>
+public record BaseResponse<T>
 {
     public bool Success { get; set; } = true;
     public T? Data { get; set; } = default;
