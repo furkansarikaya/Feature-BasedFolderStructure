@@ -3,7 +3,7 @@ using FeatureBasedFolderStructure.Domain.Enums;
 
 namespace FeatureBasedFolderStructure.Domain.Entities.Users;
 
-public class RoleClaim : BaseAuditableEntity<int>
+public sealed class RoleClaim : BaseAuditableEntity<int>
 {
     public int RoleId { get; set; }
     public ClaimType ClaimType { get; set; }

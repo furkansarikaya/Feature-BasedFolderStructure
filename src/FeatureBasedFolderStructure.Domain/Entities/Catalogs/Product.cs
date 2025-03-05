@@ -5,7 +5,7 @@ using FeatureBasedFolderStructure.Domain.ValueObjects;
 
 namespace FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 
-public class Product : BaseAuditableEntity<int>
+public sealed class Product : BaseAuditableEntity<int>
 {
     public string Name { get; set; } = null!;
     public string? Description { get; set; }

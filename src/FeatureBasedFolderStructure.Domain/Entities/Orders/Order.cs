@@ -5,7 +5,7 @@ using FeatureBasedFolderStructure.Domain.ValueObjects;
 
 namespace FeatureBasedFolderStructure.Domain.Entities.Orders;
 
-public class Order : BaseAuditableEntity<Guid>
+public sealed class Order : BaseAuditableEntity<Guid>
 {
     public string OrderNumber { get; private set; }
     public DateTime OrderDate { get; private set; }

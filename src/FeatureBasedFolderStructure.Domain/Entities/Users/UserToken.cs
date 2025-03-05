@@ -3,7 +3,7 @@ using FeatureBasedFolderStructure.Domain.Enums;
 
 namespace FeatureBasedFolderStructure.Domain.Entities.Users;
 
-public class UserToken : BaseAuditableEntity<int>
+public sealed class UserToken : BaseAuditableEntity<int>
 {
     public Guid UserId { get; set; }
     public TokenType TokenType { get; set; }

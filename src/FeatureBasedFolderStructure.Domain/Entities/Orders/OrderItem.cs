@@ -3,7 +3,7 @@ using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 
 namespace FeatureBasedFolderStructure.Domain.Entities.Orders;
 
-public class OrderItem : BaseEntity<Guid>
+public sealed class OrderItem : BaseEntity<Guid>
 {
     public Guid OrderId { get; private set; }
     public int ProductId { get; private set; }

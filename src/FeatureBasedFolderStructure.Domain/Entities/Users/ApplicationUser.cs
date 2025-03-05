@@ -4,7 +4,7 @@ using FeatureBasedFolderStructure.Domain.ValueObjects;
 
 namespace FeatureBasedFolderStructure.Domain.Entities.Users;
 
-public class ApplicationUser: BaseAuditableEntity<Guid>
+public sealed class ApplicationUser: BaseAuditableEntity<Guid>
 {
     public FullName FullName { get; set; }
     public string Email { get; set; } = null!;
