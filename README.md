@@ -11,6 +11,7 @@ Bu proje, C# dilinde yazılmış ve MediatR ile .NET 9 kullanılarak geliştiril
 - AutoMapper 14.0.0
 - FluentValidation 11.11.0
 - Scalar/OpenAPI
+- JWT Authentication
 
 ## Mimari ve Desenler
 
@@ -24,6 +25,10 @@ Bu proje, C# dilinde yazılmış ve MediatR ile .NET 9 kullanılarak geliştiril
 
 - RESTful API endpoints
 - Ürün ve Kategori CRUD işlemleri
+- Kullanıcı yönetimi ve kimlik doğrulama
+- JWT tabanlı yetkilendirme
+- Refresh Token desteği
+- Role tabanlı yetkilendirme
 - FluentValidation ile veri doğrulama
 - Global exception handling
 - PostgreSQL veritabanı desteği
