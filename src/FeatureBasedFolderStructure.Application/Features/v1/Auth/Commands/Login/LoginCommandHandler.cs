@@ -21,7 +21,7 @@ public class LoginCommandHandler(IApplicationUserService applicationUserService,
             {
                 case UserStatus.Inactive:
                     return BaseResponse<LoginDto>.NotFound("Kullanıcı bulunamadı.");
-                case UserStatus.Locked:
+                case UserStatus.Locked when applicationUser.Data.LockoutEnd != null && applicationUser.Data.LockoutEnd > DateTime.Now:
                     return BaseResponse<LoginDto>.ErrorResult("Kullanıcı hesabı kilitli.", ["Kullanıcı hesabı kilitli."]);
                 case UserStatus.Suspended:
                     return BaseResponse<LoginDto>.ErrorResult("Kullanıcı hesabı askıya alındı.", ["Kullanıcı hesabı askıya alındı."]);
@@ -32,7 +32,25 @@ public class LoginCommandHandler(IApplicationUserService applicationUserService,
         
         var passwordVerification = applicationUserService.VerifyPassword(applicationUser.Data, request.Password);
         if (!passwordVerification.Success)
+        {
+            applicationUser.Data.AccessFailedCount++;
+            if (applicationUser.Data.AccessFailedCount >= 3)
+            {
+                applicationUser.Data.Status = UserStatus.Locked;
+                applicationUser.Data.LockoutEnd = DateTime.Now.AddHours(1);
+            }
+            await applicationUserService.UpdateAsync(applicationUser.Data, cancellationToken);
+            
             return BaseResponse<LoginDto>.ErrorResult("Kullanıcı adı veya şifre hatalı.", ["Kullanıcı adı veya şifre hatalı."]);
+        }
+
+        if (applicationUser.Data.Status == UserStatus.Locked)
+        {
+            applicationUser.Data.Status = UserStatus.Active;
+            applicationUser.Data.LockoutEnd = null;
+            applicationUser.Data.AccessFailedCount = 0;
+            await applicationUserService.UpdateAsync(applicationUser.Data, cancellationToken);
+        }
 
         var accessToken = await tokenService.GenerateTokenAsync(applicationUser.Data.Id, TokenType.AccessToken);
         var refreshToken = await tokenService.GenerateTokenAsync(applicationUser.Data.Id, TokenType.RefreshToken);

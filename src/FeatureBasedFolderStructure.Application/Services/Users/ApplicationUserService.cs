@@ -150,6 +150,26 @@ public class ApplicationUserService(
         }
     }
 
+    public async Task<BaseResponse<bool>> ChangePasswordByForgetPasswordAsync(Guid id, string newPassword, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var user = await userRepository.GetByIdAsync(id, cancellationToken);
+            if (user == null)
+                return BaseResponse<bool>.NotFound("Kullanıcı bulunamadı.");
+            
+            user.PasswordHash = _passwordHasher.HashPassword(user, newPassword);
+            await userRepository.UpdateAsync(user, cancellationToken);
+
+            return BaseResponse<bool>.SuccessResult(true);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Şifre değiştirme hatası. {UserId}", id);
+            return BaseResponse<bool>.ErrorResult("İşlem sırasında hata oluştu", ["Şifre değiştirme işlemi başarısız oldu."]);
+        }
+    }
+
     public async Task<BaseResponse<bool>> ChangePasswordAsync(Guid id, string currentPassword, string newPassword, CancellationToken cancellationToken = default)
     {
         try

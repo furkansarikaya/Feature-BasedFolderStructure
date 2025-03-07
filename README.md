@@ -23,7 +23,7 @@ Bu proje, C# dilinde yazılmış ve MediatR ile .NET 9 kullanılarak geliştiril
 
 ## Özellikler
 
-- RESTful API endpoints
+- RESTful API endpoint'leri
 - Ürün ve Kategori CRUD işlemleri
 - Kullanıcı yönetimi ve kimlik doğrulama
 - JWT tabanlı yetkilendirme
@@ -33,6 +33,10 @@ Bu proje, C# dilinde yazılmış ve MediatR ile .NET 9 kullanılarak geliştiril
 - Global exception handling
 - PostgreSQL veritabanı desteği
 - Scalar ile API dokümantasyonu
+- Clean Architecture
+- CQRS ve Mediator Pattern implementasyonu
+- Repository Pattern
+- Özellik tabanlı klasör yapısı
 
 ## Gereksinimler
 
@@ -102,21 +106,27 @@ dotnet run --project src/FeatureBasedFolderStructure.API
 
 ### Auth API
 
-| Metod | Endpoint | Açıklama | İstek Gövdesi | Dönüş Tipi |
-|-------|----------|----------|---------------|------------|
-| POST | `/api/auth/login` | Kullanıcı girişi | `LoginCommand` | `BaseResponse<LoginResponseDto>` |
-| POST | `/api/auth/refresh-token` | Token yenileme | `RefreshTokenCommand` | `BaseResponse<RefreshTokenResponseDto>` |
-| POST | `/api/auth/logout` | Kullanıcı çıkışı | `LogoutCommand` | `BaseResponse<Unit>` |
+| Metod | Endpoint | Açıklama | İstek Gövdesi | Dönüş Tipi                      |
+|-------|----------|----------|---------------|---------------------------------|
+| POST | `/api/auth/register` | Kullanıcı kaydı | `RegisterCommand` | `BaseResponse<RegisterDto>`     |
+| POST | `/api/auth/login` | Kullanıcı girişi | `LoginCommand` | `BaseResponse<LoginDto>`        |
+| POST | `/api/auth/refresh-token` | Token yenileme | `RefreshTokenCommand` | `BaseResponse<RefreshTokenDto>` |
+| POST | `/api/auth/logout` | Kullanıcı çıkışı | `LogoutCommand` | `BaseResponse<Unit>`            |
+| POST | `/api/auth/change-password` | Şifre değiştirme | `ChangePasswordCommand` | `BaseResponse<Unit>`            |
+| POST | `/api/auth/forgot-password` | Şifre sıfırlama isteği | `ForgotPasswordCommand` | `BaseResponse<string>`          |
+| POST | `/api/auth/reset-password` | Şifre sıfırlama | `ResetPasswordCommand` | `BaseResponse<Unit>`            |
 
 ### HTTP Durum Kodları
 
-| Kod | Açıklama |
-|-----|-----------|
-| 200 | Başarılı |
-| 201 | Oluşturuldu |
-| 204 | İçerik Yok |
-| 400 | Hatalı İstek |
-| 404 | Bulunamadı |
+| Kod | Açıklama      |
+|-----|---------------|
+| 200 | Başarılı      |
+| 201 | Oluşturuldu   |
+| 204 | İçerik Yok    |
+| 400 | Hatalı İstek  |
+| 401 | Yetkisiz      |
+| 403 | Yasaklı       |
+| 404 | Bulunamadı    |
 | 500 | Sunucu Hatası |
 
 ## Proje Yapısı
@@ -169,8 +179,14 @@ dotnet run --project src/FeatureBasedFolderStructure.API
  ┃ ┃   ┃ ┃ ┣ 📂Commands
  ┃ ┃   ┃ ┃ ┃ ┣ 📂Login
  ┃ ┃   ┃ ┃ ┃ ┣ 📂Logout
+ ┃ ┃   ┃ ┃ ┃ ┣ 📂ForgotPassword
+ ┃ ┃   ┃ ┃ ┃ ┣ 📂ChangePassword
+ ┃ ┃   ┃ ┃ ┃ ┣ 📂Register
+ ┃ ┃   ┃ ┃ ┃ ┣ 📂ResetPassword
  ┃ ┃   ┃ ┃ ┃ ┗ 📂RefreshToken
- ┃ ┃   ┃ ┃ ┗ 📂DTOs
+ ┃ ┃   ┃ ┃ ┣ 📂DTOs
+ ┃ ┃   ┃ ┃ ┣ 📂Rules
+ ┃ ┃   ┃ ┃ ┗ 📂Validations
  ┃ ┃   ┃ ┣ 📂Products
  ┃ ┃   ┃ ┃ ┣ 📂Commands
  ┃ ┃   ┃ ┃ ┣ 📂DTOs

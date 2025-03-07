@@ -5,6 +5,7 @@ using FeatureBasedFolderStructure.API.Common;
 using FeatureBasedFolderStructure.Application.Common.Behaviors;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Common.Settings;
+using FeatureBasedFolderStructure.Application.Features.v1.Auth.Rules;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.CreateProduct;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Mappings;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Rules;
@@ -18,7 +19,9 @@ using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FeatureBasedFolderStructure.Infrastructure.Persistence;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Interceptors;
-using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories;
+using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Catalogs;
+using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Orders;
+using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Users;
 using FeatureBasedFolderStructure.Infrastructure.Services;
 using FluentValidation;
 using MediatR;
@@ -137,6 +140,7 @@ public static class ServiceExtensions
     private static void AddBusinessRules(this IServiceCollection services)
     {
         services.AddScoped<ProductBusinessRules>();
+        services.AddScoped<AuthBusinessRules>();
     }
 
     private static void AddAssemblyServices(this IServiceCollection services)
