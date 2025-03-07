@@ -53,6 +53,7 @@ public static class ServiceExtensions
                 };
                 return Task.CompletedTask;
             });
+            options.AddDocumentTransformer<BearerSecuritySchemeTransformer>(); 
         });
     }
 
