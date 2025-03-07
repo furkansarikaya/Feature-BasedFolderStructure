@@ -13,7 +13,7 @@ public class RefreshTokenCommandHandler(
 {
     public async Task<BaseResponse<RefreshTokenDto>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
-        var principal = tokenService.GetPrincipalFromToken(request.AccessToken);
+        var principal = tokenService.GetPrincipalFromToken(request.AccessToken, false);
     
         if (principal == null)
             return BaseResponse<RefreshTokenDto>.ErrorResult("Yetkilendirme hatası", ["Geçersiz refresh token formatı."]);

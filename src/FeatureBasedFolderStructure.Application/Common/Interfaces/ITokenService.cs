@@ -13,5 +13,5 @@ public interface ITokenService
     Task<UserToken?> GetTokenAsync(Guid userId, string token, TokenType tokenType);
     Task<bool> IsTokenExpiredAsync(UserToken token);
     Task<RefreshTokenResponseDto?> RefreshTokenAsync(Guid userId, string accessToken, string refreshToken);
-    ClaimsPrincipal? GetPrincipalFromToken(string token);
+    ClaimsPrincipal? GetPrincipalFromToken(string token, bool validateLifetime = true);
 }
