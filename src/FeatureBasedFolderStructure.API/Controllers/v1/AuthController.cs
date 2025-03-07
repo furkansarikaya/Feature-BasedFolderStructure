@@ -1,9 +1,11 @@
 using FeatureBasedFolderStructure.API.Controllers.Base;
 using FeatureBasedFolderStructure.Application.Common.Models;
+using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.ChangePassword;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.Login;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.Logout;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.RefreshToken;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.Register;
+using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.ResetPassword;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,23 +20,37 @@ public class AuthController : BaseController
         var response = await Mediator.Send(command, cancellationToken);
         return StatusCode((int)response.StatusCode, response);
     }
-    
+
     [HttpPost("login")]
     public async Task<ActionResult> Login(LoginCommand command, CancellationToken cancellationToken)
     {
         var response = await Mediator.Send(command, cancellationToken);
         return StatusCode((int)response.StatusCode, response);
     }
-    
+
     [HttpPost("logout")]
     public async Task<ActionResult> Logout(LogoutCommand command, CancellationToken cancellationToken)
     {
         var response = await Mediator.Send(command, cancellationToken);
         return StatusCode((int)response.StatusCode, response);
     }
-    
+
     [HttpPost("refresh-token")]
     public async Task<ActionResult<BaseResponse<RefreshTokenDto>>> RefreshToken(RefreshTokenCommand command, CancellationToken cancellationToken)
+    {
+        var response = await Mediator.Send(command, cancellationToken);
+        return StatusCode((int)response.StatusCode, response);
+    }
+
+    [HttpPost("change-password")]
+    public async Task<ActionResult<BaseResponse<RefreshTokenDto>>> ChangePassword(ChangePasswordCommand command, CancellationToken cancellationToken)
+    {
+        var response = await Mediator.Send(command, cancellationToken);
+        return StatusCode((int)response.StatusCode, response);
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<ActionResult<BaseResponse<string>>> ResetPassword(ResetPasswordCommand command, CancellationToken cancellationToken)
     {
         var response = await Mediator.Send(command, cancellationToken);
         return StatusCode((int)response.StatusCode, response);
