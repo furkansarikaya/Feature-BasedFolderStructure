@@ -8,7 +8,6 @@ using FeatureBasedFolderStructure.Application.Common.Models.Auth;
 using FeatureBasedFolderStructure.Application.Common.Settings;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
-using FeatureBasedFolderStructure.Domain.Interfaces;
 using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -136,7 +135,7 @@ public class TokenService(IApplicationUserRepository applicationUserRepository, 
         return new RefreshTokenResponseDto(newAccessToken, newRefreshToken);
     }
 
-    public ClaimsPrincipal? GetPrincipalFromToken(string token)
+    public ClaimsPrincipal? GetPrincipalFromToken(string token, bool validateLifetime = true)
     {
         var tokenValidationParameters = new TokenValidationParameters
         {
@@ -146,7 +145,7 @@ public class TokenService(IApplicationUserRepository applicationUserRepository, 
             ValidAudience = _jwtSettings.Audience,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key)),
-            ValidateLifetime = true,
+            ValidateLifetime = validateLifetime,
             ClockSkew = TimeSpan.Zero
         };
 

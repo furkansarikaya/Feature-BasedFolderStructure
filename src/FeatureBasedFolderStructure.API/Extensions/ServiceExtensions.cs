@@ -9,12 +9,9 @@ using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.Crea
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Mappings;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Rules;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Validators;
-using FeatureBasedFolderStructure.Application.Interfaces;
 using FeatureBasedFolderStructure.Application.Interfaces.Users;
-using FeatureBasedFolderStructure.Application.Services;
 using FeatureBasedFolderStructure.Application.Services.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
-using FeatureBasedFolderStructure.Domain.Interfaces;
 using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
 using FeatureBasedFolderStructure.Domain.Interfaces.Orders;
 using FeatureBasedFolderStructure.Domain.Interfaces.Users;
@@ -46,10 +43,17 @@ public static class ServiceExtensions
                 {
                     Title = "Feature-Based Folder Structure API Documentation | v1",
                     Version = "v1",
-                    Description = "API for Feature-Based Folder Structure."
+                    Description = "API for Feature-Based Folder Structure.",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Furkan SARIKAYA",
+                        Email = "furkannsarikaya@gmail.com",
+                        Url = new Uri("https://github.com/kimliyorum/Feature-Based Folder Structure")
+                        }
                 };
                 return Task.CompletedTask;
             });
+            options.AddDocumentTransformer<BearerSecuritySchemeTransformer>(); 
         });
     }
 
@@ -145,7 +149,13 @@ public static class ServiceExtensions
     {
         var jwtSettings = configuration.GetRequiredSection(nameof(JwtSettings)).Get<JwtSettings>()!;
 
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        services
+            .AddAuthorization()
+            .AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
