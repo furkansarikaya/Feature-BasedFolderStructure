@@ -3,7 +3,6 @@ using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
-using FeatureBasedFolderStructure.Domain.Interfaces;
 using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;

@@ -8,7 +8,6 @@ using FeatureBasedFolderStructure.Application.Common.Models.Auth;
 using FeatureBasedFolderStructure.Application.Common.Settings;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
-using FeatureBasedFolderStructure.Domain.Interfaces;
 using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;

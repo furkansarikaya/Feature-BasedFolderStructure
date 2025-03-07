@@ -1,5 +1,4 @@
 using FeatureBasedFolderStructure.Domain.Entities.Users;
-using FeatureBasedFolderStructure.Domain.ValueObjects;
 using FeatureBasedFolderStructure.Domain.ValueObjects.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

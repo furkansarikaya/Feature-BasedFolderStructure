@@ -1,7 +1,6 @@
 using AutoMapper;
 using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.DTOs;
-using FeatureBasedFolderStructure.Domain.Interfaces;
 using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
 using MediatR;
 

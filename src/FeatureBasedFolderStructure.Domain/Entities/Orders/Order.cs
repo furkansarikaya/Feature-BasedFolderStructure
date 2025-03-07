@@ -1,7 +1,6 @@
 using FeatureBasedFolderStructure.Domain.Common;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Domain.Enums;
-using FeatureBasedFolderStructure.Domain.ValueObjects;
 using FeatureBasedFolderStructure.Domain.ValueObjects.Orders;
 
 namespace FeatureBasedFolderStructure.Domain.Entities.Orders;
