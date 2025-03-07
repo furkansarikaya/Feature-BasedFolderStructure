@@ -1,11 +1,11 @@
-using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.ResetPassword;
+using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.ForgotPassword;
 using FluentValidation;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Auth.Validators;
 
-public class ResetPasswordCommandValidator : AbstractValidator<ResetPasswordCommand>
+public class ForgotPasswordCommandValidator : AbstractValidator<ForgotPasswordCommand>
 {
-    public ResetPasswordCommandValidator()
+    public ForgotPasswordCommandValidator()
     {
         RuleFor(x => x.Email)
             .NotEmpty().WithMessage("Email alanı zorunludur.")

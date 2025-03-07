@@ -1,11 +1,11 @@
 using FeatureBasedFolderStructure.API.Controllers.Base;
 using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.ChangePassword;
+using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.ForgotPassword;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.Login;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.Logout;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.RefreshToken;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.Register;
-using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.ResetPassword;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,8 +49,8 @@ public class AuthController : BaseController
         return StatusCode((int)response.StatusCode, response);
     }
 
-    [HttpPost("reset-password")]
-    public async Task<ActionResult<BaseResponse<string>>> ResetPassword(ResetPasswordCommand command, CancellationToken cancellationToken)
+    [HttpPost("forgot-password")]
+    public async Task<ActionResult<BaseResponse<string>>> ResetPassword(ForgotPasswordCommand command, CancellationToken cancellationToken)
     {
         var response = await Mediator.Send(command, cancellationToken);
         return StatusCode((int)response.StatusCode, response);

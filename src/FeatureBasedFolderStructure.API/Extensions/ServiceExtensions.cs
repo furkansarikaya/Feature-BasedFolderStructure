@@ -19,7 +19,6 @@ using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FeatureBasedFolderStructure.Infrastructure.Persistence;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Interceptors;
-using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Catalogs;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Orders;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Users;

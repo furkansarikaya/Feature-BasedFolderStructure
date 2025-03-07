@@ -7,12 +7,12 @@ using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 using MediatR;
 
-namespace FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.ResetPassword;
+namespace FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.ForgotPassword;
 
-public class ResetPasswordCommandHandler(IApplicationUserService applicationUserService, ITokenService tokenService, AuthBusinessRules authBusinessRules)
-    : IRequestHandler<ResetPasswordCommand, BaseResponse<string>>
+public class ForgotPasswordCommandHandler(IApplicationUserService applicationUserService, ITokenService tokenService, AuthBusinessRules authBusinessRules)
+    : IRequestHandler<ForgotPasswordCommand, BaseResponse<string>>
 {
-    public async Task<BaseResponse<string>> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
+    public async Task<BaseResponse<string>> Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
     {
         var user = await applicationUserService.GetByEmailAsync(request.Email, cancellationToken);
         if (!user.Success)
