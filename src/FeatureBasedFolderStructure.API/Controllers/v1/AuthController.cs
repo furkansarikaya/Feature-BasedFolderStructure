@@ -50,7 +50,7 @@ public class AuthController : BaseController
     }
 
     [HttpPost("forgot-password")]
-    public async Task<ActionResult<BaseResponse<string>>> ResetPassword(ForgotPasswordCommand command, CancellationToken cancellationToken)
+    public async Task<ActionResult<BaseResponse<string>>> ForgotPassword(ForgotPasswordCommand command, CancellationToken cancellationToken)
     {
         var response = await Mediator.Send(command, cancellationToken);
         return StatusCode((int)response.StatusCode, response);
