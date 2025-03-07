@@ -19,7 +19,20 @@ public class RegisterCommandHandler(IApplicationUserService applicationUserServi
 
         var customerRole = await authBusinessRules.CustomerRoleMustBeExist();
 
-        var newUser = new ApplicationUser
+        var newUser = CreateUser(request, customerRole);
+
+        var result = await applicationUserService.CreateAsync(newUser, request.Password, cancellationToken);
+        if (!result.Success)
+            return BaseResponse<RegisterDto>.ErrorResult(result.Message, result.Errors);
+
+        var tokens = await GenerateTokens(result.Data);
+
+        return BaseResponse<RegisterDto>.SuccessResult(tokens);
+    }
+
+    private ApplicationUser CreateUser(RegisterCommand request, Role customerRole)
+    {
+        return new ApplicationUser
         {
             Email = request.Email,
             FullName = FullName.Create(request.FirstName, request.LastName),
@@ -33,13 +46,14 @@ public class RegisterCommandHandler(IApplicationUserService applicationUserServi
                 }
             }
         };
+    }
 
-        var result = await applicationUserService.CreateAsync(newUser, request.Password, cancellationToken);
-        if (!result.Success)
-            return BaseResponse<RegisterDto>.ErrorResult(result.Message, result.Errors);
-        var emailConfirmation = await tokenService.GenerateTokenAsync(result.Data, TokenType.EmailConfirmation);
-        var accessToken = await tokenService.GenerateTokenAsync(result.Data, TokenType.AccessToken);
-        var refreshToken = await tokenService.GenerateTokenAsync(result.Data, TokenType.RefreshToken);
-        return BaseResponse<RegisterDto>.SuccessResult(new RegisterDto(accessToken.Token, accessToken.ExpiryDate, refreshToken.Token, refreshToken.ExpiryDate));
+    private async Task<RegisterDto> GenerateTokens(Guid applicationUserId)
+    {
+        var emailConfirmation = await tokenService.GenerateTokenAsync(applicationUserId, TokenType.EmailConfirmation);
+        var accessToken = await tokenService.GenerateTokenAsync(applicationUserId, TokenType.AccessToken);
+        var refreshToken = await tokenService.GenerateTokenAsync(applicationUserId, TokenType.RefreshToken);
+
+        return new RegisterDto(accessToken.Token, accessToken.ExpiryDate, refreshToken.Token, refreshToken.ExpiryDate);
     }
 }
