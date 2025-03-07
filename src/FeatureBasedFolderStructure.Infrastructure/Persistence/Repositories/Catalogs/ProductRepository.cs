@@ -3,7 +3,7 @@ using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories;
+namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Catalogs;
 
 public class ProductRepository(ApplicationDbContext context) : BaseRepository<Product, int>(context), IProductRepository
 {

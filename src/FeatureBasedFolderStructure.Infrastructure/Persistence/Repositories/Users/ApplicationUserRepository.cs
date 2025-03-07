@@ -4,7 +4,7 @@ using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories;
+namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Users;
 
 public class ApplicationUserRepository(ApplicationDbContext context) : BaseRepository<ApplicationUser, Guid>(context), IApplicationUserRepository
 {

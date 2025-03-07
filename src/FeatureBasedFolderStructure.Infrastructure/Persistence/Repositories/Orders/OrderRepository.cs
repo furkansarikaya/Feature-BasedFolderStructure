@@ -3,7 +3,7 @@ using FeatureBasedFolderStructure.Domain.Interfaces.Orders;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories;
+namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Orders;
 
 public class OrderRepository(ApplicationDbContext context) : BaseRepository<Order, Guid>(context), IOrderRepository
 {

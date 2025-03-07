@@ -3,7 +3,7 @@ using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories;
+namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Users;
 
 public class RoleRepository(ApplicationDbContext context) : BaseRepository<Role, int>(context), IRoleRepository
 {
@@ -11,7 +11,7 @@ public class RoleRepository(ApplicationDbContext context) : BaseRepository<Role,
     public async Task<Role?> GetByNameAsync(string roleName)
     {
         return await AsQueryable()
-            .FirstOrDefaultAsync(r => r.NormalizedName.Equals(roleName, StringComparison.InvariantCultureIgnoreCase));
+            .FirstOrDefaultAsync(r => r.NormalizedName == roleName);
     }
 
     public async Task<IEnumerable<Role>> GetRolesByUserIdAsync(Guid userId)
@@ -26,7 +26,7 @@ public class RoleRepository(ApplicationDbContext context) : BaseRepository<Role,
     public async Task<bool> RoleExistsAsync(string roleName)
     {
         return await AsQueryable()
-            .AnyAsync(r => r.NormalizedName.Equals(roleName, StringComparison.InvariantCultureIgnoreCase));
+            .AnyAsync(r => r.NormalizedName == roleName);
     }
 
     public async Task<IEnumerable<RoleClaim>> GetRoleClaimsAsync(int roleId)

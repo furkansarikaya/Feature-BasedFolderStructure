@@ -5,7 +5,7 @@ using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories;
+namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Users;
 
 public class UserTokenRepository(ApplicationDbContext context,IDateTime dateTime) : BaseRepository<UserToken, int>(context), IUserTokenRepository
 {
