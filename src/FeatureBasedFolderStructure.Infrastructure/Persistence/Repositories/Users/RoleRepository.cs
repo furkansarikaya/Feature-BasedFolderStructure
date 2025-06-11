@@ -13,8 +13,7 @@ public class RoleRepository(ApplicationDbContext context) : BaseRepository<Role,
 
     public async Task<Role?> GetByNameAsync(string roleName)
     {
-        return await GetQueryable()
-            .FirstOrDefaultAsync(r => r.NormalizedName == roleName);
+        return await FirstOrDefaultAsync(r => r.NormalizedName == roleName);
     }
 
     public async Task<IEnumerable<Role>> GetRolesByUserIdAsync(Guid userId)
@@ -28,8 +27,7 @@ public class RoleRepository(ApplicationDbContext context) : BaseRepository<Role,
 
     public async Task<bool> RoleExistsAsync(string roleName)
     {
-        return await GetQueryable()
-            .AnyAsync(r => r.NormalizedName == roleName);
+        return await ExistsAsync(r => r.NormalizedName == roleName);
     }
 
     public async Task<IEnumerable<RoleClaim>> GetRoleClaimsAsync(int roleId)

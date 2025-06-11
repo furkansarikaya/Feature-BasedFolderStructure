@@ -14,6 +14,11 @@ public interface IRepository<TEntity, TKey>
     Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default);
     Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
     Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default, bool isSoftDelete = true);
+    
+    // Bulk Operations
+    Task<int> BulkInsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+    Task<int> BulkUpdateAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+    Task<int> BulkDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default, bool isSoftDelete = true);
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
     // Gelişmiş Sorgulama
@@ -55,9 +60,16 @@ public interface IRepository<TEntity, TKey>
         bool disableTracking = true,
         CancellationToken cancellationToken = default);
     
-    // Sayım
-    Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate = null,
+    // Advanced Query Operations
+    Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool disableTracking = true, CancellationToken cancellationToken = default);
+
+    Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        List<Expression<Func<TEntity, object>>>? includes = null,
+        bool disableTracking = true,
         CancellationToken cancellationToken = default);
+    Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default);
+    Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate = null, CancellationToken cancellationToken = default);
     
     // Raw IQueryable (ileri düzey LINQ sorguları için)
     IQueryable<TEntity> GetQueryable(bool disableTracking = true);

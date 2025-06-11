@@ -22,7 +22,7 @@ public class ApplicationUserRepository(ApplicationDbContext context) : BaseRepos
 
     public async Task<ApplicationUser?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
-        return await GetQueryable().FirstOrDefaultAsync(e => e.Email == email, cancellationToken);
+        return await FirstOrDefaultAsync(predicate: e => e.Email == email, cancellationToken: cancellationToken);
     }
 
     public async Task<IEnumerable<ApplicationUser>> GetByStatusAsync(UserStatus status, CancellationToken cancellationToken = default)
@@ -35,6 +35,6 @@ public class ApplicationUserRepository(ApplicationDbContext context) : BaseRepos
 
     public async Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken = default)
     {
-        return await GetQueryable().AnyAsync(e => e.Email == email, cancellationToken);
+        return await ExistsAsync(e => e.Email == email, cancellationToken);
     }
 }

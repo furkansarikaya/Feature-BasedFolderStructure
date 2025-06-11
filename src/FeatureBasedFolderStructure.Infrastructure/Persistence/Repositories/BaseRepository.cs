@@ -58,6 +58,41 @@ public abstract class BaseRepository<TEntity, TKey>(DbContext context) : IReposi
         await SaveChangesAsync(cancellationToken);
     }
 
+    public async Task<int> BulkInsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+    {
+        await _dbSet.AddRangeAsync(entities, cancellationToken);
+        return await SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<int> BulkUpdateAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+    {
+        _dbSet.UpdateRange(entities);
+        return await SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<int> BulkDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default, bool isSoftDelete = true)
+    {
+        var hasIsDeleted = typeof(TEntity).GetProperty("IsDeleted") != null;
+
+        if (hasIsDeleted && isSoftDelete)
+        {
+            var entities = await _dbSet.Where(predicate).ToListAsync(cancellationToken);
+            foreach (var entity in entities)
+            {
+                var isDeletedProperty = typeof(TEntity).GetProperty("IsDeleted");
+                isDeletedProperty!.SetValue(entity, true);
+                context.Entry(entity).State = EntityState.Modified;
+            }
+        }
+        else
+        {
+            var entities = await _dbSet.Where(predicate).ToListAsync(cancellationToken);
+            _dbSet.RemoveRange(entities);
+        }
+
+        return await SaveChangesAsync(cancellationToken);
+    }
+
     public virtual async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => await context.SaveChangesAsync(cancellationToken);
 
     public virtual async Task<IReadOnlyList<TEntity>> GetWithIncludeStringAsync(
@@ -140,6 +175,29 @@ public abstract class BaseRepository<TEntity, TKey>(DbContext context) : IReposi
                      .ApplyOrder(orderBy);
 
         return await query.ToPaginateAsync(pageIndex, pageSize, 0, cancellationToken);
+    }
+
+    public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, bool disableTracking = true, CancellationToken cancellationToken = default)
+    {
+        var query = GetQueryable(disableTracking);
+        return await query.FirstOrDefaultAsync(predicate, cancellationToken);
+    }
+
+    public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, List<Expression<Func<TEntity, object>>>? includes = null, bool disableTracking = true, CancellationToken cancellationToken = default)
+    {
+        var query = GetQueryable(disableTracking);
+        
+        query = query.ApplySpecification(predicate)
+                     .ApplyInclude(includes)
+                     .ApplyOrder(orderBy);
+                     
+        return await query.ToListAsync(cancellationToken);
+    }
+
+    public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
+    {
+        var query = GetQueryable();
+        return await query.AnyAsync(predicate, cancellationToken);
     }
 
     public virtual async Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate = null, CancellationToken cancellationToken = default)
