@@ -1,10 +1,13 @@
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Domain.Common;
+using FeatureBasedFolderStructure.Domain.Common.Attributes;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Interceptors;
 
+[ServiceRegistration(ServiceLifetime.Scoped, Order = 80)]
 public class AuditableEntitySaveChangesInterceptor(
     ICurrentUserService currentUserService,
     IDateTime dateTime)

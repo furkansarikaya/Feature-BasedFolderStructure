@@ -1,10 +1,13 @@
+using FeatureBasedFolderStructure.Domain.Common.Attributes;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Users;
 
+[ServiceRegistration(ServiceLifetime.Scoped, Order = 1)]
 public class RoleRepository(ApplicationDbContext context) : BaseRepository<Role, int>(context), IRoleRepository
 {
 

@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using FeatureBasedFolderStructure.API.Common;
 using FeatureBasedFolderStructure.Application.Common.Behaviors;
+using FeatureBasedFolderStructure.Application.Common.Extensions;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Common.Settings;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Rules;
@@ -113,34 +114,17 @@ public static class ServiceExtensions
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration
                 .GetConnectionString("DefaultConnection"))
+                .EnableSensitiveDataLogging(
+                    Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
                 .UseSnakeCaseNamingConvention());
         
         services.AddScoped<ApplicationDbContextInitialiser>();
     }
 
-    private static void AddRepositories(this IServiceCollection services)
-    {
-        services.AddScoped<IProductRepository, ProductRepository>();
-        services.AddScoped<ICategoryRepository, CategoryRepository>();
-        services.AddScoped<IOrderRepository, OrderRepository>();
-        services.AddScoped<IUserTokenRepository, UserTokenRepository>();
-        services.AddScoped<IRoleRepository, RoleRepository>();
-        services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
-    }
-
     private static void AddCustomServices(this IServiceCollection services)
     {
-        services.AddScoped<ITokenService, TokenService>();
         services.Configure<JwtSettings>(services.BuildServiceProvider().GetService<IConfiguration>()
             .GetSection(nameof(JwtSettings)));
-
-        services.AddScoped<IApplicationUserService, ApplicationUserService>();
-    }
-    
-    private static void AddBusinessRules(this IServiceCollection services)
-    {
-        services.AddScoped<ProductBusinessRules>();
-        services.AddScoped<AuthBusinessRules>();
     }
 
     private static void AddAssemblyServices(this IServiceCollection services)
@@ -193,7 +177,7 @@ public static class ServiceExtensions
             });
     }
 
-    public static void AddApiServices(this IServiceCollection services, IConfiguration configuration)
+    public static void AddApiServices(this IServiceCollection services, IConfiguration configuration, string environmentName)
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -201,8 +185,23 @@ public static class ServiceExtensions
         services.AddOpenApiDocumentation();
         services.AddMediatRServices();
         services.AddDatabaseContext(configuration);
-        services.AddRepositories();
-        services.AddBusinessRules();
+        
+        // Auto service registration - tüm layer'ları tara
+        services.AddAutoServices(options =>
+            {
+                // Environment'a göre profile belirle
+                options.Profile = environmentName;
+                options.Configuration = configuration;
+                options.EnableLogging = environmentName != "Production";
+                options.IsTestEnvironment = false;
+            }, 
+            // Hangi assembly'lerin taranacağını belirt
+            Assembly.GetAssembly(typeof(FeatureBasedFolderStructure.Domain.Common.Attributes.ServiceRegistrationAttribute))!, // Domain
+            Assembly.GetAssembly(typeof(FeatureBasedFolderStructure.Application.Common.Extensions.ServiceCollectionExtensions))!, // Application  
+            Assembly.GetAssembly(typeof(ProductRepository))!, // Infrastructure
+            Assembly.GetExecutingAssembly() // API
+        );
+        
         services.AddCustomServices();
         services.AddAssemblyServices();
         services.AddAuthorizationPolicies(configuration);

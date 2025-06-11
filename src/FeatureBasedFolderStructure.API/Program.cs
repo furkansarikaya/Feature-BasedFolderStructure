@@ -2,7 +2,7 @@ using FeatureBasedFolderStructure.API.Extensions;
 using FeatureBasedFolderStructure.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddApiServices(builder.Configuration);
+builder.Services.AddApiServices(builder.Configuration, builder.Environment.EnvironmentName);
 
 var app = builder.Build();
 app.ConfigureApplication();

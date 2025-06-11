@@ -1,11 +1,14 @@
+using FeatureBasedFolderStructure.Domain.Common.Attributes;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Users;
 
+[ServiceRegistration(ServiceLifetime.Scoped, Order = 1)]
 public class ApplicationUserRepository(ApplicationDbContext context) : BaseRepository<ApplicationUser, Guid>(context), IApplicationUserRepository
 {
     public async Task<ApplicationUser?> GetUserWithRolesAndClaims(Guid userId)

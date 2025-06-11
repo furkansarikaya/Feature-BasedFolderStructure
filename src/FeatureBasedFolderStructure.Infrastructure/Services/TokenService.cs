@@ -6,15 +6,18 @@ using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Common.Models.Auth;
 using FeatureBasedFolderStructure.Application.Common.Settings;
+using FeatureBasedFolderStructure.Domain.Common.Attributes;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace FeatureBasedFolderStructure.Infrastructure.Services;
 
+[ServiceRegistration(ServiceLifetime.Scoped, Order = 20)]
 public class TokenService(IApplicationUserRepository applicationUserRepository, IUserTokenRepository userTokenRepository, IDateTime dateTime, IOptions<JwtSettings> jwtSettings) : ITokenService
 {
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;

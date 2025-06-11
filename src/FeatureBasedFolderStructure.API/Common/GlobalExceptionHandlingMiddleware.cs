@@ -1,9 +1,11 @@
 using System.Net;
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Common.Models;
+using FeatureBasedFolderStructure.Domain.Common.Attributes;
 
 namespace FeatureBasedFolderStructure.API.Common;
 
+[ServiceRegistration(ServiceLifetime.Scoped, Order = -1)]
 public class GlobalExceptionHandlingMiddleware(ILogger<GlobalExceptionHandlingMiddleware> logger) : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)

@@ -1,7 +1,10 @@
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
+using FeatureBasedFolderStructure.Domain.Common.Attributes;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FeatureBasedFolderStructure.Infrastructure.Services;
 
+[ServiceRegistration(ServiceLifetime.Scoped, Order = -1)]
 public class DateTimeService : IDateTime
 {
     public DateTime Now => DateTime.Now;

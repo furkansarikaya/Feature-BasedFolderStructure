@@ -1,10 +1,13 @@
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Interfaces.Users;
+using FeatureBasedFolderStructure.Domain.Common.Attributes;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Interfaces.Users;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Auth.Rules;
 
+[ServiceRegistration(ServiceLifetime.Scoped, Order = 100)]
 public class AuthBusinessRules(IApplicationUserService applicationUserService, IRoleRepository roleRepository)
 {
     public async Task EmailCanNotBeDuplicatedWhenRegistered(string email)

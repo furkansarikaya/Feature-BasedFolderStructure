@@ -1,12 +1,15 @@
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
+using FeatureBasedFolderStructure.Domain.Common.Attributes;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Users;
 
+[ServiceRegistration(ServiceLifetime.Scoped, Order = 1)]
 public class UserTokenRepository(ApplicationDbContext context,IDateTime dateTime) : BaseRepository<UserToken, int>(context), IUserTokenRepository
 {
     public async Task<UserToken?> GetByTokenValueAsync(string tokenValue)
