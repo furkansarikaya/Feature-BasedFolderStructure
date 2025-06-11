@@ -1,5 +1,4 @@
 using System.Linq.Expressions;
-using FeatureBasedFolderStructure.Domain.Common.Interfaces;
 using FeatureBasedFolderStructure.Domain.Common.Models;
 using Microsoft.EntityFrameworkCore;
 
