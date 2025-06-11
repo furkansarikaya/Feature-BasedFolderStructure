@@ -51,7 +51,7 @@ public class ApplicationUserService(
     {
         try
         {
-            var users = await userRepository.GetAllAsync(cancellationToken);
+            var users = await userRepository.GetAllAsync(cancellationToken: cancellationToken);
             return BaseResponse<IEnumerable<ApplicationUser>>.SuccessResult(users);
         }
         catch (Exception ex)

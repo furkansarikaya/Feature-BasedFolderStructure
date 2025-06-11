@@ -11,7 +11,7 @@ public class GetCategoriesQueryHandler(ICategoryRepository categoryRepository,
 {
     public async Task<BaseResponse<List<CategoryDto>>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
     {
-        var categories = await categoryRepository.GetAllAsync(cancellationToken);
+        var categories = await categoryRepository.GetAllAsync(cancellationToken: cancellationToken);
         return BaseResponse<List<CategoryDto>>.SuccessResult(mapper.Map<List<CategoryDto>>(categories.OrderBy(c => c.Name).ToList()));
     }
 }

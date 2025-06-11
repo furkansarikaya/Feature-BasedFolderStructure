@@ -12,7 +12,7 @@ public class OrderRepository(ApplicationDbContext context) : BaseRepository<Orde
 {
     public async Task<Order?> GetOrderWithItems(Guid id)
     {
-        return await AsQueryable()
+        return await GetQueryable()
             .Include(o => o.OrderItems)
             .ThenInclude(oi => oi.Product)
             .FirstOrDefaultAsync(o => o.Id == id);
@@ -20,16 +20,14 @@ public class OrderRepository(ApplicationDbContext context) : BaseRepository<Orde
 
     public async Task<IEnumerable<Order>> GetOrdersByCustomerId(string customerId)
     {
-        return await AsQueryable()
-            .Where(o => o.CustomerId == customerId)
-            .Include(o => o.OrderItems)
-            .OrderByDescending(o => o.OrderDate)
-            .ToListAsync();
+        return await GetWithIncludesAsync(predicate: order => order.CustomerId == customerId, 
+            orderBy: o => o.OrderByDescending(order => order.OrderDate),
+            includes: [order => order.OrderItems]);
     }
 
     public async Task<decimal> GetTotalOrderAmount(string customerId)
     {
-        return await AsQueryable()
+        return await GetQueryable()
             .Where(o => o.CustomerId == customerId)
             .SumAsync(o => o.TotalAmount);
     }

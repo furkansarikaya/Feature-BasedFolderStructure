@@ -111,7 +111,7 @@ public class TokenService(IApplicationUserRepository applicationUserRepository, 
 
     public async Task<UserToken?> GetTokenAsync(Guid userId, string token, TokenType tokenType)
     {
-        return await userTokenRepository.AsQueryable()
+        return await userTokenRepository.GetQueryable()
             .FirstOrDefaultAsync(t =>
                 t.UserId == userId &&
                 t.TokenValue == token &&

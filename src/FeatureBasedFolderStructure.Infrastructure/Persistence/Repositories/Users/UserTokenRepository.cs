@@ -14,26 +14,29 @@ public class UserTokenRepository(ApplicationDbContext context,IDateTime dateTime
 {
     public async Task<UserToken?> GetByTokenValueAsync(string tokenValue)
     {
-        return await AsQueryable()
+        return await GetQueryable()
             .FirstOrDefaultAsync(t => t.TokenValue == tokenValue);
     }
     
     public async Task<IEnumerable<UserToken>> GetExpiredTokensAsync()
     {
-        return await AsQueryable()
+        return await GetQueryable()
             .Where(t => t.ExpiryDate != null && t.ExpiryDate < dateTime.Now)
             .ToListAsync();
     }
 
     public async Task<UserToken?> GetByUserIdAndTypeAsync(Guid userId, TokenType tokenType)
     {
-        return await AsQueryable()
+        return await GetQueryable()
             .FirstOrDefaultAsync(t => t.UserId == userId && t.TokenType == tokenType);
     }
 
     public async Task DeleteExpiredTokensAsync()
     {
         var expiredTokens = await GetExpiredTokensAsync();
-        await DeleteRangeAsync(expiredTokens, CancellationToken.None, false);
+        foreach (var token in expiredTokens)
+        {
+            await DeleteAsync(token, CancellationToken.None, false);
+        }
     }
 }

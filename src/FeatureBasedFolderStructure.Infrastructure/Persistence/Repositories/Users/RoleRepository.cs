@@ -13,7 +13,7 @@ public class RoleRepository(ApplicationDbContext context) : BaseRepository<Role,
 
     public async Task<Role?> GetByNameAsync(string roleName)
     {
-        return await AsQueryable()
+        return await GetQueryable()
             .FirstOrDefaultAsync(r => r.NormalizedName == roleName);
     }
 
@@ -28,7 +28,7 @@ public class RoleRepository(ApplicationDbContext context) : BaseRepository<Role,
 
     public async Task<bool> RoleExistsAsync(string roleName)
     {
-        return await AsQueryable()
+        return await GetQueryable()
             .AnyAsync(r => r.NormalizedName == roleName);
     }
 

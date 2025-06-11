@@ -13,7 +13,7 @@ public class ApplicationUserRepository(ApplicationDbContext context) : BaseRepos
 {
     public async Task<ApplicationUser?> GetUserWithRolesAndClaims(Guid userId)
     {
-        return await AsQueryable()
+        return await GetQueryable()
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
             .ThenInclude(r => r.RoleClaims)
@@ -22,16 +22,19 @@ public class ApplicationUserRepository(ApplicationDbContext context) : BaseRepos
 
     public async Task<ApplicationUser?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
-        return await AsQueryable().FirstOrDefaultAsync(e => e.Email == email, cancellationToken);
+        return await GetQueryable().FirstOrDefaultAsync(e => e.Email == email, cancellationToken);
     }
 
     public async Task<IEnumerable<ApplicationUser>> GetByStatusAsync(UserStatus status, CancellationToken cancellationToken = default)
     {
-        return await AsQueryable().Where(e => e.Status == status).ToListAsync(cancellationToken);
+        return await GetWithIncludesAsync(
+            predicate: e => e.Status == status,
+            cancellationToken: cancellationToken
+        );
     }
 
     public async Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken = default)
     {
-        return await AsQueryable().AnyAsync(e => e.Email == email, cancellationToken);
+        return await GetQueryable().AnyAsync(e => e.Email == email, cancellationToken);
     }
 }
