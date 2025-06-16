@@ -6,6 +6,7 @@ using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.Logout;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.RefreshToken;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.Register;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.ResetPassword;
+using FeatureBasedFolderStructure.Application.Features.v1.Auth.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FeatureBasedFolderStructure.API.Controllers.v1;
@@ -21,10 +22,9 @@ public class AuthController : BaseController
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult> Login(LoginCommand command, CancellationToken cancellationToken)
+    public async Task<LoginDto> Login(LoginCommand command, CancellationToken cancellationToken)
     {
-        var response = await Mediator.Send(command, cancellationToken);
-        return StatusCode((int)response.StatusCode, response);
+        return await Mediator.Send(command, cancellationToken);
     }
 
     [HttpPost("logout")]

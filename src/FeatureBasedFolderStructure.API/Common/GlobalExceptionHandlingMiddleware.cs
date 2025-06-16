@@ -5,7 +5,7 @@ using FeatureBasedFolderStructure.Domain.Common.Attributes;
 
 namespace FeatureBasedFolderStructure.API.Common;
 
-[ServiceRegistration(ServiceLifetime.Scoped, Order = -1)]
+[ServiceRegistration(ServiceLifetime.Transient, Order = -1)]
 public class GlobalExceptionHandlingMiddleware(ILogger<GlobalExceptionHandlingMiddleware> logger) : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
@@ -30,6 +30,10 @@ public class GlobalExceptionHandlingMiddleware(ILogger<GlobalExceptionHandlingMi
         {
             await HandleExceptionAsync(context, exception, "Yetkiniz yok", [exception.Message], HttpStatusCode.Unauthorized);
         }
+        catch (BusinessException exception)
+        {
+            await HandleExceptionAsync(context, exception, "İş kuralı hatası oluştu", [exception.Message], HttpStatusCode.BadRequest);
+        }
         catch (Exception exception)
         {
             await HandleExceptionAsync(context, exception, "Beklenmeyen bir hata oluştu", [exception.Message], HttpStatusCode.InternalServerError);
@@ -40,9 +44,9 @@ public class GlobalExceptionHandlingMiddleware(ILogger<GlobalExceptionHandlingMi
     {
         logger.LogError(exception, message);
 
-        var response = BaseResponse<object>.ErrorResult(message, errors, statusCode);
+        var response = ApiResponse<object>.ErrorResult(errors);
 
-        context.Response.StatusCode = (int)response.StatusCode;
+        context.Response.StatusCode = (int)statusCode;
         context.Response.ContentType = "application/json";
         await context.Response.WriteAsJsonAsync(response);
     }

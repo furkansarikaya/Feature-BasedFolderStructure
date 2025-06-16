@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using FeatureBasedFolderStructure.API.Common;
+using FeatureBasedFolderStructure.API.Configuration;
 using FeatureBasedFolderStructure.Application.Common.Behaviors;
 using FeatureBasedFolderStructure.Application.Common.Extensions;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
@@ -76,6 +77,7 @@ public static class ServiceExtensions
         });
         services.AddHttpContextAccessor();
         services.AddControllers();
+        services.ConfigureApiFilters(); // Auto wrapper filter'ı ekler
         services.AddApiVersioning(opt =>
         {
             opt.DefaultApiVersion = new ApiVersion(1, 0);

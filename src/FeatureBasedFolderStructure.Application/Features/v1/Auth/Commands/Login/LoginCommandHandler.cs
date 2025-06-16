@@ -1,3 +1,4 @@
+using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.DTOs;
@@ -7,26 +8,26 @@ using MediatR;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.Login;
 
-public class LoginCommandHandler(IApplicationUserService applicationUserService,ITokenService tokenService) : IRequestHandler<LoginCommand, BaseResponse<LoginDto>>
+public class LoginCommandHandler(IApplicationUserService applicationUserService,ITokenService tokenService) : IRequestHandler<LoginCommand, LoginDto>
 {
-    public async Task<BaseResponse<LoginDto>> Handle(LoginCommand request, CancellationToken cancellationToken)
+    public async Task<LoginDto> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var applicationUser = await applicationUserService.GetByEmailAsync(request.Email, cancellationToken);
         if (!applicationUser.Success)
-            return BaseResponse<LoginDto>.NotFound(applicationUser.Message);
+            throw new NotFoundException(nameof(applicationUser.Data), request.Email);
 
         if (applicationUser.Data.Status != UserStatus.Active)
         {
             switch (applicationUser.Data.Status)
             {
                 case UserStatus.Inactive:
-                    return BaseResponse<LoginDto>.NotFound("Kullanıcı bulunamadı.");
+                    throw new NotFoundException(nameof(applicationUser.Data), request.Email);
                 case UserStatus.Locked when applicationUser.Data.LockoutEnd != null && applicationUser.Data.LockoutEnd > DateTime.Now:
-                    return BaseResponse<LoginDto>.ErrorResult("Kullanıcı hesabı kilitli.", ["Kullanıcı hesabı kilitli."]);
+                    throw new BusinessException("Kullanıcı hesabı kilitli.");
                 case UserStatus.Suspended:
-                    return BaseResponse<LoginDto>.ErrorResult("Kullanıcı hesabı askıya alındı.", ["Kullanıcı hesabı askıya alındı."]);
+                    throw new BusinessException("Kullanıcı hesabı askıya alındı.");
                 case UserStatus.PendingActivation:
-                    return BaseResponse<LoginDto>.ErrorResult("Kullanıcı hesabı aktifleştirilmemiş.", ["Kullanıcı hesabı aktifleştirilmemiş."]);
+                    throw new BusinessException("Kullanıcı hesabı aktifleştirilmemiş.");
             }
         }
         
@@ -41,7 +42,7 @@ public class LoginCommandHandler(IApplicationUserService applicationUserService,
             }
             await applicationUserService.UpdateAsync(applicationUser.Data, cancellationToken);
             
-            return BaseResponse<LoginDto>.ErrorResult("Kullanıcı adı veya şifre hatalı.", ["Kullanıcı adı veya şifre hatalı."]);
+            throw new BusinessException("Kullanıcı adı veya şifre hatalı.");
         }
 
         if (applicationUser.Data.Status == UserStatus.Locked)
@@ -54,6 +55,6 @@ public class LoginCommandHandler(IApplicationUserService applicationUserService,
 
         var accessToken = await tokenService.GenerateTokenAsync(applicationUser.Data.Id, TokenType.AccessToken);
         var refreshToken = await tokenService.GenerateTokenAsync(applicationUser.Data.Id, TokenType.RefreshToken);
-        return BaseResponse<LoginDto>.SuccessResult(new LoginDto(accessToken.Token, accessToken.ExpiryDate, refreshToken.Token, refreshToken.ExpiryDate));
+        return new LoginDto(accessToken.Token, accessToken.ExpiryDate, refreshToken.Token, refreshToken.ExpiryDate);
     }
 }
