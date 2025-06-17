@@ -20,17 +20,19 @@ internal sealed class AddHeaderParameterOpenApiOperationTransformer : IOpenApiOp
             Description = "Correlation ID for tracking requests across services."
         });
         
-        operation.Parameters.Add(new OpenApiParameter
+        // Sadece POST istekleri için Idempotency-Key
+        if (string.Equals(context.Description.HttpMethod, "POST", StringComparison.OrdinalIgnoreCase))
         {
-            Name = "X-Request-Idempotency-Key",
-            In = ParameterLocation.Header,
-            Required = false,
-            Schema = new OpenApiSchema
+            operation.Parameters.Add(new OpenApiParameter
             {
-                Type = "string"
-            },
-            Description = "Idempotency key for ensuring the request is processed only once."
-        });
+                Name = "X-Request-Idempotency-Key",
+                In = ParameterLocation.Header,
+                Required = false,
+                Schema = new OpenApiSchema { Type = "string" },
+                Description = "Idempotency key for ensuring the request is processed only once."
+            });
+        }
+
         
         return Task.CompletedTask;
     }
