@@ -1,4 +1,5 @@
 using FeatureBasedFolderStructure.API.Controllers.Base;
+using FeatureBasedFolderStructure.Application.Common.Models.Responses;
 using FeatureBasedFolderStructure.Application.Features.v1.Categories.Commands.CreateCategory;
 using FeatureBasedFolderStructure.Application.Features.v1.Categories.Commands.DeleteCategory;
 using FeatureBasedFolderStructure.Application.Features.v1.Categories.Commands.UpdateCategory;
@@ -13,18 +14,21 @@ namespace FeatureBasedFolderStructure.API.Controllers.v1;
 public class CategoriesController : BaseController
 {
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<List<CategoryDto>>))]
     public async Task<List<CategoryDto>> GetCategories(CancellationToken cancellationToken)
     {
         return await Mediator.Send(new GetCategoriesQuery(), cancellationToken);
     }
 
     [HttpGet("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<CategoryDto>))]
     public async Task<CategoryDto> GetCategory(int id, CancellationToken cancellationToken)
     {
         return await Mediator.Send(new GetCategoryDetailQuery { Id = id }, cancellationToken);
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiResponse<CategoryDto>))]
     public async Task<IActionResult> Create(CreateCategoryCommand command, CancellationToken cancellationToken)
     {
         var category = await Mediator.Send(command, cancellationToken);
@@ -32,6 +36,7 @@ public class CategoriesController : BaseController
     }
 
     [HttpPut("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Update(int id, UpdateCategoryCommand command, CancellationToken cancellationToken)
     {
         if (id != command.Id)
@@ -44,6 +49,7 @@ public class CategoriesController : BaseController
     }
     
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         await Mediator.Send(new DeleteCategoryCommand(id), cancellationToken);

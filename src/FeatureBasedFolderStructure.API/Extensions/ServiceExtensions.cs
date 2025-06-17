@@ -6,6 +6,7 @@ using FeatureBasedFolderStructure.API.Configuration;
 using FeatureBasedFolderStructure.Application.Common.Behaviors;
 using FeatureBasedFolderStructure.Application.Common.Extensions;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
+using FeatureBasedFolderStructure.Application.Common.Models.Responses;
 using FeatureBasedFolderStructure.Application.Common.Settings;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.CreateProduct;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Mappings;
@@ -44,12 +45,13 @@ public static class ServiceExtensions
                     {
                         Name = "Furkan SARIKAYA",
                         Email = "furkannsarikaya@gmail.com",
-                        Url = new Uri("https://github.com/kimliyorum/Feature-Based Folder Structure")
+                        Url = new Uri("https://github.com/furkansarikaya/Feature-BasedFolderStructure")
                         }
                 };
                 return Task.CompletedTask;
             });
-            options.AddDocumentTransformer<BearerSecuritySchemeTransformer>(); 
+            options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+            options.AddOperationTransformer<AddHeaderParameterOpenApiOperationTransformer>();
         });
     }
 
@@ -76,7 +78,14 @@ public static class ServiceExtensions
                     .AllowAnyHeader());
         });
         services.AddHttpContextAccessor();
-        services.AddControllers();
+        services.AddControllers(options =>
+        {
+           options.Filters.Add((new ProducesResponseTypeAttribute(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)));
+           options.Filters.Add((new ProducesResponseTypeAttribute(typeof(ApiResponse<object>), StatusCodes.Status401Unauthorized)));
+           options.Filters.Add((new ProducesResponseTypeAttribute(typeof(ApiResponse<object>), StatusCodes.Status403Forbidden)));
+           options.Filters.Add((new ProducesResponseTypeAttribute(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)));
+           options.Filters.Add((new ProducesResponseTypeAttribute(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)));
+        });
         services.ConfigureApiFilters(); // Auto wrapper filter'ı ekler
         services.AddApiVersioning(opt =>
         {
