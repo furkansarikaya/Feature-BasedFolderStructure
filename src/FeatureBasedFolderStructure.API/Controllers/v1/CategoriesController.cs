@@ -1,5 +1,4 @@
 using FeatureBasedFolderStructure.API.Controllers.Base;
-using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.v1.Categories.Commands.CreateCategory;
 using FeatureBasedFolderStructure.Application.Features.v1.Categories.Commands.DeleteCategory;
 using FeatureBasedFolderStructure.Application.Features.v1.Categories.Commands.UpdateCategory;
@@ -14,43 +13,40 @@ namespace FeatureBasedFolderStructure.API.Controllers.v1;
 public class CategoriesController : BaseController
 {
     [HttpGet]
-    public async Task<ActionResult<List<CategoryDto>>> GetCategories(CancellationToken cancellationToken)
+    public async Task<List<CategoryDto>> GetCategories(CancellationToken cancellationToken)
     {
-        var response = await Mediator.Send(new GetCategoriesQuery(), cancellationToken);
-        return StatusCode((int)response.StatusCode, response);
+        return await Mediator.Send(new GetCategoriesQuery(), cancellationToken);
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<CategoryDto>> GetCategory(int id, CancellationToken cancellationToken)
+    [HttpGet("{id:int}")]
+    public async Task<CategoryDto> GetCategory(int id, CancellationToken cancellationToken)
     {
-        var response = await Mediator.Send(new GetCategoryDetailQuery { Id = id }, cancellationToken);
-        return StatusCode((int)response.StatusCode, response);
+        return await Mediator.Send(new GetCategoryDetailQuery { Id = id }, cancellationToken);
     }
 
     [HttpPost]
-    public async Task<ActionResult<int>> Create(CreateCategoryCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create(CreateCategoryCommand command, CancellationToken cancellationToken)
     {
-        var response = await Mediator.Send(command, cancellationToken);
-        return StatusCode((int)response.StatusCode, response);
+        var category = await Mediator.Send(command, cancellationToken);
+        return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, category);
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult> Update(int id, UpdateCategoryCommand command, CancellationToken cancellationToken)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id, UpdateCategoryCommand command, CancellationToken cancellationToken)
     {
         if (id != command.Id)
         {
-            var errorResponse = BaseResponse<object>.ErrorResult("Id in request does not match Id in command", ["Id in request does not match Id in command"]);
-            return StatusCode((int)errorResponse.StatusCode, errorResponse);
+            throw new ArgumentException($"Category ID mismatch. The ID in the URL must match the ID in the command. Please check your request. The ID in the URL is: {id}, the ID in the command is: {command.Id}");
         }
 
-        var response = await Mediator.Send(command, cancellationToken);
-        return StatusCode((int)response.StatusCode, response);
+        await Mediator.Send(command, cancellationToken);
+        return NoContent();
     }
     
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
-        var response = await Mediator.Send(new DeleteCategoryCommand(id), cancellationToken);
-        return StatusCode((int)response.StatusCode, response);
+        await Mediator.Send(new DeleteCategoryCommand(id), cancellationToken);
+        return NoContent();
     }
 }

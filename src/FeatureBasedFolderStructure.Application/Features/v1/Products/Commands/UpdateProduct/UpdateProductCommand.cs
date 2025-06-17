@@ -1,9 +1,8 @@
-using FeatureBasedFolderStructure.Application.Common.Models;
 using MediatR;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.UpdateProduct;
 
-public class UpdateProductCommand : IRequest<BaseResponse<Unit>>
+public class UpdateProductCommand : IRequest<Unit>
 {
     public int Id { get; set; }
     public string Name { get; set; } = null!;

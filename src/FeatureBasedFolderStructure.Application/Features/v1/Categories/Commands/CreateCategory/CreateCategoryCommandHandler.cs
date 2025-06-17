@@ -1,28 +1,30 @@
-using System.Net;
-using FeatureBasedFolderStructure.Application.Common.Models;
+using AutoMapper;
+using FeatureBasedFolderStructure.Application.Features.v1.Categories.DTOs;
+using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
-using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Categories.Commands.CreateCategory;
 
-public class CreateCategoryCommandHandler(ICategoryRepository categoryRepository, 
-    ILogger<CreateCategoryCommandHandler> logger)
-    : IRequestHandler<CreateCategoryCommand, BaseResponse<int>>
+public class CreateCategoryCommandHandler(
+    IUnitOfWork unitOfWork,
+    ILogger<CreateCategoryCommandHandler> logger,
+    IMapper mapper)
+    : IRequestHandler<CreateCategoryCommand, CategoryDto>
 {
-    public async Task<BaseResponse<int>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<CategoryDto> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
         var entity = new Category
         {
             Name = request.Name,
             Description = request.Description
         };
-
+        var categoryRepository = unitOfWork.GetRepository<Category, int>();
         await categoryRepository.AddAsync(entity, cancellationToken);
-
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Created Category {CategoryId}", entity.Id);
 
-        return BaseResponse<int>.SuccessResult(entity.Id, HttpStatusCode.Created);
+        return mapper.Map<CategoryDto>(entity);
     }
 }

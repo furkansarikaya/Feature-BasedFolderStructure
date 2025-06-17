@@ -1,22 +1,22 @@
 using AutoMapper;
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
-using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.v1.Categories.DTOs;
+using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
-using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
 using MediatR;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Categories.Queries.GetCategoryDetail;
 
 public class GetCategoryDetailQueryHandler(
-    ICategoryRepository categoryRepository,
-    IMapper mapper) : IRequestHandler<GetCategoryDetailQuery, BaseResponse<CategoryDto>>
+    IUnitOfWork unitOfWork,
+    IMapper mapper) : IRequestHandler<GetCategoryDetailQuery, CategoryDto>
 {
-    public async Task<BaseResponse<CategoryDto>> Handle(GetCategoryDetailQuery request, CancellationToken cancellationToken)
+    public async Task<CategoryDto> Handle(GetCategoryDetailQuery request, CancellationToken cancellationToken)
     {
+        var categoryRepository = unitOfWork.GetRepository<Category, int>();
         var category = await categoryRepository.GetByIdAsync(request.Id, cancellationToken, true);
         if (category == null)
             throw new NotFoundException(nameof(Category), request.Id);
-        return BaseResponse<CategoryDto>.SuccessResult(mapper.Map<CategoryDto>(category));
+        return mapper.Map<CategoryDto>(category);
     }
 }

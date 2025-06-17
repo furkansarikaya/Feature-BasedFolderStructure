@@ -2,25 +2,18 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using FeatureBasedFolderStructure.API.Common;
+using FeatureBasedFolderStructure.API.Configuration;
 using FeatureBasedFolderStructure.Application.Common.Behaviors;
+using FeatureBasedFolderStructure.Application.Common.Extensions;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Common.Settings;
-using FeatureBasedFolderStructure.Application.Features.v1.Auth.Rules;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.CreateProduct;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Mappings;
-using FeatureBasedFolderStructure.Application.Features.v1.Products.Rules;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Validators;
-using FeatureBasedFolderStructure.Application.Interfaces.Users;
-using FeatureBasedFolderStructure.Application.Services.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
-using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
-using FeatureBasedFolderStructure.Domain.Interfaces.Orders;
-using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FeatureBasedFolderStructure.Infrastructure.Persistence;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Interceptors;
-using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Catalogs;
-using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Orders;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Users;
 using FeatureBasedFolderStructure.Infrastructure.Services;
 using FluentValidation;
@@ -84,6 +77,7 @@ public static class ServiceExtensions
         });
         services.AddHttpContextAccessor();
         services.AddControllers();
+        services.ConfigureApiFilters(); // Auto wrapper filter'ı ekler
         services.AddApiVersioning(opt =>
         {
             opt.DefaultApiVersion = new ApiVersion(1, 0);
@@ -113,34 +107,17 @@ public static class ServiceExtensions
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration
                 .GetConnectionString("DefaultConnection"))
+                .EnableSensitiveDataLogging(
+                    Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
                 .UseSnakeCaseNamingConvention());
         
         services.AddScoped<ApplicationDbContextInitialiser>();
     }
 
-    private static void AddRepositories(this IServiceCollection services)
-    {
-        services.AddScoped<IProductRepository, ProductRepository>();
-        services.AddScoped<ICategoryRepository, CategoryRepository>();
-        services.AddScoped<IOrderRepository, OrderRepository>();
-        services.AddScoped<IUserTokenRepository, UserTokenRepository>();
-        services.AddScoped<IRoleRepository, RoleRepository>();
-        services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
-    }
-
     private static void AddCustomServices(this IServiceCollection services)
     {
-        services.AddScoped<ITokenService, TokenService>();
         services.Configure<JwtSettings>(services.BuildServiceProvider().GetService<IConfiguration>()
             .GetSection(nameof(JwtSettings)));
-
-        services.AddScoped<IApplicationUserService, ApplicationUserService>();
-    }
-    
-    private static void AddBusinessRules(this IServiceCollection services)
-    {
-        services.AddScoped<ProductBusinessRules>();
-        services.AddScoped<AuthBusinessRules>();
     }
 
     private static void AddAssemblyServices(this IServiceCollection services)
@@ -193,7 +170,7 @@ public static class ServiceExtensions
             });
     }
 
-    public static void AddApiServices(this IServiceCollection services, IConfiguration configuration)
+    public static void AddApiServices(this IServiceCollection services, IConfiguration configuration, string environmentName)
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -201,8 +178,23 @@ public static class ServiceExtensions
         services.AddOpenApiDocumentation();
         services.AddMediatRServices();
         services.AddDatabaseContext(configuration);
-        services.AddRepositories();
-        services.AddBusinessRules();
+        
+        // Auto service registration - tüm layer'ları tara
+        services.AddAutoServices(options =>
+            {
+                // Environment'a göre profile belirle
+                options.Profile = environmentName;
+                options.Configuration = configuration;
+                options.EnableLogging = environmentName != "Production";
+                options.IsTestEnvironment = false;
+            }, 
+            // Hangi assembly'lerin taranacağını belirt
+            Assembly.GetAssembly(typeof(FeatureBasedFolderStructure.Domain.Common.Attributes.ServiceRegistrationAttribute))!, // Domain
+            Assembly.GetAssembly(typeof(FeatureBasedFolderStructure.Application.Common.Extensions.ServiceCollectionExtensions))!, // Application  
+            Assembly.GetAssembly(typeof(ApplicationUserRepository))!, // Infrastructure
+            Assembly.GetExecutingAssembly() // API
+        );
+        
         services.AddCustomServices();
         services.AddAssemblyServices();
         services.AddAuthorizationPolicies(configuration);

@@ -6,16 +6,18 @@ using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Common.Models.Auth;
 using FeatureBasedFolderStructure.Application.Common.Settings;
+using FeatureBasedFolderStructure.Domain.Common.Attributes;
+using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
-using FeatureBasedFolderStructure.Domain.Interfaces.Users;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace FeatureBasedFolderStructure.Infrastructure.Services;
 
-public class TokenService(IApplicationUserRepository applicationUserRepository, IUserTokenRepository userTokenRepository, IDateTime dateTime, IOptions<JwtSettings> jwtSettings) : ITokenService
+[ServiceRegistration(ServiceLifetime.Scoped, Order = 20)]
+public class TokenService(IUnitOfWork unitOfWork, IDateTime dateTime, IOptions<JwtSettings> jwtSettings) : ITokenService
 {
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
@@ -29,7 +31,7 @@ public class TokenService(IApplicationUserRepository applicationUserRepository, 
             // JWT AccessToken oluşturma
             var expiryTime = expiryDuration ?? TimeSpan.FromHours(_jwtSettings.ExpiryInHours);
             expiryDate = dateTime.Now.Add(expiryTime);
-            var applicationUser = await applicationUserRepository.GetUserWithRolesAndClaims(userId);
+            var applicationUser = await unitOfWork.ApplicationUserRepository.GetUserWithRolesAndClaims(userId);
             if (applicationUser == null)
                 throw new NotFoundException(nameof(ApplicationUser), userId);
             tokenValue = GenerateJwtToken(applicationUser, expiryDate);
@@ -59,7 +61,9 @@ public class TokenService(IApplicationUserRepository applicationUserRepository, 
             ExpiryDate = expiryDate
         };
 
+        var userTokenRepository = unitOfWork.GetRepository<UserToken, int>();
         await userTokenRepository.AddAsync(userToken, CancellationToken.None);
+        await unitOfWork.SaveChangesAsync();
         return new TokenResponseDto(tokenValue, expiryDate);
     }
 
@@ -102,14 +106,16 @@ public class TokenService(IApplicationUserRepository applicationUserRepository, 
         if (userToken == null)
             return false;
 
+        var userTokenRepository = unitOfWork.GetRepository<UserToken, int>();
         await userTokenRepository.DeleteAsync(userToken, CancellationToken.None, false);
+        await unitOfWork.SaveChangesAsync();
         return true;
     }
 
     public async Task<UserToken?> GetTokenAsync(Guid userId, string token, TokenType tokenType)
     {
-        return await userTokenRepository.AsQueryable()
-            .FirstOrDefaultAsync(t =>
+        var userTokenRepository = unitOfWork.GetRepository<UserToken, int>();
+        return await userTokenRepository.FirstOrDefaultAsync(t =>
                 t.UserId == userId &&
                 t.TokenValue == token &&
                 t.TokenType == tokenType);

@@ -1,17 +1,19 @@
+using FeatureBasedFolderStructure.Domain.Common.Attributes;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Users;
 
+[ServiceRegistration(ServiceLifetime.Scoped, Order = 1)]
 public class RoleRepository(ApplicationDbContext context) : BaseRepository<Role, int>(context), IRoleRepository
 {
 
     public async Task<Role?> GetByNameAsync(string roleName)
     {
-        return await AsQueryable()
-            .FirstOrDefaultAsync(r => r.NormalizedName == roleName);
+        return await FirstOrDefaultAsync(r => r.NormalizedName == roleName);
     }
 
     public async Task<IEnumerable<Role>> GetRolesByUserIdAsync(Guid userId)
@@ -25,8 +27,7 @@ public class RoleRepository(ApplicationDbContext context) : BaseRepository<Role,
 
     public async Task<bool> RoleExistsAsync(string roleName)
     {
-        return await AsQueryable()
-            .AnyAsync(r => r.NormalizedName == roleName);
+        return await ExistsAsync(r => r.NormalizedName == roleName);
     }
 
     public async Task<IEnumerable<RoleClaim>> GetRoleClaimsAsync(int roleId)

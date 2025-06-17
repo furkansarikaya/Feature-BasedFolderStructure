@@ -1,17 +1,18 @@
 using AutoMapper;
-using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.v1.Categories.DTOs;
-using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
+using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
+using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using MediatR;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Categories.Queries.GetCategories;
 
-public class GetCategoriesQueryHandler(ICategoryRepository categoryRepository,
-    IMapper mapper) : IRequestHandler<GetCategoriesQuery, BaseResponse<List<CategoryDto>>>
+public class GetCategoriesQueryHandler(IUnitOfWork unitOfWork,
+    IMapper mapper) : IRequestHandler<GetCategoriesQuery, List<CategoryDto>>
 {
-    public async Task<BaseResponse<List<CategoryDto>>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
+    public async Task<List<CategoryDto>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
     {
-        var categories = await categoryRepository.GetAllAsync(cancellationToken);
-        return BaseResponse<List<CategoryDto>>.SuccessResult(mapper.Map<List<CategoryDto>>(categories.OrderBy(c => c.Name).ToList()));
+        var categoryRepository = unitOfWork.GetRepository<Category, int>();
+        var categories = await categoryRepository.GetAllAsync(cancellationToken: cancellationToken);
+        return mapper.Map<List<CategoryDto>>(categories.OrderBy(c => c.Name).ToList());
     }
 }

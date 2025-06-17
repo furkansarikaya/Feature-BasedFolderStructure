@@ -1,22 +1,24 @@
 using AutoMapper;
-using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.DTOs;
-using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
+using FeatureBasedFolderStructure.Domain.Common.Paging;
+using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
+using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using MediatR;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Products.Queries.GetProducts;
 
 public class GetProductsQueryHandler(
-    IProductRepository productRepository,
-    IMapper mapper) : IRequestHandler<GetProductsQuery, BaseResponse<ProductListDto>>
+    IUnitOfWork unitOfWork,
+    IMapper mapper) : IRequestHandler<GetProductsQuery, PagedResult<ProductDto>>
 {
-    public async Task<BaseResponse<ProductListDto>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
+    public async Task<PagedResult<ProductDto>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
-        var products = await productRepository.GetListAsync(
+        var productRepository = unitOfWork.GetRepository<Product, int>();
+        var products = await productRepository.GetPagedAsync(
+            pageIndex: request.PageRequest.Page,
+            pageSize: request.PageRequest.PageSize,
             orderBy: p => p.OrderBy(product => product.Name),
-            index: request.PageRequest.Page,
-            size: request.PageRequest.PageSize,
             cancellationToken: cancellationToken);
-        return BaseResponse<ProductListDto>.SuccessResult(mapper.Map<ProductListDto>(products));
+        return mapper.Map<PagedResult<ProductDto>>(products);
     }
 }

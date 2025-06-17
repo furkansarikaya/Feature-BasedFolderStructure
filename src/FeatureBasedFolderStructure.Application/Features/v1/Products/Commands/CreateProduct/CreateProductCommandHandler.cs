@@ -1,19 +1,21 @@
-using FeatureBasedFolderStructure.Application.Common.Models;
+using AutoMapper;
+using FeatureBasedFolderStructure.Application.Features.v1.Products.DTOs;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Rules;
+using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
-using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.CreateProduct;
 
 public class CreateProductCommandHandler(
-    IProductRepository productRepository,
+    IUnitOfWork unitOfWork,
     ProductBusinessRules productBusinessRules,
-    ILogger<CreateProductCommandHandler> logger)
-    : IRequestHandler<CreateProductCommand, BaseResponse<int>>
+    ILogger<CreateProductCommandHandler> logger,
+    IMapper mapper)
+    : IRequestHandler<CreateProductCommand, ProductDto>
 {
-    public async Task<BaseResponse<int>> Handle(CreateProductCommand request, 
+    public async Task<ProductDto> Handle(CreateProductCommand request, 
         CancellationToken cancellationToken)
     {
         await productBusinessRules.CheckIfCategoryExists(request.CategoryId, cancellationToken);
@@ -27,10 +29,11 @@ public class CreateProductCommandHandler(
         };
         entity.UpdatePrice(request.Price, "TRY");
         
+        var productRepository = unitOfWork.GetRepository<Product, int>();
         await productRepository.AddAsync(entity, cancellationToken);
-        
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Created Product {ProductId}", entity.Id);
-        
-        return BaseResponse<int>.SuccessResult(entity.Id);
+
+        return mapper.Map<ProductDto>(entity);
     }
 }
