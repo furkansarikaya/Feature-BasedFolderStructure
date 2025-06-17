@@ -16,9 +16,9 @@ public interface IRepository<TEntity, TKey>
     Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default, bool isSoftDelete = true);
     
     // Bulk Operations
-    Task<int> BulkInsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
-    Task<int> BulkUpdateAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
-    Task<int> BulkDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default, bool isSoftDelete = true);
+    Task BulkInsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+    void BulkUpdate(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+    Task BulkDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default, bool isSoftDelete = true);
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
     // Gelişmiş Sorgulama

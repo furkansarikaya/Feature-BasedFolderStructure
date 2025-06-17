@@ -1,18 +1,19 @@
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
+using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
-using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Categories.Commands.UpdateCategory;
 
 public class UpdateCategoryCommandHandler(
-    ICategoryRepository categoryRepository,
+    IUnitOfWork unitOfWork,
     ILogger<UpdateCategoryCommandHandler> logger)
     : IRequestHandler<UpdateCategoryCommand, Unit>
 {
     public async Task<Unit> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
+        var categoryRepository = unitOfWork.GetRepository<Category, int>();
         var entity = await categoryRepository.GetByIdAsync(request.Id, cancellationToken);
 
         if (entity == null)
@@ -22,7 +23,7 @@ public class UpdateCategoryCommandHandler(
         entity.Description = request.Description;
 
         await categoryRepository.UpdateAsync(entity, cancellationToken);
-
+        await unitOfWork.SaveChangesAsync(cancellationToken); 
         logger.LogInformation("Updated Category {CategoryId}", entity.Id);
 
         return Unit.Value;

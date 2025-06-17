@@ -1,6 +1,7 @@
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.Common.Attributes;
+using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.Interfaces.Users;
@@ -11,7 +12,7 @@ namespace FeatureBasedFolderStructure.Application.Services.Users;
 
 [ServiceRegistration(ServiceLifetime.Scoped, Order = 20)]
 public class ApplicationUserService(
-    IApplicationUserRepository userRepository)
+    IUnitOfWork unitOfWork)
     : IApplicationUserService
 {
     private readonly PasswordHasher<ApplicationUser> _passwordHasher = new();
@@ -20,7 +21,7 @@ public class ApplicationUserService(
     {
         try
         {
-            var user = await userRepository.GetByIdAsync(id, cancellationToken);
+            var user = await unitOfWork.ApplicationUserRepository.GetByIdAsync(id, cancellationToken);
             return user ?? throw new NotFoundException(nameof(ApplicationUser), id);
         }
         catch (Exception ex)
@@ -33,7 +34,7 @@ public class ApplicationUserService(
     {
         try
         {
-            var user = await userRepository.GetUserWithRolesAndClaims(id, cancellationToken);
+            var user = await unitOfWork.ApplicationUserRepository.GetUserWithRolesAndClaims(id, cancellationToken);
             return user ?? throw new NotFoundException(nameof(ApplicationUser), id);
         }
         catch (Exception ex)
@@ -46,7 +47,7 @@ public class ApplicationUserService(
     {
         try
         {
-            var user = await userRepository.GetByEmailAsync(email, cancellationToken);
+            var user = await unitOfWork.ApplicationUserRepository.GetByEmailAsync(email, cancellationToken);
             return user ?? throw new NotFoundException(nameof(ApplicationUser), email);
         }
         catch (Exception ex)
@@ -59,7 +60,7 @@ public class ApplicationUserService(
     {
         try
         {
-            var users = await userRepository.GetAllAsync(cancellationToken: cancellationToken);
+            var users = await unitOfWork.ApplicationUserRepository.GetAllAsync(cancellationToken: cancellationToken);
             return users;
         }
         catch (Exception ex)
@@ -72,7 +73,7 @@ public class ApplicationUserService(
     {
         try
         {
-            var users = await userRepository.GetByStatusAsync(status, cancellationToken);
+            var users = await unitOfWork.ApplicationUserRepository.GetByStatusAsync(status, cancellationToken);
             return users;
         }
         catch (Exception ex)
@@ -85,13 +86,14 @@ public class ApplicationUserService(
     {
         try
         {
-            var emailExists = await userRepository.EmailExistsAsync(user.Email, cancellationToken);
+            var emailExists = await unitOfWork.ApplicationUserRepository.EmailExistsAsync(user.Email, cancellationToken);
             if (emailExists)
                 throw new BusinessException("Bu e-posta adresi zaten kullanımda.");
 
             user.PasswordHash = _passwordHasher.HashPassword(user, password);
 
-            var result = await userRepository.AddAsync(user, cancellationToken);
+            var result = await unitOfWork.ApplicationUserRepository.AddAsync(user, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             return result.Id == Guid.Empty ? throw new BusinessException("Kullanıcı oluşturulamadı.") : user.Id;
         }
         catch (Exception ex)
@@ -104,12 +106,13 @@ public class ApplicationUserService(
     {
         try
         {
-            var existingUser = await userRepository.GetByIdAsync(user.Id, cancellationToken);
+            var existingUser = await unitOfWork.ApplicationUserRepository.GetByIdAsync(user.Id, cancellationToken);
             if (existingUser == null)
                 throw new NotFoundException(nameof(ApplicationUser), user.Id);
 
             user.PasswordHash = existingUser.PasswordHash;
-            await userRepository.UpdateAsync(user, cancellationToken);
+            await unitOfWork.ApplicationUserRepository.UpdateAsync(user, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             return true;
         }
         catch (Exception ex)
@@ -122,11 +125,12 @@ public class ApplicationUserService(
     {
         try
         {
-            var user = await userRepository.GetByIdAsync(id, cancellationToken);
+            var user = await unitOfWork.ApplicationUserRepository.GetByIdAsync(id, cancellationToken);
             if (user == null)
                 throw new NotFoundException(nameof(ApplicationUser), id);
 
-            await userRepository.DeleteAsync(user, cancellationToken);
+            await unitOfWork.ApplicationUserRepository.DeleteAsync(user, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             return true;
         }
         catch (Exception ex)
@@ -159,12 +163,13 @@ public class ApplicationUserService(
     {
         try
         {
-            var user = await userRepository.GetByIdAsync(id, cancellationToken);
+            var user = await unitOfWork.ApplicationUserRepository.GetByIdAsync(id, cancellationToken);
             if (user == null)
                 throw new NotFoundException(nameof(ApplicationUser), id);
             
             user.PasswordHash = _passwordHasher.HashPassword(user, newPassword);
-            await userRepository.UpdateAsync(user, cancellationToken);
+            await unitOfWork.ApplicationUserRepository.UpdateAsync(user, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
             return true;
         }
@@ -178,7 +183,7 @@ public class ApplicationUserService(
     {
         try
         {
-            var user = await userRepository.GetByIdAsync(id, cancellationToken);
+            var user = await unitOfWork.ApplicationUserRepository.GetByIdAsync(id, cancellationToken);
             if (user == null)
                 throw new NotFoundException(nameof(ApplicationUser), id);
 
@@ -187,7 +192,8 @@ public class ApplicationUserService(
                 throw new BusinessException("Mevcut şifre yanlış.");
 
             user.PasswordHash = _passwordHasher.HashPassword(user, newPassword);
-            await userRepository.UpdateAsync(user, cancellationToken);
+            await unitOfWork.ApplicationUserRepository.UpdateAsync(user, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
 
             return true;
         }
@@ -201,12 +207,13 @@ public class ApplicationUserService(
     {
         try
         {
-            var user = await userRepository.GetByIdAsync(id, cancellationToken);
+            var user = await unitOfWork.ApplicationUserRepository.GetByIdAsync(id, cancellationToken);
             if (user == null)
                 throw new NotFoundException(nameof(ApplicationUser), id);
 
             user.LockoutEnd = lockoutEnd;
-            await userRepository.UpdateAsync(user, cancellationToken);
+            await unitOfWork.ApplicationUserRepository.UpdateAsync(user, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             return true;
         }
         catch (Exception ex)
@@ -219,12 +226,13 @@ public class ApplicationUserService(
     {
         try
         {
-            var user = await userRepository.GetByIdAsync(id, cancellationToken);
+            var user = await unitOfWork.ApplicationUserRepository.GetByIdAsync(id, cancellationToken);
             if (user == null)
                 throw new NotFoundException(nameof(ApplicationUser), id);
 
             user.LockoutEnd = null;
-            await userRepository.UpdateAsync(user, cancellationToken);
+            await unitOfWork.ApplicationUserRepository.UpdateAsync(user, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             return true;
         }
         catch (Exception ex)
@@ -237,12 +245,13 @@ public class ApplicationUserService(
     {
         try
         {
-            var user = await userRepository.GetByIdAsync(id, cancellationToken);
+            var user = await unitOfWork.ApplicationUserRepository.GetByIdAsync(id, cancellationToken);
             if (user == null)
                 throw new NotFoundException(nameof(ApplicationUser), id);
 
             user.Status = status;
-            await userRepository.UpdateAsync(user, cancellationToken);
+            await unitOfWork.ApplicationUserRepository.UpdateAsync(user, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             return true;
         }
         catch (Exception ex)

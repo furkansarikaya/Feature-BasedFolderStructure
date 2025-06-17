@@ -14,7 +14,7 @@ using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Infrastructure.Persistence;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Interceptors;
-using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Catalogs;
+using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Users;
 using FeatureBasedFolderStructure.Infrastructure.Services;
 using FluentValidation;
 using MediatR;
@@ -191,7 +191,7 @@ public static class ServiceExtensions
             // Hangi assembly'lerin taranacağını belirt
             Assembly.GetAssembly(typeof(FeatureBasedFolderStructure.Domain.Common.Attributes.ServiceRegistrationAttribute))!, // Domain
             Assembly.GetAssembly(typeof(FeatureBasedFolderStructure.Application.Common.Extensions.ServiceCollectionExtensions))!, // Application  
-            Assembly.GetAssembly(typeof(ProductRepository))!, // Infrastructure
+            Assembly.GetAssembly(typeof(ApplicationUserRepository))!, // Infrastructure
             Assembly.GetExecutingAssembly() // API
         );
         

@@ -9,11 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories;
 
-public abstract class BaseRepository<TEntity, TKey>(DbContext context) : IRepository<TEntity, TKey>
+public class BaseRepository<TEntity, TKey>(DbContext context) : IRepository<TEntity, TKey>
     where TEntity : BaseEntity<TKey>
     where TKey : IEquatable<TKey>
 {
-    private readonly DbSet<TEntity> _dbSet = context.Set<TEntity>();
+    protected readonly DbContext _context = context;
+    protected readonly DbSet<TEntity> _dbSet = context.Set<TEntity>();
 
     public virtual async Task<TEntity?> GetByIdAsync(TKey id, CancellationToken cancellationToken = default, bool enableTracking = false) =>
         enableTracking
@@ -32,14 +33,12 @@ public abstract class BaseRepository<TEntity, TKey>(DbContext context) : IReposi
     public virtual async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         await _dbSet.AddAsync(entity, cancellationToken);
-        await SaveChangesAsync(cancellationToken);
         return entity;
     }
 
     public virtual async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        context.Entry(entity).State = EntityState.Modified;
-        await SaveChangesAsync(cancellationToken);
+        _context.Entry(entity).State = EntityState.Modified;
     }
 
     public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default, bool isSoftDelete = true)
@@ -50,27 +49,23 @@ public abstract class BaseRepository<TEntity, TKey>(DbContext context) : IReposi
         {
             var isDeletedProperty = typeof(TEntity).GetProperty("IsDeleted");
             isDeletedProperty!.SetValue(entity, true);
-            context.Entry(entity).State = EntityState.Modified;
+            _context.Entry(entity).State = EntityState.Modified;
         }
         else
             _dbSet.Remove(entity);
-
-        await SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<int> BulkInsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+    public async Task BulkInsertAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         await _dbSet.AddRangeAsync(entities, cancellationToken);
-        return await SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<int> BulkUpdateAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+    public void BulkUpdate(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         _dbSet.UpdateRange(entities);
-        return await SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<int> BulkDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default, bool isSoftDelete = true)
+    public async Task BulkDeleteAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default, bool isSoftDelete = true)
     {
         var hasIsDeleted = typeof(TEntity).GetProperty("IsDeleted") != null;
 
@@ -81,7 +76,7 @@ public abstract class BaseRepository<TEntity, TKey>(DbContext context) : IReposi
             {
                 var isDeletedProperty = typeof(TEntity).GetProperty("IsDeleted");
                 isDeletedProperty!.SetValue(entity, true);
-                context.Entry(entity).State = EntityState.Modified;
+                _context.Entry(entity).State = EntityState.Modified;
             }
         }
         else
@@ -89,11 +84,9 @@ public abstract class BaseRepository<TEntity, TKey>(DbContext context) : IReposi
             var entities = await _dbSet.Where(predicate).ToListAsync(cancellationToken);
             _dbSet.RemoveRange(entities);
         }
-
-        return await SaveChangesAsync(cancellationToken);
     }
 
-    public virtual async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => await context.SaveChangesAsync(cancellationToken);
+    public virtual async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => await _context.SaveChangesAsync(cancellationToken);
 
     public virtual async Task<IReadOnlyList<TEntity>> GetWithIncludeStringAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
@@ -212,7 +205,7 @@ public abstract class BaseRepository<TEntity, TKey>(DbContext context) : IReposi
 
     public virtual IQueryable<TEntity> GetQueryable(bool disableTracking = true) => disableTracking ? _dbSet.AsNoTracking() : _dbSet;
 
-    public async Task<int> ExecuteNativeQueryAsync(string query, params object[] parameters) => await context.Database.ExecuteSqlRawAsync(query, parameters);
+    public async Task<int> ExecuteNativeQueryAsync(string query, params object[] parameters) => await _context.Database.ExecuteSqlRawAsync(query, parameters);
 
     private IQueryable<TEntity> ApplySpecification(BaseSpecification<TEntity> spec)
     {

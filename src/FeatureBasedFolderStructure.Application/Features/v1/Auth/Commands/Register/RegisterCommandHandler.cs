@@ -2,24 +2,35 @@ using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.DTOs;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Rules;
 using FeatureBasedFolderStructure.Application.Interfaces.Users;
+using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
-using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.ValueObjects.Users;
 using MediatR;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.Register;
 
-public class RegisterCommandHandler(IApplicationUserService applicationUserService, ITokenService tokenService, AuthBusinessRules authBusinessRules, IRoleRepository roleRepository) : IRequestHandler<RegisterCommand, RegisterDto>
+public class RegisterCommandHandler(IApplicationUserService applicationUserService, ITokenService tokenService, AuthBusinessRules authBusinessRules, IUnitOfWork unitOfWork) : IRequestHandler<RegisterCommand, RegisterDto>
 {
     public async Task<RegisterDto> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        await authBusinessRules.EmailCanNotBeDuplicatedWhenRegistered(request.Email);
-        var customerRole = await authBusinessRules.CustomerRoleMustBeExist();
-        var newUser = CreateUser(request, customerRole);
-        var result = await applicationUserService.CreateAsync(newUser, request.Password, cancellationToken);
-        var tokens = await GenerateTokens(result);
-        return tokens;
+        var applicationUserId = await unitOfWork.ExecuteInTransactionAsync(async () =>
+        {
+            await authBusinessRules.EmailCanNotBeDuplicatedWhenRegistered(request.Email);
+            var customerRole = await unitOfWork.RoleRepository.GetByNameAsync("CUSTOMER");
+            if (customerRole == null)
+            {
+                customerRole = new Role { Name = "Customer", NormalizedName = "CUSTOMER" };
+                await unitOfWork.RoleRepository.AddAsync(customerRole, cancellationToken);
+            }
+
+            var newUser = CreateUser(request, customerRole);
+            var result = await applicationUserService.CreateAsync(newUser, request.Password, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+            return result;
+        });
+
+        return await GenerateTokens(applicationUserId);
     }
 
     private static ApplicationUser CreateUser(RegisterCommand request, Role customerRole)
