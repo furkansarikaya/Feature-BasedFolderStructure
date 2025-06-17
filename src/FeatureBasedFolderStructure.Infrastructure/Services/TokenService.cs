@@ -10,7 +10,6 @@ using FeatureBasedFolderStructure.Domain.Common.Attributes;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.Interfaces.Users;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;

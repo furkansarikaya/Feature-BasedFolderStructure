@@ -1,4 +1,3 @@
-using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.DTOs;
 using MediatR;
 

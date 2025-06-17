@@ -1,6 +1,5 @@
 using AutoMapper;
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
-using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.DTOs;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
@@ -10,16 +9,15 @@ namespace FeatureBasedFolderStructure.Application.Features.v1.Products.Queries.G
 
 public class GetProductDetailQueryHandler(
     IProductRepository productRepository,
-    IMapper mapper) : IRequestHandler<GetProductDetailQuery, BaseResponse<ProductDto>>
+    IMapper mapper) : IRequestHandler<GetProductDetailQuery, ProductDto>
 {
-    public async Task<BaseResponse<ProductDto>> Handle(GetProductDetailQuery request, CancellationToken cancellationToken)
+    public async Task<ProductDto> Handle(GetProductDetailQuery request, CancellationToken cancellationToken)
     {
         var product = await productRepository.GetByIdAsync(request.Id, cancellationToken, true);
 
         if (product == null)
             throw new NotFoundException(nameof(Product), request.Id);
-
         
-        return BaseResponse<ProductDto>.SuccessResult(mapper.Map<ProductDto>(product));
+        return mapper.Map<ProductDto>(product);
     }
 }

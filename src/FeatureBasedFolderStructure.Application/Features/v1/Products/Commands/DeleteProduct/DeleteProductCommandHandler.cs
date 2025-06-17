@@ -1,5 +1,4 @@
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
-using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
 using MediatR;
@@ -10,9 +9,9 @@ namespace FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.
 public class DeleteProductCommandHandler(
     IProductRepository productRepository,
     ILogger<DeleteProductCommandHandler> logger) 
-    : IRequestHandler<DeleteProductCommand, BaseResponse<Unit>>
+    : IRequestHandler<DeleteProductCommand, Unit>
 {
-    public async Task<BaseResponse<Unit>> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
     {
         var entity = await productRepository.GetByIdAsync(request.Id, cancellationToken);
         
@@ -22,7 +21,7 @@ public class DeleteProductCommandHandler(
         await productRepository.DeleteAsync(entity, cancellationToken);
         
         logger.LogInformation("Deleted Product {ProductId}", request.Id);
-        
-        return BaseResponse<Unit>.SuccessResult(Unit.Value);
+
+        return Unit.Value;
     }
 }

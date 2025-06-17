@@ -1,5 +1,4 @@
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
-using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
 using MediatR;
@@ -10,9 +9,9 @@ namespace FeatureBasedFolderStructure.Application.Features.v1.Categories.Command
 public class UpdateCategoryCommandHandler(
     ICategoryRepository categoryRepository,
     ILogger<UpdateCategoryCommandHandler> logger)
-    : IRequestHandler<UpdateCategoryCommand, BaseResponse<Unit>>
+    : IRequestHandler<UpdateCategoryCommand, Unit>
 {
-    public async Task<BaseResponse<Unit>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
         var entity = await categoryRepository.GetByIdAsync(request.Id, cancellationToken);
 
@@ -26,6 +25,6 @@ public class UpdateCategoryCommandHandler(
 
         logger.LogInformation("Updated Category {CategoryId}", entity.Id);
 
-        return BaseResponse<Unit>.SuccessResult(Unit.Value);
+        return Unit.Value;
     }
 }

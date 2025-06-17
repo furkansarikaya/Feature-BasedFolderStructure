@@ -15,10 +15,9 @@ namespace FeatureBasedFolderStructure.API.Controllers.v1;
 public class AuthController : BaseController
 {
     [HttpPost("register")]
-    public async Task<ActionResult> Register(RegisterCommand command, CancellationToken cancellationToken)
+    public async Task<RegisterDto> Register(RegisterCommand command, CancellationToken cancellationToken)
     {
-        var response = await Mediator.Send(command, cancellationToken);
-        return StatusCode((int)response.StatusCode, response);
+        return await Mediator.Send(command, cancellationToken);
     }
 
     [HttpPost("login")]
@@ -28,37 +27,35 @@ public class AuthController : BaseController
     }
 
     [HttpPost("logout")]
-    public async Task<ActionResult> Logout(LogoutCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Logout(LogoutCommand command, CancellationToken cancellationToken)
     {
-        var response = await Mediator.Send(command, cancellationToken);
-        return StatusCode((int)response.StatusCode, response);
+        await Mediator.Send(command, cancellationToken);
+        return NoContent();
     }
 
     [HttpPost("refresh-token")]
-    public async Task<ActionResult> RefreshToken(RefreshTokenCommand command, CancellationToken cancellationToken)
+    public async Task<RefreshTokenDto> RefreshToken(RefreshTokenCommand command, CancellationToken cancellationToken)
     {
-        var response = await Mediator.Send(command, cancellationToken);
-        return StatusCode((int)response.StatusCode, response);
+        return await Mediator.Send(command, cancellationToken);
     }
 
     [HttpPost("change-password")]
-    public async Task<ActionResult> ChangePassword(ChangePasswordCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> ChangePassword(ChangePasswordCommand command, CancellationToken cancellationToken)
     {
-        var response = await Mediator.Send(command, cancellationToken);
-        return StatusCode((int)response.StatusCode, response);
+        await Mediator.Send(command, cancellationToken);
+        return NoContent();
     }
 
     [HttpPost("forgot-password")]
-    public async Task<ActionResult> ForgotPassword(ForgotPasswordCommand command, CancellationToken cancellationToken)
+    public async Task<string> ForgotPassword(ForgotPasswordCommand command, CancellationToken cancellationToken)
     {
-        var response = await Mediator.Send(command, cancellationToken);
-        return StatusCode((int)response.StatusCode, response);
+        return await Mediator.Send(command, cancellationToken);
     }
 
     [HttpPost("reset-password")]
-    public async Task<ActionResult> ResetPassword(ResetPasswordCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> ResetPassword(ResetPasswordCommand command, CancellationToken cancellationToken)
     {
-        var response = await Mediator.Send(command, cancellationToken);
-        return StatusCode((int)response.StatusCode, response);
+        await Mediator.Send(command, cancellationToken);
+        return NoContent();
     }
 }

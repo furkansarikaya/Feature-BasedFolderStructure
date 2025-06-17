@@ -1,6 +1,5 @@
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
-using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.DTOs;
 using FeatureBasedFolderStructure.Application.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
@@ -13,16 +12,13 @@ public class LoginCommandHandler(IApplicationUserService applicationUserService,
     public async Task<LoginDto> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var applicationUser = await applicationUserService.GetByEmailAsync(request.Email, cancellationToken);
-        if (!applicationUser.Success)
-            throw new NotFoundException(nameof(applicationUser.Data), request.Email);
-
-        if (applicationUser.Data.Status != UserStatus.Active)
+        if (applicationUser.Status != UserStatus.Active)
         {
-            switch (applicationUser.Data.Status)
+            switch (applicationUser.Status)
             {
                 case UserStatus.Inactive:
-                    throw new NotFoundException(nameof(applicationUser.Data), request.Email);
-                case UserStatus.Locked when applicationUser.Data.LockoutEnd != null && applicationUser.Data.LockoutEnd > DateTime.Now:
+                    throw new NotFoundException(nameof(applicationUser), request.Email);
+                case UserStatus.Locked when applicationUser.LockoutEnd != null && applicationUser.LockoutEnd > DateTime.Now:
                     throw new BusinessException("Kullanıcı hesabı kilitli.");
                 case UserStatus.Suspended:
                     throw new BusinessException("Kullanıcı hesabı askıya alındı.");
@@ -31,30 +27,30 @@ public class LoginCommandHandler(IApplicationUserService applicationUserService,
             }
         }
         
-        var passwordVerification = applicationUserService.VerifyPassword(applicationUser.Data, request.Password);
-        if (!passwordVerification.Success)
+        var passwordVerification = applicationUserService.VerifyPassword(applicationUser, request.Password);
+        if (!passwordVerification)
         {
-            applicationUser.Data.AccessFailedCount++;
-            if (applicationUser.Data.AccessFailedCount >= 3)
+            applicationUser.AccessFailedCount++;
+            if (applicationUser.AccessFailedCount >= 3)
             {
-                applicationUser.Data.Status = UserStatus.Locked;
-                applicationUser.Data.LockoutEnd = DateTime.Now.AddHours(1);
+                applicationUser.Status = UserStatus.Locked;
+                applicationUser.LockoutEnd = DateTime.Now.AddHours(1);
             }
-            await applicationUserService.UpdateAsync(applicationUser.Data, cancellationToken);
+            await applicationUserService.UpdateAsync(applicationUser, cancellationToken);
             
             throw new BusinessException("Kullanıcı adı veya şifre hatalı.");
         }
 
-        if (applicationUser.Data.Status == UserStatus.Locked)
+        if (applicationUser.Status == UserStatus.Locked)
         {
-            applicationUser.Data.Status = UserStatus.Active;
-            applicationUser.Data.LockoutEnd = null;
-            applicationUser.Data.AccessFailedCount = 0;
-            await applicationUserService.UpdateAsync(applicationUser.Data, cancellationToken);
+            applicationUser.Status = UserStatus.Active;
+            applicationUser.LockoutEnd = null;
+            applicationUser.AccessFailedCount = 0;
+            await applicationUserService.UpdateAsync(applicationUser, cancellationToken);
         }
 
-        var accessToken = await tokenService.GenerateTokenAsync(applicationUser.Data.Id, TokenType.AccessToken);
-        var refreshToken = await tokenService.GenerateTokenAsync(applicationUser.Data.Id, TokenType.RefreshToken);
+        var accessToken = await tokenService.GenerateTokenAsync(applicationUser.Id, TokenType.AccessToken);
+        var refreshToken = await tokenService.GenerateTokenAsync(applicationUser.Id, TokenType.RefreshToken);
         return new LoginDto(accessToken.Token, accessToken.ExpiryDate, refreshToken.Token, refreshToken.ExpiryDate);
     }
 }

@@ -1,5 +1,4 @@
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
-using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Rules;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
@@ -12,15 +11,15 @@ public class UpdateProductCommandHandler(
     IProductRepository productRepository,
     ProductBusinessRules productBusinessRules,
     ILogger<UpdateProductCommandHandler> logger)
-    : IRequestHandler<UpdateProductCommand, BaseResponse<Unit>>
+    : IRequestHandler<UpdateProductCommand, Unit>
 {
-    public async Task<BaseResponse<Unit>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
         var entity = await productRepository.GetByIdAsync(request.Id, cancellationToken);
 
         if (entity == null)
             throw new NotFoundException(nameof(Product), request.Id);
-        
+
         await productBusinessRules.CheckIfCategoryExists(request.CategoryId, cancellationToken);
 
         entity.Name = request.Name;
@@ -32,6 +31,6 @@ public class UpdateProductCommandHandler(
 
         logger.LogInformation("Updated Product {ProductId}", entity.Id);
 
-        return BaseResponse<Unit>.SuccessResult(Unit.Value);
+        return Unit.Value;
     }
 }

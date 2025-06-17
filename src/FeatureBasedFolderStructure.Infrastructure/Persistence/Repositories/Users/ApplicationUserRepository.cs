@@ -11,13 +11,13 @@ namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Us
 [ServiceRegistration(ServiceLifetime.Scoped, Order = 1)]
 public class ApplicationUserRepository(ApplicationDbContext context) : BaseRepository<ApplicationUser, Guid>(context), IApplicationUserRepository
 {
-    public async Task<ApplicationUser?> GetUserWithRolesAndClaims(Guid userId)
+    public async Task<ApplicationUser?> GetUserWithRolesAndClaims(Guid userId, CancellationToken cancellationToken = default)
     {
         return await GetQueryable()
             .Include(u => u.UserRoles)
             .ThenInclude(ur => ur.Role)
             .ThenInclude(r => r.RoleClaims)
-            .FirstOrDefaultAsync(u => u.Id == userId);
+            .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
     }
 
     public async Task<ApplicationUser?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)

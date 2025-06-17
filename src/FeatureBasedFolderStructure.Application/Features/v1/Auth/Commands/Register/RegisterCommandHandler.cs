@@ -1,5 +1,4 @@
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
-using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.DTOs;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Rules;
 using FeatureBasedFolderStructure.Application.Interfaces.Users;
@@ -11,26 +10,19 @@ using MediatR;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.Register;
 
-public class RegisterCommandHandler(IApplicationUserService applicationUserService, ITokenService tokenService, AuthBusinessRules authBusinessRules, IRoleRepository roleRepository) : IRequestHandler<RegisterCommand, BaseResponse<RegisterDto>>
+public class RegisterCommandHandler(IApplicationUserService applicationUserService, ITokenService tokenService, AuthBusinessRules authBusinessRules, IRoleRepository roleRepository) : IRequestHandler<RegisterCommand, RegisterDto>
 {
-    public async Task<BaseResponse<RegisterDto>> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<RegisterDto> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         await authBusinessRules.EmailCanNotBeDuplicatedWhenRegistered(request.Email);
-
         var customerRole = await authBusinessRules.CustomerRoleMustBeExist();
-
         var newUser = CreateUser(request, customerRole);
-
         var result = await applicationUserService.CreateAsync(newUser, request.Password, cancellationToken);
-        if (!result.Success)
-            return BaseResponse<RegisterDto>.ErrorResult(result.Message, result.Errors);
-
-        var tokens = await GenerateTokens(result.Data);
-
-        return BaseResponse<RegisterDto>.SuccessResult(tokens);
+        var tokens = await GenerateTokens(result);
+        return tokens;
     }
 
-    private ApplicationUser CreateUser(RegisterCommand request, Role customerRole)
+    private static ApplicationUser CreateUser(RegisterCommand request, Role customerRole)
     {
         return new ApplicationUser
         {

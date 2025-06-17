@@ -14,7 +14,8 @@ namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 public class ApplicationDbContext(
     DbContextOptions<ApplicationDbContext> options,
     IMediator mediator,
-    AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor)
+    AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
+    QueryStatisticsInterceptor queryStatisticsInterceptor)
     : DbContext(options)
 {
     public DbSet<Product> Products => Set<Product>();
@@ -52,6 +53,7 @@ public class ApplicationDbContext(
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.AddInterceptors(auditableEntitySaveChangesInterceptor);
+        optionsBuilder.AddInterceptors(queryStatisticsInterceptor);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

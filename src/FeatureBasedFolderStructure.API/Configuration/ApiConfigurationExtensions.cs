@@ -18,7 +18,7 @@ public static class ApiConfigurationExtensions
         services.Configure<MvcOptions>(options =>
         {
             // Auto API Response Wrapper filter'ını tüm controller'lara uygula
-            options.Filters.Add<AutoApiResponseWrapperFilter>();
+            options.Filters.Add<ApiResponseWrapperFilter>();
             
             // Diğer global filter'lar da burada eklenebilir
             // options.Filters.Add<ValidationFilter>();

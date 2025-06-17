@@ -1,4 +1,4 @@
-namespace FeatureBasedFolderStructure.Application.Common.Models;
+namespace FeatureBasedFolderStructure.Application.Common.Models.Responses;
 
 /// <summary>
 /// API response'ları için generic wrapper.
@@ -10,7 +10,7 @@ public class ApiResponse<T>
     public T? Data { get; set; }
     public string? Message { get; set; }
     public List<string> Errors { get; set; } = new();
-    public ApiMetadata? Metadata { get; set; }
+    public ResponseMetadata? Metadata { get; set; }
     
     public static ApiResponse<T> SuccessResult(T data, string? message = null)
     {

@@ -1,5 +1,4 @@
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
-using FeatureBasedFolderStructure.Application.Common.Models;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Domain.Interfaces.Catalogs;
 using MediatR;
@@ -10,9 +9,9 @@ namespace FeatureBasedFolderStructure.Application.Features.v1.Categories.Command
 public class DeleteCategoryCommandHandler(
     ICategoryRepository categoryRepository,
     ILogger<DeleteCategoryCommandHandler> logger) 
-    : IRequestHandler<DeleteCategoryCommand, BaseResponse<Unit>>
+    : IRequestHandler<DeleteCategoryCommand, Unit>
 {
-    public async Task<BaseResponse<Unit>> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
     {
         var entity = await categoryRepository.GetByIdAsync(request.Id, cancellationToken);
         
@@ -22,7 +21,7 @@ public class DeleteCategoryCommandHandler(
         await categoryRepository.DeleteAsync(entity, cancellationToken);
         
         logger.LogInformation("Deleted Category {CategoryId}", request.Id);
-        
-        return BaseResponse<Unit>.SuccessResult(Unit.Value);
+
+        return Unit.Value;
     }
 }

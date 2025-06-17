@@ -13,7 +13,7 @@ public class AuthBusinessRules(IApplicationUserService applicationUserService, I
     public async Task EmailCanNotBeDuplicatedWhenRegistered(string email)
     {
         var user = await applicationUserService.GetByEmailAsync(email);
-        if (user.Success) throw new BusinessException("Mail already exists");
+        if (user != null && user.Id != Guid.Empty) throw new BusinessException("Mail already exists");
     }
 
     public async Task<Role> CustomerRoleMustBeExist()
