@@ -1,4 +1,4 @@
-using FeatureBasedFolderStructure.API.Common;
+using FS.AspNetCore.ResponseWrapper.Middlewares;
 using Scalar.AspNetCore;
 
 namespace FeatureBasedFolderStructure.API.Extensions;

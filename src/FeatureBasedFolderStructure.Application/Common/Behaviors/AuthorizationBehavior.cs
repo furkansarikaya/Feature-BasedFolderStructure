@@ -1,6 +1,6 @@
 using System.Reflection;
 using FeatureBasedFolderStructure.Application.Common.Attributes;
-using FeatureBasedFolderStructure.Application.Common.Exceptions;
+using FS.AspNetCore.ResponseWrapper.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;

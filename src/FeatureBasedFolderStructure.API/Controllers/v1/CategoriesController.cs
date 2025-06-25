@@ -1,11 +1,11 @@
 using FeatureBasedFolderStructure.API.Controllers.Base;
-using FeatureBasedFolderStructure.Application.Common.Models.Responses;
 using FeatureBasedFolderStructure.Application.Features.v1.Categories.Commands.CreateCategory;
 using FeatureBasedFolderStructure.Application.Features.v1.Categories.Commands.DeleteCategory;
 using FeatureBasedFolderStructure.Application.Features.v1.Categories.Commands.UpdateCategory;
 using FeatureBasedFolderStructure.Application.Features.v1.Categories.DTOs;
 using FeatureBasedFolderStructure.Application.Features.v1.Categories.Queries.GetCategories;
 using FeatureBasedFolderStructure.Application.Features.v1.Categories.Queries.GetCategoryDetail;
+using FS.AspNetCore.ResponseWrapper.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FeatureBasedFolderStructure.API.Controllers.v1;

@@ -1,6 +1,6 @@
-using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Rules;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
+using FS.AspNetCore.ResponseWrapper.Exceptions;
 using FS.EntityFramework.Library.UnitOfWorks;
 using MediatR;
 using Microsoft.Extensions.Logging;

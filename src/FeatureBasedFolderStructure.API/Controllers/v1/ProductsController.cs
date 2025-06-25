@@ -1,5 +1,4 @@
 using FeatureBasedFolderStructure.API.Controllers.Base;
-using FeatureBasedFolderStructure.Application.Common.Models.Responses;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.CreateProduct;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.DeleteProduct;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.UpdateProduct;
@@ -8,6 +7,7 @@ using FeatureBasedFolderStructure.Application.Features.v1.Products.Queries.GetPr
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Queries.GetProducts;
 using FeatureBasedFolderStructure.Application.Requests;
 using FeatureBasedFolderStructure.Domain.Common.Paging;
+using FS.AspNetCore.ResponseWrapper.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FeatureBasedFolderStructure.API.Controllers.v1;

@@ -1,6 +1,6 @@
-using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.Common.Attributes;
+using FS.AspNetCore.ResponseWrapper.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Auth.Rules;
