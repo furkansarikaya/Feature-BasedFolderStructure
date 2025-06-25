@@ -1,12 +1,9 @@
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
-using FeatureBasedFolderStructure.API.Common;
-using FeatureBasedFolderStructure.API.Configuration;
 using FeatureBasedFolderStructure.Application.Common.Behaviors;
 using FeatureBasedFolderStructure.Application.Common.Extensions;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
-using FeatureBasedFolderStructure.Application.Common.Models.Responses;
 using FeatureBasedFolderStructure.Application.Common.Settings;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.CreateProduct;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Mappings;
@@ -16,6 +13,9 @@ using FeatureBasedFolderStructure.Infrastructure.Persistence;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Users;
 using FluentValidation;
+using FS.AspNetCore.ResponseWrapper;
+using FS.AspNetCore.ResponseWrapper.Middlewares;
+using FS.AspNetCore.ResponseWrapper.Models;
 using FS.EntityFramework.Library;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -85,7 +85,13 @@ public static class ServiceExtensions
            options.Filters.Add((new ProducesResponseTypeAttribute(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)));
            options.Filters.Add((new ProducesResponseTypeAttribute(typeof(ApiResponse<object>), StatusCodes.Status500InternalServerError)));
         });
-        services.ConfigureApiFilters(); // Auto wrapper filter'ı ekler
+
+        services.AddResponseWrapper(options =>
+        {
+            options.DateTimeProvider = () => DateTime.Now;
+            options.EnableQueryStatistics = true;
+        });
+        
         services.AddApiVersioning(opt =>
         {
             opt.DefaultApiVersion = new ApiVersion(1, 0);

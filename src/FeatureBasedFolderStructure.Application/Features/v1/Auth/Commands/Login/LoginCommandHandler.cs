@@ -1,8 +1,8 @@
-using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.DTOs;
 using FeatureBasedFolderStructure.Application.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
+using FS.AspNetCore.ResponseWrapper.Exceptions;
 using MediatR;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.Login;

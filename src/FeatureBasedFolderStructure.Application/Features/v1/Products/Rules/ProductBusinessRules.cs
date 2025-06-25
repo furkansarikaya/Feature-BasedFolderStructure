@@ -1,6 +1,6 @@
-using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Domain.Common.Attributes;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
+using FS.AspNetCore.ResponseWrapper.Exceptions;
 using FS.EntityFramework.Library.UnitOfWorks;
 using Microsoft.Extensions.DependencyInjection;
 

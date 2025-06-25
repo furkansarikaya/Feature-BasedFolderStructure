@@ -8,7 +8,7 @@ public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TReq
 {
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        if (!validators.Any()) return await next();
+        if (!validators.Any()) return await next(cancellationToken);
         var context = new ValidationContext<TRequest>(request);
 
         var validationResults = await Task.WhenAll(
@@ -20,7 +20,7 @@ public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TReq
             .ToList();
 
         if (failures.Count != 0)
-            throw new Exceptions.ValidationException(failures);
-        return await next();
+            throw new FS.AspNetCore.ResponseWrapper.Exceptions.ValidationException(failures);
+        return await next(cancellationToken);
     }
 }

@@ -1,5 +1,4 @@
 using FeatureBasedFolderStructure.API.Controllers.Base;
-using FeatureBasedFolderStructure.Application.Common.Models.Responses;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.ChangePassword;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.ForgotPassword;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.Login;
@@ -8,6 +7,7 @@ using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.RefreshT
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.Register;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.ResetPassword;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.DTOs;
+using FS.AspNetCore.ResponseWrapper.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FeatureBasedFolderStructure.API.Controllers.v1;
