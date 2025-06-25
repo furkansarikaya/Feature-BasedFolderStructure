@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FeatureBasedFolderStructure.Infrastructure.Persistence;
 
-public class ApplicationDbContextInitialiser(
+public class      ApplicationDbContextInitialiser(
     ILogger<ApplicationDbContextInitialiser> logger,
     ApplicationDbContext context)
 {

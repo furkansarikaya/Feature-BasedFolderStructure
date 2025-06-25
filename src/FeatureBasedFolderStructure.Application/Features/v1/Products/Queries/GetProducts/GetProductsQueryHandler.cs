@@ -1,8 +1,8 @@
 using AutoMapper;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.DTOs;
 using FeatureBasedFolderStructure.Domain.Common.Paging;
-using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
+using FS.EntityFramework.Library.UnitOfWorks;
 using MediatR;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Products.Queries.GetProducts;

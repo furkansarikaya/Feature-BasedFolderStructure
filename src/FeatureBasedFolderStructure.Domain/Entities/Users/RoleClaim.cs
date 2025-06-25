@@ -1,5 +1,5 @@
-using FeatureBasedFolderStructure.Domain.Common;
 using FeatureBasedFolderStructure.Domain.Enums;
+using FS.EntityFramework.Library.Common;
 
 namespace FeatureBasedFolderStructure.Domain.Entities.Users;
 

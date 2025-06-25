@@ -1,7 +1,6 @@
-using FeatureBasedFolderStructure.Domain.Common;
 using FeatureBasedFolderStructure.Domain.Enums;
-using FeatureBasedFolderStructure.Domain.Events;
 using FeatureBasedFolderStructure.Domain.ValueObjects.Catalogs;
+using FS.EntityFramework.Library.Common;
 
 namespace FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 
@@ -18,6 +17,5 @@ public sealed class Product : BaseAuditableEntity<int>
     public void UpdatePrice(decimal newPrice, string currency)
     {
         CurrentPrice = new Money(newPrice, currency);
-        AddDomainEvent(new ProductPriceUpdatedEvent(this));
     }
 }

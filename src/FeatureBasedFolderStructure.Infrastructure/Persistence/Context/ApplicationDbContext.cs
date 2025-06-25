@@ -1,20 +1,17 @@
-using System.Linq.Expressions;
 using System.Reflection;
-using FeatureBasedFolderStructure.Domain.Common;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Domain.Entities.Orders;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
-using FeatureBasedFolderStructure.Infrastructure.Extensions;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Interceptors;
-using MediatR;
+using FS.EntityFramework.Library.Extensions;
+using FS.EntityFramework.Library.Interceptors;
 using Microsoft.EntityFrameworkCore;
 
 namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 
 public class ApplicationDbContext(
     DbContextOptions<ApplicationDbContext> options,
-    IMediator mediator,
-    AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor,
+    AuditInterceptor auditInterceptor,
     QueryStatisticsInterceptor queryStatisticsInterceptor)
     : DbContext(options)
 {
@@ -31,34 +28,17 @@ public class ApplicationDbContext(
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.Ignore<DomainEvent>();
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         
-        // Tüm entity'ler için soft delete filtresi
-        foreach (var entityType in builder.Model.GetEntityTypes())
-        {
-            if (entityType.ClrType.GetProperty("IsDeleted") == null) continue;
-            
-            var parameter = Expression.Parameter(entityType.ClrType, "e");
-            var property = Expression.Property(parameter, "IsDeleted");
-            var condition = Expression.Equal(property, Expression.Constant(false));
-            var lambda = Expression.Lambda(condition, parameter);
-
-            builder.Entity(entityType.ClrType).HasQueryFilter(lambda);
-        }
+        // Apply global query filters to exclude soft-deleted entities
+        builder.ApplySoftDeleteQueryFilters();
         
         base.OnModelCreating(builder);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.AddInterceptors(auditableEntitySaveChangesInterceptor);
+        optionsBuilder.AddInterceptors(auditInterceptor);
         optionsBuilder.AddInterceptors(queryStatisticsInterceptor);
-    }
-
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        await mediator.DispatchDomainEvents(this);
-        return await base.SaveChangesAsync(cancellationToken);
     }
 }

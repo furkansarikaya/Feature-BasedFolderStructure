@@ -1,4 +1,4 @@
-using FeatureBasedFolderStructure.Domain.Common;
+using FS.EntityFramework.Library.Common;
 
 namespace FeatureBasedFolderStructure.Domain.ValueObjects.Catalogs;
 

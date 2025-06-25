@@ -1,5 +1,5 @@
-using FeatureBasedFolderStructure.Domain.Common;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
+using FS.EntityFramework.Library.Common;
 
 namespace FeatureBasedFolderStructure.Domain.Entities.Orders;
 

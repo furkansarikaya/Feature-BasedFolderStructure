@@ -1,7 +1,7 @@
 using AutoMapper;
 using FeatureBasedFolderStructure.Application.Features.v1.Categories.DTOs;
-using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
+using FS.EntityFramework.Library.UnitOfWorks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -21,7 +21,7 @@ public class CreateCategoryCommandHandler(
             Description = request.Description
         };
         var categoryRepository = unitOfWork.GetRepository<Category, int>();
-        await categoryRepository.AddAsync(entity, cancellationToken);
+        await categoryRepository.AddAsync(entity, cancellationToken: cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Created Category {CategoryId}", entity.Id);
 

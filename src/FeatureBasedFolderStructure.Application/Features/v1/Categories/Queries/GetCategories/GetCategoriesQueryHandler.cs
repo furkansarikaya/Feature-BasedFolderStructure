@@ -1,7 +1,7 @@
 using AutoMapper;
 using FeatureBasedFolderStructure.Application.Features.v1.Categories.DTOs;
-using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
+using FS.EntityFramework.Library.UnitOfWorks;
 using MediatR;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Categories.Queries.GetCategories;
