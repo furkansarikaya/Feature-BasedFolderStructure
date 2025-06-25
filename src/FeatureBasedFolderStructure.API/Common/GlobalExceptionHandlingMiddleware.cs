@@ -4,7 +4,6 @@ using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Common.Models.Responses;
 using FeatureBasedFolderStructure.Application.Interfaces.Users;
-using FeatureBasedFolderStructure.Domain.Common.Attributes;
 
 namespace FeatureBasedFolderStructure.API.Common;
 
@@ -75,27 +74,6 @@ public class GlobalExceptionHandlingMiddleware(ILogger<GlobalExceptionHandlingMi
         await context.Response.WriteAsJsonAsync(response);
     }
 
-
-
-    /// <summary>
-    /// User context building.
-    /// </summary>
-    private async Task<UserContext?> BuildUserContext()
-    {
-        if (!Guid.TryParse(currentUserService.UserId, out var userId))
-            return null;
-
-        var user = await applicationUserService.GetUserWithRolesAndClaims(userId);
-
-        return new UserContext
-        {
-            UserId = user.Id.ToString(),
-            Email = user.Email,
-            Roles = user.UserRoles.Select(r => r.Role.Name).ToArray(),
-            // TenantId = currentUserService.User?.FindFirst("tenant_id")?.Value
-        };
-    }
-
     /// <summary>
     /// Query metadata extraction.
     /// HttpContext'ten database query statistics extract ediyor.
@@ -143,9 +121,6 @@ public class GlobalExceptionHandlingMiddleware(ILogger<GlobalExceptionHandlingMi
 
             // API version (header'dan veya config'den)
             Version = GetApiVersion(httpContext),
-
-            // User context
-            User = await BuildUserContext(),
 
             // Query metadata (eğer varsa)
             Query = ExtractQueryMetadata(httpContext),

@@ -15,7 +15,6 @@ using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Infrastructure.Persistence;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Users;
-using FeatureBasedFolderStructure.Infrastructure.Services;
 using FluentValidation;
 using FS.EntityFramework.Library;
 using MediatR;
