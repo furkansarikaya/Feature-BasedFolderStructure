@@ -38,11 +38,6 @@ public class ResponseMetadata
     public string Method { get; set; } = "";
     
     /// <summary>
-    /// User information (if authenticated).
-    /// </summary>
-    public UserContext? User { get; set; }
-    
-    /// <summary>
     /// Pagination metadata (for paged results).
     /// </summary>
     public PaginationMetadata? Pagination { get; set; }

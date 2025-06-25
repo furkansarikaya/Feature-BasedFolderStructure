@@ -164,9 +164,6 @@ public class ApiResponseWrapperFilter(
             // API version (header'dan veya config'den)
             Version = GetApiVersion(httpContext),
 
-            // User context
-            User = await BuildUserContext(),
-
             // Pagination metadata (eğer result paged ise)
             Pagination = ExtractPaginationMetadata(originalData),
 
@@ -178,25 +175,6 @@ public class ApiResponseWrapperFilter(
         };
 
         return metadata;
-    }
-
-    /// <summary>
-    /// User context building.
-    /// </summary>
-    private async Task<UserContext?> BuildUserContext()
-    {
-        if (!Guid.TryParse(currentUserService.UserId, out var userId))
-            return null;
-
-        var user = await applicationUserService.GetUserWithRolesAndClaims(userId);
-
-        return new UserContext
-        {
-            UserId = user.Id.ToString(),
-            Email = user.Email,
-            Roles = user.UserRoles.Select(r => r.Role.Name).ToArray(),
-            // TenantId = currentUserService.User?.FindFirst("tenant_id")?.Value
-        };
     }
 
     /// <summary>
