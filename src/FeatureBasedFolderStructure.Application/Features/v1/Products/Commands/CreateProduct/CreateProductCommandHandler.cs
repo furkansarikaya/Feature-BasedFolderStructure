@@ -1,8 +1,8 @@
 using AutoMapper;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.DTOs;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Rules;
-using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
+using FS.EntityFramework.Library.UnitOfWorks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -30,7 +30,7 @@ public class CreateProductCommandHandler(
         entity.UpdatePrice(request.Price, "TRY");
         
         var productRepository = unitOfWork.GetRepository<Product, int>();
-        await productRepository.AddAsync(entity, cancellationToken);
+        await productRepository.AddAsync(entity, cancellationToken: cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Created Product {ProductId}", entity.Id);
 

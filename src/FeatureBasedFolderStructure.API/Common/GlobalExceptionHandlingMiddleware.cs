@@ -8,7 +8,6 @@ using FeatureBasedFolderStructure.Domain.Common.Attributes;
 
 namespace FeatureBasedFolderStructure.API.Common;
 
-[ServiceRegistration(ServiceLifetime.Transient, Order = -1)]
 public class GlobalExceptionHandlingMiddleware(ILogger<GlobalExceptionHandlingMiddleware> logger, ICurrentUserService currentUserService, IApplicationUserService applicationUserService, IDateTime dateTime) : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)

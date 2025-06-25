@@ -2,10 +2,11 @@ using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.DTOs;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Rules;
 using FeatureBasedFolderStructure.Application.Interfaces.Users;
-using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
+using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.ValueObjects.Users;
+using FS.EntityFramework.Library.UnitOfWorks;
 using MediatR;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.Register;
@@ -17,11 +18,12 @@ public class RegisterCommandHandler(IApplicationUserService applicationUserServi
         var applicationUserId = await unitOfWork.ExecuteInTransactionAsync(async () =>
         {
             await authBusinessRules.EmailCanNotBeDuplicatedWhenRegistered(request.Email);
-            var customerRole = await unitOfWork.RoleRepository.GetByNameAsync("CUSTOMER");
+            var roleRepository = unitOfWork.GetRepository<IRoleRepository>();
+            var customerRole = await roleRepository.GetByNameAsync("CUSTOMER");
             if (customerRole == null)
             {
                 customerRole = new Role { Name = "Customer", NormalizedName = "CUSTOMER" };
-                await unitOfWork.RoleRepository.AddAsync(customerRole, cancellationToken);
+                await roleRepository.AddAsync(customerRole, cancellationToken: cancellationToken);
             }
 
             var newUser = CreateUser(request, customerRole);
@@ -53,7 +55,7 @@ public class RegisterCommandHandler(IApplicationUserService applicationUserServi
 
     private async Task<RegisterDto> GenerateTokens(Guid applicationUserId)
     {
-        var emailConfirmation = await tokenService.GenerateTokenAsync(applicationUserId, TokenType.EmailConfirmation);
+        _ = await tokenService.GenerateTokenAsync(applicationUserId, TokenType.EmailConfirmation);
         var accessToken = await tokenService.GenerateTokenAsync(applicationUserId, TokenType.AccessToken);
         var refreshToken = await tokenService.GenerateTokenAsync(applicationUserId, TokenType.RefreshToken);
 

@@ -1,6 +1,6 @@
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
-using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
+using FS.EntityFramework.Library.UnitOfWorks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -14,7 +14,7 @@ public class UpdateCategoryCommandHandler(
     public async Task<Unit> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
         var categoryRepository = unitOfWork.GetRepository<Category, int>();
-        var entity = await categoryRepository.GetByIdAsync(request.Id, cancellationToken);
+        var entity = await categoryRepository.GetByIdAsync(request.Id, cancellationToken: cancellationToken);
 
         if (entity == null)
             throw new NotFoundException(nameof(Category), request.Id);
@@ -22,7 +22,7 @@ public class UpdateCategoryCommandHandler(
         entity.Name = request.Name;
         entity.Description = request.Description;
 
-        await categoryRepository.UpdateAsync(entity, cancellationToken);
+        await categoryRepository.UpdateAsync(entity, cancellationToken: cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken); 
         logger.LogInformation("Updated Category {CategoryId}", entity.Id);
 

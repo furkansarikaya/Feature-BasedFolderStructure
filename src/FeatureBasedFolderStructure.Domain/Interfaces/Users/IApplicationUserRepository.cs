@@ -1,6 +1,6 @@
-using FeatureBasedFolderStructure.Domain.Common.Interfaces;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
+using FS.EntityFramework.Library.Interfaces;
 
 namespace FeatureBasedFolderStructure.Domain.Interfaces.Users;
 

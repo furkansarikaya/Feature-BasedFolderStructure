@@ -14,10 +14,10 @@ using FeatureBasedFolderStructure.Application.Features.v1.Products.Validators;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Infrastructure.Persistence;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
-using FeatureBasedFolderStructure.Infrastructure.Persistence.Interceptors;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Users;
 using FeatureBasedFolderStructure.Infrastructure.Services;
 using FluentValidation;
+using FS.EntityFramework.Library;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -104,10 +104,7 @@ public static class ServiceExtensions
         });
         
         services.AddEndpointsApiExplorer();
-
-        services.AddScoped<IDateTime, DateTimeService>();
-        services.AddScoped<ICurrentUserService, CurrentUserService>();
-        services.AddScoped<AuditableEntitySaveChangesInterceptor>();
+        
         services.AddTransient<GlobalExceptionHandlingMiddleware>();
     }
 
@@ -119,6 +116,10 @@ public static class ServiceExtensions
                 .EnableSensitiveDataLogging(
                     Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
                 .UseSnakeCaseNamingConvention());
+        
+        services.AddGenericUnitOfWorkWithAudit<ApplicationDbContext>(
+            provider => provider.GetRequiredService<ICurrentUserService>().UserId,
+            provider => provider.GetRequiredService<IDateTime>().Now);
         
         services.AddScoped<ApplicationDbContextInitialiser>();
     }

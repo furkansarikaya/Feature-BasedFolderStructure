@@ -7,9 +7,10 @@ using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Common.Models.Auth;
 using FeatureBasedFolderStructure.Application.Common.Settings;
 using FeatureBasedFolderStructure.Domain.Common.Attributes;
-using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
+using FeatureBasedFolderStructure.Domain.Interfaces.Users;
+using FS.EntityFramework.Library.UnitOfWorks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -31,7 +32,8 @@ public class TokenService(IUnitOfWork unitOfWork, IDateTime dateTime, IOptions<J
             // JWT AccessToken oluşturma
             var expiryTime = expiryDuration ?? TimeSpan.FromHours(_jwtSettings.ExpiryInHours);
             expiryDate = dateTime.Now.Add(expiryTime);
-            var applicationUser = await unitOfWork.ApplicationUserRepository.GetUserWithRolesAndClaims(userId);
+            var applicationUserRepository = unitOfWork.GetRepository<IApplicationUserRepository>();
+            var applicationUser = await applicationUserRepository.GetUserWithRolesAndClaims(userId);
             if (applicationUser == null)
                 throw new NotFoundException(nameof(ApplicationUser), userId);
             tokenValue = GenerateJwtToken(applicationUser, expiryDate);
@@ -62,7 +64,7 @@ public class TokenService(IUnitOfWork unitOfWork, IDateTime dateTime, IOptions<J
         };
 
         var userTokenRepository = unitOfWork.GetRepository<UserToken, int>();
-        await userTokenRepository.AddAsync(userToken, CancellationToken.None);
+        await userTokenRepository.AddAsync(userToken);
         await unitOfWork.SaveChangesAsync();
         return new TokenResponseDto(tokenValue, expiryDate);
     }
@@ -107,7 +109,7 @@ public class TokenService(IUnitOfWork unitOfWork, IDateTime dateTime, IOptions<J
             return false;
 
         var userTokenRepository = unitOfWork.GetRepository<UserToken, int>();
-        await userTokenRepository.DeleteAsync(userToken, CancellationToken.None, false);
+        await userTokenRepository.DeleteAsync(userToken, isSoftDelete: false);
         await unitOfWork.SaveChangesAsync();
         return true;
     }

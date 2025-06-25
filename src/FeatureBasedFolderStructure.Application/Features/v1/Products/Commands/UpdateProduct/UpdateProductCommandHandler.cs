@@ -1,7 +1,7 @@
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Rules;
-using FeatureBasedFolderStructure.Domain.Common.UnitOfWork;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
+using FS.EntityFramework.Library.UnitOfWorks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -16,7 +16,7 @@ public class UpdateProductCommandHandler(
     public async Task<Unit> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
         var productRepository = unitOfWork.GetRepository<Product, int>();
-        var entity = await productRepository.GetByIdAsync(request.Id, cancellationToken);
+        var entity = await productRepository.GetByIdAsync(request.Id, cancellationToken: cancellationToken);
 
         if (entity == null)
             throw new NotFoundException(nameof(Product), request.Id);
@@ -25,10 +25,11 @@ public class UpdateProductCommandHandler(
 
         entity.Name = request.Name;
         entity.Price = request.Price;
+        entity.UpdatePrice(request.Price, "TRY");
         entity.Description = request.Description;
         entity.CategoryId = request.CategoryId;
 
-        await productRepository.UpdateAsync(entity, cancellationToken);
+        await productRepository.UpdateAsync(entity, cancellationToken: cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         
         logger.LogInformation("Updated Product {ProductId}", entity.Id);
