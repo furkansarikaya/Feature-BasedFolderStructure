@@ -46,7 +46,7 @@ public static class ServiceExtensions
                         Name = "Furkan SARIKAYA",
                         Email = "furkannsarikaya@gmail.com",
                         Url = new Uri("https://github.com/furkansarikaya/Feature-BasedFolderStructure")
-                        }
+                    }
                 };
                 return Task.CompletedTask;
             });
