@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.Reflection;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Common.Models.Responses;
-using FeatureBasedFolderStructure.Application.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.Common.Paging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -19,9 +18,7 @@ namespace FeatureBasedFolderStructure.API.Filters;
 /// 3. Metadata HTTP context'ten extract edilip inject ediliyor
 /// </summary>
 public class ApiResponseWrapperFilter(
-    ICurrentUserService currentUserService,
     ILogger<ApiResponseWrapperFilter> logger,
-    IApplicationUserService applicationUserService,
     IDateTime dateTime)
     : IAsyncActionFilter
 {

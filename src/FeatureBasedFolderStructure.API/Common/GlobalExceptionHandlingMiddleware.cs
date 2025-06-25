@@ -3,11 +3,10 @@ using System.Net;
 using FeatureBasedFolderStructure.Application.Common.Exceptions;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Common.Models.Responses;
-using FeatureBasedFolderStructure.Application.Interfaces.Users;
 
 namespace FeatureBasedFolderStructure.API.Common;
 
-public class GlobalExceptionHandlingMiddleware(ILogger<GlobalExceptionHandlingMiddleware> logger, ICurrentUserService currentUserService, IApplicationUserService applicationUserService, IDateTime dateTime) : IMiddleware
+public class GlobalExceptionHandlingMiddleware(ILogger<GlobalExceptionHandlingMiddleware> logger, IDateTime dateTime) : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
