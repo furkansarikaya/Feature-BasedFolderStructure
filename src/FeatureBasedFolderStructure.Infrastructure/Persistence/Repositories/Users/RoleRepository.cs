@@ -1,7 +1,7 @@
-using FeatureBasedFolderStructure.Domain.Common.Attributes;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
+using FS.AutoServiceDiscovery.Extensions.Attributes;
 using FS.EntityFramework.Library.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
