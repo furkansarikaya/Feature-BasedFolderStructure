@@ -1,9 +1,9 @@
 using FeatureBasedFolderStructure.Application.Interfaces.Users;
-using FeatureBasedFolderStructure.Domain.Common.Attributes;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FS.AspNetCore.ResponseWrapper.Exceptions;
+using FS.AutoServiceDiscovery.Extensions.Attributes;
 using FS.EntityFramework.Library.UnitOfWorks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,5 +1,5 @@
 using System.Data.Common;
-using FeatureBasedFolderStructure.Domain.Common.Attributes;
+using FS.AutoServiceDiscovery.Extensions.Attributes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;

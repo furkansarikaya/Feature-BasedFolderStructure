@@ -1,5 +1,5 @@
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
-using FeatureBasedFolderStructure.Domain.Common.Attributes;
+using FS.AutoServiceDiscovery.Extensions.Attributes;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FeatureBasedFolderStructure.Infrastructure.Services;

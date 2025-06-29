@@ -2,7 +2,6 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using FeatureBasedFolderStructure.Application.Common.Behaviors;
-using FeatureBasedFolderStructure.Application.Common.Extensions;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Common.Settings;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.CreateProduct;
@@ -16,6 +15,7 @@ using FluentValidation;
 using FS.AspNetCore.ResponseWrapper;
 using FS.AspNetCore.ResponseWrapper.Middlewares;
 using FS.AspNetCore.ResponseWrapper.Models;
+using FS.AutoServiceDiscovery.Extensions.DependencyInjection;
 using FS.EntityFramework.Library;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -65,7 +65,7 @@ public static class ServiceExtensions
         });
     }
 
-    private static void AddCoreServices(this IServiceCollection services)
+    private static void AddCoreServices(this IServiceCollection services, string environmentName)
     {
         services.AddCors(options =>
         {
@@ -89,7 +89,7 @@ public static class ServiceExtensions
         services.AddResponseWrapper(options =>
         {
             options.DateTimeProvider = () => DateTime.Now;
-            options.EnableQueryStatistics = true;
+            options.EnableQueryStatistics= environmentName != "Production";
         });
         
         services.AddApiVersioning(opt =>
@@ -131,7 +131,7 @@ public static class ServiceExtensions
 
     private static void AddCustomServices(this IServiceCollection services)
     {
-        services.Configure<JwtSettings>(services.BuildServiceProvider().GetService<IConfiguration>()
+        services.Configure<JwtSettings>(services.BuildServiceProvider().GetService<IConfiguration>()!
             .GetSection(nameof(JwtSettings)));
     }
 
@@ -189,26 +189,23 @@ public static class ServiceExtensions
     {
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-        services.AddCoreServices();
+        services.AddCoreServices(environmentName);
         services.AddOpenApiDocumentation();
         services.AddMediatRServices();
         services.AddDatabaseContext(configuration);
         
         // Auto service registration - tüm layer'ları tara
-        services.AddAutoServices(options =>
-            {
-                // Environment'a göre profile belirle
-                options.Profile = environmentName;
-                options.Configuration = configuration;
-                options.EnableLogging = environmentName != "Production";
-                options.IsTestEnvironment = false;
-            }, 
-            // Hangi assembly'lerin taranacağını belirt
-            Assembly.GetAssembly(typeof(FeatureBasedFolderStructure.Domain.Common.Attributes.ServiceRegistrationAttribute))!, // Domain
-            Assembly.GetAssembly(typeof(FeatureBasedFolderStructure.Application.Common.Extensions.ServiceCollectionExtensions))!, // Application  
-            Assembly.GetAssembly(typeof(ApplicationUserRepository))!, // Infrastructure
-            Assembly.GetExecutingAssembly() // API
-        );
+
+        services.ConfigureAutoServices()
+            .FromAssemblies(Assembly.GetAssembly(typeof(Domain.Common.Paging.IPagedResult))!,
+                Assembly.GetAssembly(typeof(Application.Common.Attributes.RequiresClaimAttribute))!,
+                Assembly.GetAssembly(typeof(ApplicationUserRepository))!)
+            .WithProfile(environmentName)
+            .WithConfiguration(configuration)
+            .WithLogging(environmentName != "Production")
+            .WithPerformanceOptimizations()
+            .ForTestEnvironment(false)
+            .Apply();
         
         services.AddCustomServices();
         services.AddAssemblyServices();

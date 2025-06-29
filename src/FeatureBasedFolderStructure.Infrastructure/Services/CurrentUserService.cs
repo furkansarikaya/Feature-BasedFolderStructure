@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
-using FeatureBasedFolderStructure.Domain.Common.Attributes;
+using FS.AutoServiceDiscovery.Extensions.Attributes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
