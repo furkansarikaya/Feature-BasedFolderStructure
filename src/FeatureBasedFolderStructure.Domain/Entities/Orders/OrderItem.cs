@@ -3,7 +3,7 @@ using FS.EntityFramework.Library.Common;
 
 namespace FeatureBasedFolderStructure.Domain.Entities.Orders;
 
-public sealed class OrderItem : BaseEntity<Guid>
+public sealed class OrderItem : BaseEntity<Guid>, ISoftDelete
 {
     public Guid OrderId { get; private set; }
     public int ProductId { get; private set; }
@@ -11,6 +11,10 @@ public sealed class OrderItem : BaseEntity<Guid>
     public int Quantity { get; private set; }
     public decimal UnitPrice { get; private set; }
     public decimal TotalPrice { get; private set; }
+
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
+    public string? DeletedBy { get; set; }
 
     public OrderItem()
     {

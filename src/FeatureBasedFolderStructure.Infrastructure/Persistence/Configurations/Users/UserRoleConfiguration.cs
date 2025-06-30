@@ -18,7 +18,7 @@ public class UserRoleConfiguration : IEntityTypeConfiguration<UserRole>
             .HasForeignKey(ur => ur.RoleId)
             .IsRequired();
 
-        builder.HasIndex(rc => new { rc.UserId, rc.RoleId, rc.IsDeleted })
+        builder.HasIndex(rc => new { rc.UserId, rc.RoleId })
             .IsUnique();
     }
 }

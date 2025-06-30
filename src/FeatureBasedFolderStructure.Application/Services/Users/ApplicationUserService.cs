@@ -113,7 +113,7 @@ public class ApplicationUserService(
         try
         {
             var applicationUserRepository = unitOfWork.GetRepository<IApplicationUserRepository>();
-            var existingUser = await applicationUserRepository.GetByIdAsync(user.Id, cancellationToken: cancellationToken);
+            var existingUser = await applicationUserRepository.GetByIdAsync(user.Id, true, cancellationToken);
             if (existingUser == null)
                 throw new NotFoundException(nameof(ApplicationUser), user.Id);
 

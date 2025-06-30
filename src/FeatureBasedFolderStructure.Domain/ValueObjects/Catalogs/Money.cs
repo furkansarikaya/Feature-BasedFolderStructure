@@ -9,7 +9,8 @@ public class Money : ValueObject
 
     public Money()
     {
-        
+        Amount = 0;
+        Currency = "TRY";
     }
     public Money(decimal amount, string currency)
     {

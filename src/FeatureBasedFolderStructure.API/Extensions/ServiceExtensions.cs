@@ -17,6 +17,7 @@ using FS.AspNetCore.ResponseWrapper.Middlewares;
 using FS.AspNetCore.ResponseWrapper.Models;
 using FS.AutoServiceDiscovery.Extensions.DependencyInjection;
 using FS.EntityFramework.Library;
+using FS.EntityFramework.Library.FluentConfiguration;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -113,19 +114,21 @@ public static class ServiceExtensions
         services.AddTransient<GlobalExceptionHandlingMiddleware>();
     }
 
-    private static void AddDatabaseContext(this IServiceCollection services, IConfiguration configuration)
+    private static void AddDatabaseContext(this IServiceCollection services, IConfiguration configuration, string environmentName)
     {
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(configuration
-                .GetConnectionString("DefaultConnection"))
-                .EnableSensitiveDataLogging(
-                    Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+                    .GetConnectionString("DefaultConnection"))
                 .UseSnakeCaseNamingConvention());
-        
-        services.AddGenericUnitOfWorkWithAudit<ApplicationDbContext>(
-            provider => provider.GetRequiredService<ICurrentUserService>().UserId,
-            provider => provider.GetRequiredService<IDateTime>().Now);
-        
+
+       services.AddFSEntityFramework<ApplicationDbContext>()
+            .WithAudit()
+            .UsingUserProvider(provider => provider.GetRequiredService<ICurrentUserService>().UserId,
+                provider => provider.GetRequiredService<IDateTime>().Now)
+            .WithDetailedLogging(environmentName != "Production")
+            .WithSoftDelete()
+            .Build();
+
         services.AddScoped<ApplicationDbContextInitialiser>();
     }
 
@@ -192,7 +195,7 @@ public static class ServiceExtensions
         services.AddCoreServices(environmentName);
         services.AddOpenApiDocumentation();
         services.AddMediatRServices();
-        services.AddDatabaseContext(configuration);
+        services.AddDatabaseContext(configuration, environmentName);
         
         // Auto service registration - tüm layer'ları tara
 

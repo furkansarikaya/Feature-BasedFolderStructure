@@ -21,7 +21,7 @@ public class UserTokenConfiguration : IEntityTypeConfiguration<UserToken>
             .HasForeignKey(ut => ut.UserId)
             .IsRequired();
 
-        builder.HasIndex(ut => new { ut.UserId, ut.TokenType,ut.TokenValue, ut.IsDeleted })
+        builder.HasIndex(ut => new { ut.UserId, ut.TokenType,ut.TokenValue })
             .IsUnique();
     }
 }

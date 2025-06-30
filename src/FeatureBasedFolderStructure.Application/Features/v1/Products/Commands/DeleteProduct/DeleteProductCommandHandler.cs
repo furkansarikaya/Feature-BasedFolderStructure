@@ -18,9 +18,9 @@ public class DeleteProductCommandHandler(
         
         if (entity == null)
             throw new NotFoundException(nameof(Product), request.Id);
-
+        
         await productRepository.DeleteAsync(entity, cancellationToken: cancellationToken);
-        await unitOfWork.SaveChangesAsync(cancellationToken); 
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         logger.LogInformation("Deleted Product {ProductId}", request.Id);
 
         return Unit.Value;

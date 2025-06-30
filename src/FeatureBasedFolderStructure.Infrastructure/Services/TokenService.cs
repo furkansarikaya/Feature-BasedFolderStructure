@@ -109,7 +109,7 @@ public class TokenService(IUnitOfWork unitOfWork, IDateTime dateTime, IOptions<J
             return false;
 
         var userTokenRepository = unitOfWork.GetRepository<UserToken, int>();
-        await userTokenRepository.DeleteAsync(userToken, isSoftDelete: false);
+        await userTokenRepository.DeleteAsync(userToken);
         await unitOfWork.SaveChangesAsync();
         return true;
     }
