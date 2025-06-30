@@ -3,6 +3,7 @@ using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FS.AspNetCore.ResponseWrapper.Exceptions;
 using FS.EntityFramework.Library.UnitOfWorks;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.UpdateProduct;
@@ -16,7 +17,7 @@ public class UpdateProductCommandHandler(
     public async Task<Unit> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
         var productRepository = unitOfWork.GetRepository<Product, int>();
-        var entity = await productRepository.GetByIdAsync(request.Id, cancellationToken: cancellationToken);
+        var entity = await productRepository.GetQueryable().Include(p => p.CurrentPrice).FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken: cancellationToken);
 
         if (entity == null)
             throw new NotFoundException(nameof(Product), request.Id);

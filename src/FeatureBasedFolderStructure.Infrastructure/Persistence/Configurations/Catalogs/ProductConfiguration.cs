@@ -19,14 +19,16 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Description)
             .HasMaxLength(1000);
         
-        builder.OwnsOne(p => p.CurrentPrice, cp =>
+        builder.ComplexProperty(p => p.CurrentPrice, cp =>
         {
             cp.Property(m => m.Amount)
                 .HasPrecision(18, 2)
+                .HasColumnName("current_price_amount")
                 .IsRequired();
 
             cp.Property(m => m.Currency)
                 .HasMaxLength(3)
+                .HasColumnName("current_price_currency")
                 .IsRequired();
         });
 
