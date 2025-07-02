@@ -17,21 +17,21 @@ public class CategoriesController : BaseController
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<List<CategoryDto>>))]
     public async Task<List<CategoryDto>> GetCategories(CancellationToken cancellationToken)
     {
-        return await Mediator.Send(new GetCategoriesQuery(), cancellationToken);
+        return await Mediator.SendAsync(new GetCategoriesQuery(), cancellationToken);
     }
 
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<CategoryDto>))]
     public async Task<CategoryDto> GetCategory(int id, CancellationToken cancellationToken)
     {
-        return await Mediator.Send(new GetCategoryDetailQuery { Id = id }, cancellationToken);
+        return await Mediator.SendAsync(new GetCategoryDetailQuery(id), cancellationToken);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiResponse<CategoryDto>))]
     public async Task<IActionResult> Create(CreateCategoryCommand command, CancellationToken cancellationToken)
     {
-        var category = await Mediator.Send(command, cancellationToken);
+        var category = await Mediator.SendAsync(command, cancellationToken);
         return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, category);
     }
 
@@ -44,7 +44,7 @@ public class CategoriesController : BaseController
             throw new ArgumentException($"Category ID mismatch. The ID in the URL must match the ID in the command. Please check your request. The ID in the URL is: {id}, the ID in the command is: {command.Id}");
         }
 
-        await Mediator.Send(command, cancellationToken);
+        await Mediator.SendAsync(command, cancellationToken);
         return NoContent();
     }
     
@@ -52,7 +52,7 @@ public class CategoriesController : BaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
-        await Mediator.Send(new DeleteCategoryCommand(id), cancellationToken);
+        await Mediator.SendAsync(new DeleteCategoryCommand(id), cancellationToken);
         return NoContent();
     }
 }

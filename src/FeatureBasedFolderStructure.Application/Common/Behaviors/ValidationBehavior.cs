@@ -1,12 +1,12 @@
 using FluentValidation;
-using MediatR;
+using FS.Mediator.Features.RequestHandling.Core;
 
 namespace FeatureBasedFolderStructure.Application.Common.Behaviors;
 
 public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public async Task<TResponse> HandleAsync(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
         if (!validators.Any()) return await next(cancellationToken);
         var context = new ValidationContext<TRequest>(request);

@@ -19,21 +19,21 @@ public class AuthController : BaseController
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiResponse<RegisterDto>))]
     public async Task<RegisterDto> Register(RegisterCommand command, CancellationToken cancellationToken)
     {
-        return await Mediator.Send(command, cancellationToken);
+        return await Mediator.SendAsync(command, cancellationToken);
     }
 
     [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<LoginDto>))]
     public async Task<LoginDto> Login(LoginCommand command, CancellationToken cancellationToken)
     {
-        return await Mediator.Send(command, cancellationToken);
+        return await Mediator.SendAsync(command, cancellationToken);
     }
 
     [HttpPost("logout")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Logout(LogoutCommand command, CancellationToken cancellationToken)
     {
-        await Mediator.Send(command, cancellationToken);
+        await Mediator.SendAsync(command, cancellationToken);
         return NoContent();
     }
 
@@ -41,14 +41,14 @@ public class AuthController : BaseController
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<RefreshTokenDto>))]
     public async Task<RefreshTokenDto> RefreshToken(RefreshTokenCommand command, CancellationToken cancellationToken)
     {
-        return await Mediator.Send(command, cancellationToken);
+        return await Mediator.SendAsync(command, cancellationToken);
     }
 
     [HttpPost("change-password")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> ChangePassword(ChangePasswordCommand command, CancellationToken cancellationToken)
     {
-        await Mediator.Send(command, cancellationToken);
+        await Mediator.SendAsync(command, cancellationToken);
         return NoContent();
     }
 
@@ -56,14 +56,14 @@ public class AuthController : BaseController
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<string>))]
     public async Task<string> ForgotPassword(ForgotPasswordCommand command, CancellationToken cancellationToken)
     {
-        return await Mediator.Send(command, cancellationToken);
+        return await Mediator.SendAsync(command, cancellationToken);
     }
 
     [HttpPost("reset-password")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> ResetPassword(ResetPasswordCommand command, CancellationToken cancellationToken)
     {
-        await Mediator.Send(command, cancellationToken);
+        await Mediator.SendAsync(command, cancellationToken);
         return NoContent();
     }
 }
