@@ -1,4 +1,4 @@
-using MediatR;
+using FS.Mediator.Features.RequestHandling.Core;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FeatureBasedFolderStructure.API.Controllers.Base;

@@ -16,9 +16,12 @@ using FS.AspNetCore.ResponseWrapper;
 using FS.AspNetCore.ResponseWrapper.Middlewares;
 using FS.AspNetCore.ResponseWrapper.Models;
 using FS.AutoServiceDiscovery.Extensions.DependencyInjection;
-using FS.EntityFramework.Library;
 using FS.EntityFramework.Library.FluentConfiguration;
-using MediatR;
+using FS.Mediator.Extensions;
+using FS.Mediator.Features.Backpressure.Models.Enums;
+using FS.Mediator.Features.CircuitBreaker.Models.Enums;
+using FS.Mediator.Features.HealthChecking.Models.Enums;
+using FS.Mediator.Features.Retry.Models.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -55,15 +58,19 @@ public static class ServiceExtensions
         });
     }
 
-    private static void AddMediatRServices(this IServiceCollection services)
+    private static void AddFSMediatorServices(this IServiceCollection services)
     {
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(Assembly.GetAssembly(typeof(CreateProductCommand))!);
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehavior<,>));
-        });
+        services.AddFSMediator(Assembly.GetAssembly(typeof(CreateProductCommand))!)
+            .AddRetryBehavior(RetryPreset.Database)
+            .AddCircuitBreakerBehavior(CircuitBreakerPreset.ExternalApi)
+            .AddLoggingBehavior()
+            .AddPerformanceBehavior()
+            .AddStreamingResiliencePackage()                  // Complete streaming protection
+            .AddStreamingBackpressureBehavior(BackpressurePreset.Analytics)  // Handle load spikes
+            .AddStreamingHealthCheckBehavior(HealthCheckPreset.LongRunning)      // Monitor health
+
+            .AddPipelineBehavior(typeof(AuthorizationBehavior<,>))
+            .AddPipelineBehavior(typeof(ValidationBehavior<,>));
     }
 
     private static void AddCoreServices(this IServiceCollection services, string environmentName)
@@ -194,7 +201,7 @@ public static class ServiceExtensions
 
         services.AddCoreServices(environmentName);
         services.AddOpenApiDocumentation();
-        services.AddMediatRServices();
+        services.AddFSMediatorServices();
         services.AddDatabaseContext(configuration, environmentName);
         
         // Auto service registration - tüm layer'ları tara

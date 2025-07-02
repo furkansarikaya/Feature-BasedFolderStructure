@@ -19,7 +19,7 @@ public class ProductsController : BaseController
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<CleanPagedResult<ProductDto>>))]
     public async Task<PagedResult<ProductDto>> GetProducts([FromQuery] PageRequest pageRequest, CancellationToken cancellationToken)
     {
-        var result = await Mediator.Send(new GetProductsQuery { PageRequest = pageRequest }, cancellationToken);
+        var result = await Mediator.SendAsync(new GetProductsQuery(pageRequest), cancellationToken);
         return result;
     }
 
@@ -27,14 +27,14 @@ public class ProductsController : BaseController
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<ProductDto>))]
     public async Task<ProductDto> GetProduct(int id, CancellationToken cancellationToken)
     {
-        return await Mediator.Send(new GetProductDetailQuery { Id = id }, cancellationToken);
+        return await Mediator.SendAsync(new GetProductDetailQuery(id), cancellationToken);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiResponse<ProductDto>))]
     public async Task<ActionResult> Create(CreateProductCommand command, CancellationToken cancellationToken)
     {
-        var product = await Mediator.Send(command, cancellationToken);
+        var product = await Mediator.SendAsync(command, cancellationToken);
         return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
     }
 
@@ -47,7 +47,7 @@ public class ProductsController : BaseController
             throw new ArgumentException($"Product ID mismatch. The ID in the URL must match the ID in the command. Please check your request. The ID in the URL is: {id}, the ID in the command is: {command.Id}");
         }
 
-        await Mediator.Send(command, cancellationToken);
+        await Mediator.SendAsync(command, cancellationToken);
         return NoContent();
     }
 
@@ -55,7 +55,7 @@ public class ProductsController : BaseController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
     {
-        await Mediator.Send(new DeleteProductCommand(id), cancellationToken);
+        await Mediator.SendAsync(new DeleteProductCommand(id), cancellationToken);
         return NoContent();
     }
 }
