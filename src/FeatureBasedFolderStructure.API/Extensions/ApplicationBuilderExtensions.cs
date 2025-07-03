@@ -13,10 +13,12 @@ public static class ApplicationBuilderExtensions
             options
                 .WithTitle("Feature-Based Folder Structure API")
                 .WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.Axios)
-                .Authentication = new ScalarAuthenticationOptions
+                .AddPreferredSecuritySchemes("BearerAuth")
+                .AddHttpAuthentication("BearerAuth", auth =>
                 {
-                    PreferredSecurityScheme = "Bearer"
-                };
+                    auth.Token = "ey...";
+                })
+                .WithPersistentAuthentication();
         });
 
         app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
