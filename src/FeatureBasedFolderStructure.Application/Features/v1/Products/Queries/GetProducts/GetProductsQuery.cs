@@ -1,8 +1,8 @@
 using AutoMapper;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.DTOs;
 using FeatureBasedFolderStructure.Application.Requests;
-using FeatureBasedFolderStructure.Domain.Common.Paging;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
+using FS.AspNetCore.ResponseWrapper.Models.Paging;
 using FS.EntityFramework.Library.UnitOfWorks;
 using FS.Mediator.Features.RequestHandling.Core;
 

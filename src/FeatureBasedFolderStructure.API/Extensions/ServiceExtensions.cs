@@ -207,7 +207,7 @@ public static class ServiceExtensions
         // Auto service registration - tüm layer'ları tara
 
         services.ConfigureAutoServices()
-            .FromAssemblies(Assembly.GetAssembly(typeof(Domain.Common.Paging.IPagedResult))!,
+            .FromAssemblies(Assembly.GetAssembly(typeof(Domain.ValueObjects.Catalogs.Money))!,
                 Assembly.GetAssembly(typeof(Application.Common.Attributes.RequiresClaimAttribute))!,
                 Assembly.GetAssembly(typeof(ApplicationUserRepository))!)
             .WithProfile(environmentName)

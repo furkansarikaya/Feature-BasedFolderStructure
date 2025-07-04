@@ -2,8 +2,8 @@ using AutoMapper;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.CreateProduct;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.UpdateProduct;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.DTOs;
-using FeatureBasedFolderStructure.Domain.Common.Paging;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
+using FS.AspNetCore.ResponseWrapper.Models.Paging;
 using FS.EntityFramework.Library.Paging;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Products.Mappings;

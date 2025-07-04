@@ -1,4 +1,5 @@
 using FeatureBasedFolderStructure.API.Controllers.Base;
+using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.CreateFakeProducts;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.CreateProduct;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.DeleteProduct;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.UpdateProduct;
@@ -6,8 +7,8 @@ using FeatureBasedFolderStructure.Application.Features.v1.Products.DTOs;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Queries.GetProductDetail;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Queries.GetProducts;
 using FeatureBasedFolderStructure.Application.Requests;
-using FeatureBasedFolderStructure.Domain.Common.Paging;
 using FS.AspNetCore.ResponseWrapper.Models;
+using FS.AspNetCore.ResponseWrapper.Models.Paging;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FeatureBasedFolderStructure.API.Controllers.v1;
@@ -36,6 +37,14 @@ public class ProductsController : BaseController
     {
         var product = await Mediator.SendAsync(command, cancellationToken);
         return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+    }
+    
+    [HttpPost("fake-products")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<ActionResult> CreateFakeProducts(CreateFakeProductsCommand command, CancellationToken cancellationToken)
+    {
+        await Mediator.SendAsync(command, cancellationToken);
+        return NoContent();
     }
 
     [HttpPut("{id:int}")]
