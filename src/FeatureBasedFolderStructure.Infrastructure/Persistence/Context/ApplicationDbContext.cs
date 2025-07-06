@@ -2,7 +2,7 @@ using System.Reflection;
 using FeatureBasedFolderStructure.Domain.Entities.Catalogs;
 using FeatureBasedFolderStructure.Domain.Entities.Orders;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
-using FeatureBasedFolderStructure.Infrastructure.Persistence.Interceptors;
+using FeatureBasedFolderStructure.Infrastructure.Features.Common.Interceptors;
 using FS.EntityFramework.Library.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

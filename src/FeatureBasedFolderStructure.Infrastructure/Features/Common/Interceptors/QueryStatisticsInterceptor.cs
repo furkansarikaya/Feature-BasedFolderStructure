@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Interceptors;
+namespace FeatureBasedFolderStructure.Infrastructure.Features.Common.Interceptors;
 
 [ServiceRegistration(ServiceLifetime.Scoped, Order = 80)]
 public class QueryStatisticsInterceptor(
