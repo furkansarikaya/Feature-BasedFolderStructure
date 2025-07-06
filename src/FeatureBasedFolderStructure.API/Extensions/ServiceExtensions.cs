@@ -8,7 +8,6 @@ using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.Crea
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Mappings;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Validators;
 using FeatureBasedFolderStructure.Domain.Enums;
-using FeatureBasedFolderStructure.Infrastructure.Features.Auth.Repositories;
 using FeatureBasedFolderStructure.Infrastructure.Persistence;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
 using FluentValidation;
@@ -209,7 +208,7 @@ public static class ServiceExtensions
         services.ConfigureAutoServices()
             .FromAssemblies(Assembly.GetAssembly(typeof(Domain.ValueObjects.Catalogs.Money))!,
                 Assembly.GetAssembly(typeof(Application.Common.Attributes.RequiresClaimAttribute))!,
-                Assembly.GetAssembly(typeof(ApplicationUserRepository))!)
+                Assembly.GetAssembly(typeof(ApplicationDbContextInitialiser))!)
             .WithProfile(environmentName)
             .WithConfiguration(configuration)
             .WithLogging(environmentName != "Production")

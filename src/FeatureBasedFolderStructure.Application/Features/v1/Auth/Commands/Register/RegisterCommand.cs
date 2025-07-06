@@ -4,7 +4,6 @@ using FeatureBasedFolderStructure.Application.Features.v1.Auth.Rules;
 using FeatureBasedFolderStructure.Application.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
-using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.ValueObjects.Users;
 using FS.EntityFramework.Library.UnitOfWorks;
 using FS.Mediator.Features.RequestHandling.Core;
@@ -20,8 +19,8 @@ internal class RegisterCommandHandler(IApplicationUserService applicationUserSer
         var applicationUserId = await unitOfWork.ExecuteInTransactionAsync(async () =>
         {
             await authBusinessRules.EmailCanNotBeDuplicatedWhenRegistered(request.Email);
-            var roleRepository = unitOfWork.GetRepository<IRoleRepository>();
-            var customerRole = await roleRepository.GetByNameAsync("CUSTOMER");
+            var roleRepository = unitOfWork.GetRepository<Role, int>();
+            var customerRole = await roleRepository.FirstOrDefaultAsync(r => r.NormalizedName == "CUSTOMER", cancellationToken: cancellationToken);
             if (customerRole == null)
             {
                 customerRole = new Role { Name = "Customer", NormalizedName = "CUSTOMER" };

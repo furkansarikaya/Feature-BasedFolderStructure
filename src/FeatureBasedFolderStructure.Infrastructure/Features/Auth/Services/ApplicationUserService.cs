@@ -1,14 +1,14 @@
 using FeatureBasedFolderStructure.Application.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
-using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FS.AspNetCore.ResponseWrapper.Exceptions;
 using FS.AutoServiceDiscovery.Extensions.Attributes;
 using FS.EntityFramework.Library.UnitOfWorks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FeatureBasedFolderStructure.Application.Features.v1.Auth.Services;
+namespace FeatureBasedFolderStructure.Infrastructure.Features.Auth.Services;
 
 [ServiceRegistration(ServiceLifetime.Scoped, Order = 20)]
 public class ApplicationUserService(
@@ -21,7 +21,7 @@ public class ApplicationUserService(
     {
         try
         {
-            var applicationUserRepository = unitOfWork.GetRepository<IApplicationUserRepository>();
+            var applicationUserRepository = unitOfWork.GetRepository<ApplicationUser, Guid>();
             var user = await applicationUserRepository.GetByIdAsync(id, true, cancellationToken);
             return user ?? throw new NotFoundException(nameof(ApplicationUser), id);
         }
@@ -35,8 +35,13 @@ public class ApplicationUserService(
     {
         try
         {
-            var applicationUserRepository = unitOfWork.GetRepository<IApplicationUserRepository>();
-            var user = await applicationUserRepository.GetUserWithRolesAndClaims(id, cancellationToken);
+            var applicationUserRepository = unitOfWork.GetRepository<ApplicationUser, Guid>();
+
+            var user = await applicationUserRepository.GetQueryable()
+                .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+                .ThenInclude(r => r.RoleClaims)
+                .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
             return user ?? throw new NotFoundException(nameof(ApplicationUser), id);
         }
         catch (Exception ex)
@@ -49,37 +54,9 @@ public class ApplicationUserService(
     {
         try
         {
-            var applicationUserRepository = unitOfWork.GetRepository<IApplicationUserRepository>();
-            var user = await applicationUserRepository.GetByEmailAsync(email, cancellationToken);
+            var applicationUserRepository = unitOfWork.GetRepository<ApplicationUser, Guid>();
+            var user = await applicationUserRepository.FirstOrDefaultAsync(predicate: e => e.Email == email, cancellationToken: cancellationToken);
             return user ?? throw new NotFoundException(nameof(ApplicationUser), email);
-        }
-        catch (Exception ex)
-        {
-            throw new ApplicationException("İşlem sırasında hata oluştu", ex);
-        }
-    }
-
-    public async Task<IEnumerable<ApplicationUser>> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var applicationUserRepository = unitOfWork.GetRepository<IApplicationUserRepository>();
-            var users = await applicationUserRepository.GetAllAsync(cancellationToken: cancellationToken);
-            return users;
-        }
-        catch (Exception ex)
-        {
-            throw new ApplicationException("İşlem sırasında hata oluştu", ex);
-        }
-    }
-
-    public async Task<IEnumerable<ApplicationUser>> GetByStatusAsync(UserStatus status, CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var applicationUserRepository = unitOfWork.GetRepository<IApplicationUserRepository>();
-            var users = await applicationUserRepository.GetByStatusAsync(status, cancellationToken);
-            return users;
         }
         catch (Exception ex)
         {
@@ -91,8 +68,8 @@ public class ApplicationUserService(
     {
         try
         {
-            var applicationUserRepository = unitOfWork.GetRepository<IApplicationUserRepository>();
-            var emailExists = await applicationUserRepository.EmailExistsAsync(user.Email, cancellationToken);
+            var applicationUserRepository = unitOfWork.GetRepository<ApplicationUser, Guid>();
+            var emailExists = await applicationUserRepository.ExistsAsync(e => e.Email == user.Email, cancellationToken);
             if (emailExists)
                 throw new BusinessException("Bu e-posta adresi zaten kullanımda.");
 
@@ -112,7 +89,7 @@ public class ApplicationUserService(
     {
         try
         {
-            var applicationUserRepository = unitOfWork.GetRepository<IApplicationUserRepository>();
+            var applicationUserRepository = unitOfWork.GetRepository<ApplicationUser, Guid>();
             var existingUser = await applicationUserRepository.GetByIdAsync(user.Id, true, cancellationToken);
             if (existingUser == null)
                 throw new NotFoundException(nameof(ApplicationUser), user.Id);
@@ -132,7 +109,7 @@ public class ApplicationUserService(
     {
         try
         {
-            var applicationUserRepository = unitOfWork.GetRepository<IApplicationUserRepository>();
+            var applicationUserRepository = unitOfWork.GetRepository<ApplicationUser, Guid>();
             var user = await applicationUserRepository.GetByIdAsync(id, cancellationToken: cancellationToken);
             if (user == null)
                 throw new NotFoundException(nameof(ApplicationUser), id);
@@ -171,7 +148,7 @@ public class ApplicationUserService(
     {
         try
         {
-            var applicationUserRepository = unitOfWork.GetRepository<IApplicationUserRepository>();
+            var applicationUserRepository = unitOfWork.GetRepository<ApplicationUser, Guid>();
             var user = await applicationUserRepository.GetByIdAsync(id, cancellationToken: cancellationToken);
             if (user == null)
                 throw new NotFoundException(nameof(ApplicationUser), id);
@@ -192,7 +169,7 @@ public class ApplicationUserService(
     {
         try
         {
-            var applicationUserRepository = unitOfWork.GetRepository<IApplicationUserRepository>();
+            var applicationUserRepository = unitOfWork.GetRepository<ApplicationUser, Guid>();
             var user = await applicationUserRepository.GetByIdAsync(id, cancellationToken: cancellationToken);
             if (user == null)
                 throw new NotFoundException(nameof(ApplicationUser), id);
@@ -217,7 +194,7 @@ public class ApplicationUserService(
     {
         try
         {
-            var applicationUserRepository = unitOfWork.GetRepository<IApplicationUserRepository>();
+            var applicationUserRepository = unitOfWork.GetRepository<ApplicationUser, Guid>();
             var user = await applicationUserRepository.GetByIdAsync(id, cancellationToken: cancellationToken);
             if (user == null)
                 throw new NotFoundException(nameof(ApplicationUser), id);
@@ -237,7 +214,7 @@ public class ApplicationUserService(
     {
         try
         {
-            var applicationUserRepository = unitOfWork.GetRepository<IApplicationUserRepository>();
+            var applicationUserRepository = unitOfWork.GetRepository<ApplicationUser, Guid>();
             var user = await applicationUserRepository.GetByIdAsync(id, cancellationToken: cancellationToken);
             if (user == null)
                 throw new NotFoundException(nameof(ApplicationUser), id);
@@ -257,7 +234,7 @@ public class ApplicationUserService(
     {
         try
         {
-            var applicationUserRepository = unitOfWork.GetRepository<IApplicationUserRepository>();
+            var applicationUserRepository = unitOfWork.GetRepository<ApplicationUser, Guid>();
             var user = await applicationUserRepository.GetByIdAsync(id, cancellationToken: cancellationToken);
             if (user == null)
                 throw new NotFoundException(nameof(ApplicationUser), id);

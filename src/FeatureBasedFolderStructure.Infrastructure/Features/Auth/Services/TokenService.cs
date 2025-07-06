@@ -5,9 +5,9 @@ using System.Text;
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Common.Models.Auth;
 using FeatureBasedFolderStructure.Application.Common.Settings;
+using FeatureBasedFolderStructure.Application.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
-using FeatureBasedFolderStructure.Domain.Interfaces.Users;
 using FS.AspNetCore.ResponseWrapper.Exceptions;
 using FS.AutoServiceDiscovery.Extensions.Attributes;
 using FS.EntityFramework.Library.UnitOfWorks;
@@ -18,7 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace FeatureBasedFolderStructure.Infrastructure.Features.Auth.Services;
 
 [ServiceRegistration(ServiceLifetime.Scoped, Order = 20)]
-public class TokenService(IUnitOfWork unitOfWork, IDateTime dateTime, IOptions<JwtSettings> jwtSettings) : ITokenService
+public class TokenService(IUnitOfWork unitOfWork, IDateTime dateTime, IOptions<JwtSettings> jwtSettings,IApplicationUserService applicationUserService) : ITokenService
 {
     private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
@@ -32,8 +32,7 @@ public class TokenService(IUnitOfWork unitOfWork, IDateTime dateTime, IOptions<J
             // JWT AccessToken oluşturma
             var expiryTime = expiryDuration ?? TimeSpan.FromHours(_jwtSettings.ExpiryInHours);
             expiryDate = dateTime.Now.Add(expiryTime);
-            var applicationUserRepository = unitOfWork.GetRepository<IApplicationUserRepository>();
-            var applicationUser = await applicationUserRepository.GetUserWithRolesAndClaims(userId);
+            var applicationUser = await applicationUserService.GetUserWithRolesAndClaims(userId);
             if (applicationUser == null)
                 throw new NotFoundException(nameof(ApplicationUser), userId);
             tokenValue = GenerateJwtToken(applicationUser, expiryDate);

@@ -13,6 +13,7 @@ public class ApplicationDbContext(
     DbContextOptions<ApplicationDbContext> options, IServiceProvider serviceProvider)
     : FSDbContext(options, serviceProvider)
 {
+    private readonly IServiceProvider _serviceProvider = serviceProvider;
     public DbSet<Product> Products => Set<Product>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Order> Orders => Set<Order>();
@@ -32,7 +33,7 @@ public class ApplicationDbContext(
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var queryStatisticsInterceptor = serviceProvider.CreateScope().ServiceProvider.GetService<QueryStatisticsInterceptor>();
+        var queryStatisticsInterceptor = _serviceProvider.CreateScope().ServiceProvider.GetService<QueryStatisticsInterceptor>();
         if (queryStatisticsInterceptor != null)
         {
             optionsBuilder.AddInterceptors(queryStatisticsInterceptor);
