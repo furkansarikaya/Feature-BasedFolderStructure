@@ -8,9 +8,9 @@ using FeatureBasedFolderStructure.Application.Features.v1.Products.Commands.Crea
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Mappings;
 using FeatureBasedFolderStructure.Application.Features.v1.Products.Validators;
 using FeatureBasedFolderStructure.Domain.Enums;
+using FeatureBasedFolderStructure.Infrastructure.Features.Auth.Repositories;
 using FeatureBasedFolderStructure.Infrastructure.Persistence;
 using FeatureBasedFolderStructure.Infrastructure.Persistence.Context;
-using FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Users;
 using FluentValidation;
 using FS.AspNetCore.ResponseWrapper;
 using FS.AspNetCore.ResponseWrapper.Middlewares;

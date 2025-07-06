@@ -7,7 +7,7 @@ using FS.EntityFramework.Library.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FeatureBasedFolderStructure.Infrastructure.Persistence.Repositories.Users;
+namespace FeatureBasedFolderStructure.Infrastructure.Features.Auth.Repositories;
 
 [ServiceRegistration(ServiceLifetime.Scoped, Order = 1)]
 public class ApplicationUserRepository(ApplicationDbContext context) : BaseRepository<ApplicationUser, Guid>(context), IApplicationUserRepository

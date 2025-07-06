@@ -15,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace FeatureBasedFolderStructure.Infrastructure.Services;
+namespace FeatureBasedFolderStructure.Infrastructure.Features.Auth.Services;
 
 [ServiceRegistration(ServiceLifetime.Scoped, Order = 20)]
 public class TokenService(IUnitOfWork unitOfWork, IDateTime dateTime, IOptions<JwtSettings> jwtSettings) : ITokenService

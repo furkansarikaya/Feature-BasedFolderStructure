@@ -28,4 +28,8 @@
       <Reference Include="Microsoft.Extensions.Identity.Core" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Common\" />
+    </ItemGroup>
+
 </Project>
