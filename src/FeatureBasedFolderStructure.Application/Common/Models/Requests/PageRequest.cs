@@ -1,4 +1,4 @@
-namespace FeatureBasedFolderStructure.Application.Requests;
+namespace FeatureBasedFolderStructure.Application.Common.Models.Requests;
 
 public class PageRequest
 {
