@@ -8,7 +8,7 @@ using FS.EntityFramework.Library.UnitOfWorks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FeatureBasedFolderStructure.Application.Services.Users;
+namespace FeatureBasedFolderStructure.Application.Features.v1.Auth.Services;
 
 [ServiceRegistration(ServiceLifetime.Scoped, Order = 20)]
 public class ApplicationUserService(
