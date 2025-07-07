@@ -1,7 +1,7 @@
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 
-namespace FeatureBasedFolderStructure.Application.Interfaces.Users;
+namespace FeatureBasedFolderStructure.Application.Features.v1.Auth.Interfaces.Users;
 
 public interface IApplicationUserService
 {

@@ -1,4 +1,4 @@
-using FeatureBasedFolderStructure.Application.Interfaces.Users;
+using FeatureBasedFolderStructure.Application.Features.v1.Auth.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FS.AspNetCore.ResponseWrapper.Exceptions;

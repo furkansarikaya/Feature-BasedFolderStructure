@@ -1,5 +1,5 @@
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
-using FeatureBasedFolderStructure.Application.Interfaces.Users;
+using FeatureBasedFolderStructure.Application.Features.v1.Auth.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FS.Mediator.Features.RequestHandling.Core;
 

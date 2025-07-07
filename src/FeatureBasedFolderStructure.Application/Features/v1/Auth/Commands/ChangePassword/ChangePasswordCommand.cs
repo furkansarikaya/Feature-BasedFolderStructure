@@ -1,5 +1,5 @@
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
-using FeatureBasedFolderStructure.Application.Interfaces.Users;
+using FeatureBasedFolderStructure.Application.Features.v1.Auth.Interfaces.Users;
 using FS.Mediator.Features.RequestHandling.Core;
 
 namespace FeatureBasedFolderStructure.Application.Features.v1.Auth.Commands.ChangePassword;

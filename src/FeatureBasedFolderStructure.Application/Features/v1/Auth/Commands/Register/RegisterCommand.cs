@@ -1,7 +1,7 @@
 using FeatureBasedFolderStructure.Application.Common.Interfaces;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.DTOs;
+using FeatureBasedFolderStructure.Application.Features.v1.Auth.Interfaces.Users;
 using FeatureBasedFolderStructure.Application.Features.v1.Auth.Rules;
-using FeatureBasedFolderStructure.Application.Interfaces.Users;
 using FeatureBasedFolderStructure.Domain.Entities.Users;
 using FeatureBasedFolderStructure.Domain.Enums;
 using FeatureBasedFolderStructure.Domain.ValueObjects.Users;

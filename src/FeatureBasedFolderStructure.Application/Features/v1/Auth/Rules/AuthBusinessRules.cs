@@ -1,4 +1,4 @@
-using FeatureBasedFolderStructure.Application.Interfaces.Users;
+using FeatureBasedFolderStructure.Application.Features.v1.Auth.Interfaces.Users;
 using FS.AspNetCore.ResponseWrapper.Exceptions;
 using FS.AutoServiceDiscovery.Extensions.Attributes;
 using Microsoft.Extensions.DependencyInjection;
